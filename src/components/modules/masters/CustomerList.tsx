@@ -36,9 +36,14 @@ export default function CustomerList({ customers }: Props) {
           <h1 className={styles.title}>Customers</h1>
           <p className={styles.subtitle}>{customers.length} total customers</p>
         </div>
-        <Button onClick={() => router.push('/dashboard/masters/customers/new')}>
-          + New Customer
-        </Button>
+        <div style={{ display: 'flex', gap: '0.6rem' }}>
+          <Button variant="ghost" onClick={() => router.push('/dashboard/masters/customers/analytics')}>
+            ◎ Analytics
+          </Button>
+          <Button onClick={() => router.push('/dashboard/masters/customers/new')}>
+            + New Customer
+          </Button>
+        </div>
       </div>
 
       {/* Search */}
@@ -55,12 +60,12 @@ export default function CustomerList({ customers }: Props) {
       <Card noPad>
         <Table
           columns={[
-            { key: 'code',           label: 'Code'           },
-            { key: 'name',           label: 'Name'           },
-            { key: 'mobile',         label: 'Mobile'         },
-            { key: 'gstin',          label: 'GSTIN'          },
-            { key: 'city',           label: 'City'           },
-            { key: 'credit_period',  label: 'Credit Days', align: 'c' },
+            { key: 'code', label: 'Code' },
+            { key: 'name', label: 'Name' },
+            { key: 'mobile', label: 'Mobile' },
+            { key: 'gstin', label: 'GSTIN' },
+            { key: 'city', label: 'City' },
+            { key: 'credit_period', label: 'Credit Days', align: 'c' },
             {
               key: 'is_active', label: 'Status', align: 'c',
               render: (v) => (
