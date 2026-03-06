@@ -1,0 +1,418 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+// ── Header ───────────────────────────────────
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+// ── Toolbar ──────────────────────────────────
+.toolbar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 200px;
+  max-width: 380px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+
+  &::placeholder { color: var(--text-muted); }
+  &:focus { border-color: var(--accent); }
+}
+
+.filterSelect {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:focus { border-color: var(--accent); }
+  option  { background: var(--bg-surface); }
+}
+
+// ── Table Actions ────────────────────────────
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.editBtn {
+  background: rgba(108, 143, 255, 0.1);
+  color: var(--accent);
+  border: none;
+  border-radius: 5px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+
+  &:hover { background: rgba(108, 143, 255, 0.2); }
+}
+
+.toggleBtn {
+  background: rgba(139, 143, 168, 0.1);
+  color: var(--text-muted);
+  border: none;
+  border-radius: 5px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+
+  &:hover { background: rgba(139, 143, 168, 0.2); }
+}
+
+// ── Form ─────────────────────────────────────
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  &.span2 { grid-column: span 2; }
+
+  label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  input, select, textarea {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+
+    &::placeholder { color: var(--text-muted); }
+    &:focus { border-color: var(--accent); }
+  }
+
+  select option { background: var(--bg-surface); }
+  textarea { resize: vertical; }
+}
+
+.req { color: var(--red); }
+
+// ── Stock Summary ────────────────────────────
+.stockGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.stockCard {
+  border-radius: 8px;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.stockOk  { border-color: rgba(74, 222, 128, 0.3); background: rgba(74, 222, 128, 0.05); }
+.stockLow { border-color: rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.05); }
+
+.stockName {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stockRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+
+  strong { color: var(--text-primary); font-size: 0.8rem; }
+}
+
+// ── Items Table ──────────────────────────────
+.itemsTable {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.itemsHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 40px;
+  gap: 0.5rem;
+  padding: 0 0.25rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+
+  span {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
+.itemRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 40px;
+  gap: 0.5rem;
+  align-items: center;
+
+  input, select {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s;
+
+    &:focus { border-color: var(--accent); }
+    option  { background: var(--bg-surface); }
+  }
+}
+
+.readOnly {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+  background: var(--bg-elevated) !important;
+}
+
+.stockAlert {
+  color: var(--red) !important;
+  opacity: 1 !important;
+}
+
+.removeBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+
+  &:hover {
+    color: var(--red);
+    background: rgba(248, 113, 113, 0.1);
+  }
+}
+
+.addRowBtn {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s, color 0.15s;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+// ── Totals ───────────────────────────────────
+.totalsBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.totalRow {
+  display: flex;
+  gap: 2rem;
+  font-size: 0.85rem;
+
+  span { color: var(--text-muted); min-width: 120px; text-align: right; }
+  strong { color: var(--text-primary); min-width: 100px; text-align: right; font-family: var(--mono); }
+
+  &.grandTotal {
+    span, strong { font-size: 1rem; }
+    strong { color: var(--accent); }
+  }
+}
+
+// ── Footer ───────────────────────────────────
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+// ── Error ────────────────────────────────────
+.error {
+  font-size: 0.85rem;
+  color: var(--red);
+  background: rgba(248, 113, 113, 0.08);
+  padding: 0.6rem 0.9rem;
+  border-radius: 7px;
+  margin-top: 0.5rem;
+}
+
+// ── GST Breakup ──────────────────────────────
+.gstBreakup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 0.75rem;
+}
+
+.gstRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+
+  span   { color: var(--text-muted); }
+  strong { color: var(--text-primary); font-family: var(--mono); }
+
+  &.gstTotal {
+    border-top: 1px solid var(--border);
+    padding-top: 0.4rem;
+    margin-top: 0.2rem;
+    span, strong { font-weight: 700; color: var(--text-primary); }
+  }
+}
+
+// ── Summary Row ──────────────────────────────
+.summaryRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 900px) { grid-template-columns: repeat(2, 1fr); }
+}
+
+.summaryCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  span   { font-size: 0.78rem; color: var(--text-muted); }
+  strong { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); font-family: var(--mono); }
+}
+
+// ── Invoice Summary Panel ────────────────────
+.invoiceSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.summaryLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+
+  span   { color: var(--text-muted); }
+  strong { color: var(--text-primary); font-family: var(--mono); }
+}
+
+.summaryDivider {
+  border-top: 1px solid var(--border);
+  margin: 0.25rem 0;
+}
+
+.fullPaymentBadge {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  color: var(--green);
+  border-radius: 7px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.partialPaymentBadge {
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: var(--amber);
+  border-radius: 7px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
