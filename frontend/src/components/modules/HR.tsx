@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import PageHeader from '@/components/ui/PageHeader';
 import Card from '@/components/ui/Card';
 import Table from '@/components/ui/Table';
@@ -9,7 +9,7 @@ import Button from '@/components/ui/Button';
 import StatCard from '@/components/ui/StatCard';
 import Tabs from '@/components/ui/Tabs';
 import {
-    EMPLOYEES, SALARY_HEADS, STRUCTURES, SALARY_SHEET, ADVANCES,
+    EMPLOYEES, SALARY_HEADS, STRUCTURES, SALARY_SHEET, ADVANCES, SalaryHead
 } from '@/lib/hrData';
 import styles from './HR.module.css';
 
@@ -77,15 +77,109 @@ function HRDashboard() {
 
 // ─── Employees Tab ────────────────────────────────────────
 function HREmployees() {
+    const [employees, setEmployees] = useState(EMPLOYEES);
+    const [showModal, setShowModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Form state
+    const [formData, setFormData] = useState({
+        code: '', name: '', designation: '', dept: '',
+        mobile: '', joining: '', basic: '', bank: ''
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        // Simulating API call
+        try {
+            // Here you would do: await fetch('/api/employees', { method: 'POST', body: JSON.stringify(formData) })
+            await new Promise(resolve => setTimeout(resolve, 600)); // fake delay
+
+            const newEmp = {
+                ...formData,
+                basic: Number(formData.basic),
+                status: 'Active'
+            };
+
+            setEmployees(prev => [...prev, newEmp]);
+            setShowModal(false);
+            setFormData({ code: '', name: '', designation: '', dept: '', mobile: '', joining: '', basic: '', bank: '' });
+        } catch (error) {
+            console.error("Failed to add employee:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <>
+            {showModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <div className={styles.modalHeader}>
+                            <span>Add New Employee</span>
+                            <button className={styles.modalClose} onClick={() => setShowModal(false)}>×</button>
+                        </div>
+                        <form onSubmit={handleSubmit}>
+                            <div className={styles.modalBody}>
+                                <div className={styles.formGrid}>
+                                    <div className={styles.formField}>
+                                        <label>Emp Code *</label>
+                                        <input required name="code" value={formData.code} onChange={handleChange} pattern="^[A-Z0-9-]+$" title="Requires uppercase letters, numbers, and hyphens (e.g. EMP-007)" placeholder="e.g. EMP-007" />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Name *</label>
+                                        <input required name="name" value={formData.name} onChange={handleChange} pattern="^[a-zA-Z\s.-]+$" title="Only characters space dot or hyphen are allowed" placeholder="Full Name" />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Designation *</label>
+                                        <input required name="designation" value={formData.designation} onChange={handleChange} placeholder="e.g. Developer" />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Department</label>
+                                        <input name="dept" value={formData.dept} onChange={handleChange} placeholder="e.g. IT" />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Mobile *</label>
+                                        <input required type="tel" name="mobile" value={formData.mobile} onChange={handleChange} pattern="^(?:\d{5}-\d{5}|\d{10})$" title="Must be 10 digits or 5-5 digits (e.g. 98765-43210)" placeholder="e.g. 98765-43210" />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Joining Date *</label>
+                                        <input required type="date" name="joining" value={formData.joining} onChange={handleChange} />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Basic Salary *</label>
+                                        <input required type="number" min="0" step="0.01" name="basic" value={formData.basic} onChange={handleChange} placeholder="e.g. 50000" />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Bank Details *</label>
+                                        <input required name="bank" value={formData.bank} onChange={handleChange} placeholder="e.g. HDFC 4521" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={styles.modalFooter}>
+                                <Button variant="secondary" onClick={() => setShowModal(false)} type="button">Cancel</Button>
+                                <Button variant="primary" type="submit" disabled={isSubmitting}>
+                                    {isSubmitting ? 'Saving...' : 'Save Employee'}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             <div className={styles.grid4}>
-                <StatCard label="Total Employees" value="6" sub="active" />
+                <StatCard label="Total Employees" value={employees.length.toString()} sub="active" />
                 <StatCard label="Total Payroll" value="₹3.06L" sub="this month" trend={2.1} />
                 <StatCard label="New Joiners" value="1" sub="this month" />
                 <StatCard label="Avg. Basic" value="₹32.5K" sub="per employee" />
             </div>
-            <Card title="Employee Master" noPad action={<Button variant="primary" size="sm">+ Add Employee</Button>}>
+            <Card title="Employee Master" noPad action={<Button variant="primary" size="sm" onClick={() => setShowModal(true)}>+ Add Employee</Button>}>
                 <Table
                     columns={[
                         { key: 'code', label: 'Emp Code', render: v => <span style={{ fontFamily: 'var(--mono)', fontSize: 12 }}>{v as string}</span> },
@@ -96,7 +190,7 @@ function HREmployees() {
                         { key: 'basic', label: 'Basic Salary', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)' }}>{fmtC(v as number)}</span> },
                         { key: 'status', label: 'Status', align: 'c', render: () => <Badge label="Active" variant="success" /> },
                     ]}
-                    rows={EMPLOYEES}
+                    rows={employees}
                 />
             </Card>
         </>
@@ -105,39 +199,210 @@ function HREmployees() {
 
 // ─── Salary Heads Tab ─────────────────────────────────────
 function HRSalaryHeads() {
+    const [heads, setHeads] = useState<SalaryHead[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchHeads = async () => {
+            try {
+                // Simulating an API call to fetch the static static salary template plan
+                await new Promise(resolve => setTimeout(resolve, 800));
+                setHeads(SALARY_HEADS);
+            } catch (error) {
+                console.error("Failed to fetch salary components:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchHeads();
+    }, []);
+
     return (
-        <Card title="Salary Head Master" noPad action={<Button variant="primary" size="sm">+ Add Head</Button>}>
-            <Table
-                columns={[
-                    { key: 'head', label: 'Head Name', render: v => <span style={{ fontWeight: 500 }}>{v as string}</span> },
-                    { key: 'type', label: 'Type', render: v => <Badge label={v as string} variant={(v === 'Earning' ? 'success' : 'danger') as BadgeVariant} /> },
-                    { key: 'calcOn', label: 'Calculation Basis' },
-                    { key: 'value', label: 'Value / Rate', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', fontSize: 12 }}>{v as string}</span> },
-                ]}
-                rows={SALARY_HEADS}
-            />
+        <Card title="Salary Component Template" noPad>
+            {isLoading ? (
+                <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                    Loading salary components from backend...
+                </div>
+            ) : (
+                <Table
+                    columns={[
+                        { key: 'head', label: 'Head Name', render: v => <span style={{ fontWeight: 500 }}>{v as string}</span> },
+                        { key: 'type', label: 'Type', render: v => <Badge label={v as string} variant={(v === 'Earning' ? 'success' : 'danger') as BadgeVariant} /> },
+                        { key: 'calcOn', label: 'Calculation Basis' },
+                        { key: 'value', label: 'Value / Rate', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', fontSize: 12 }}>{v as string}</span> },
+                    ]}
+                    rows={heads}
+                />
+            )}
         </Card>
     );
 }
 
 // ─── Salary Structure Tab ─────────────────────────────────
 function HRStructure() {
+    const [structures, setStructures] = useState(STRUCTURES);
+    const [showModal, setShowModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Basic calculation rates matching Salary Master
+    const HRA_RATE = 0.40;
+    const DA_RATE = 0.12;
+    const PF_RATE = 0.12;
+    const ESIC_RATE = 0.0075;
+    const PT_VALUE = 200;
+    const CONV_VALUE = 1600;
+
+    const [formData, setFormData] = useState({
+        empCode: '', effDate: '', basic: ''
+    });
+
+    const [calculated, setCalculated] = useState({
+        name: '', hra: 0, da: 0, pf: 0, esic: 0,
+        gross: 0, net: 0,
+    });
+
+    // Auto-calculate fields when basic changes
+    useEffect(() => {
+        const basicAmt = Number(formData.basic) || 0;
+        const hra = basicAmt * HRA_RATE;
+        const da = basicAmt * DA_RATE;
+        const pf = basicAmt * PF_RATE;
+        const gross = basicAmt + hra + da + CONV_VALUE;
+        const esic = gross * ESIC_RATE;
+        const net = gross - pf - esic - PT_VALUE;
+
+        let empName = '';
+        if (formData.empCode) {
+            const foundEmp = EMPLOYEES.find(e => e.code.toLowerCase() === formData.empCode.toLowerCase());
+            if (foundEmp) empName = foundEmp.name;
+        }
+
+        setCalculated({
+            name: empName,
+            hra, da, pf, esic, gross, net
+        });
+    }, [formData.basic, formData.empCode]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            await new Promise(resolve => setTimeout(resolve, 600)); // Simulating API
+
+            const newStruct = {
+                emp: calculated.name || formData.empCode,
+                effDate: formData.effDate,
+                basic: Number(formData.basic),
+                hra: calculated.hra,
+                da: calculated.da,
+                conv: CONV_VALUE,
+                pf: calculated.pf,
+                esic: calculated.esic,
+                pt: PT_VALUE,
+                gross: calculated.gross,
+                net: calculated.net
+            };
+
+            setStructures(prev => {
+                const existingIndex = prev.findIndex(s => s.emp.toLowerCase() === newStruct.emp.toLowerCase());
+                if (existingIndex >= 0) {
+                    const updated = [...prev];
+                    updated[existingIndex] = newStruct;
+                    return updated;
+                }
+                return [...prev, newStruct];
+            });
+            setShowModal(false);
+            setFormData({ empCode: '', effDate: '', basic: '' });
+        } catch (error) {
+            console.error("Failed to assign pay structure:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
-        <Card title="Employee Salary Structures" noPad action={<Button variant="primary" size="sm">+ Assign Structure</Button>}>
-            <Table
-                columns={[
-                    { key: 'emp', label: 'Employee', render: v => <span style={{ fontWeight: 500 }}>{v as string}</span> },
-                    { key: 'effDate', label: 'Effective From' },
-                    { key: 'basic', label: 'Basic', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)' }}>{fmtC(v as number)}</span> },
-                    { key: 'hra', label: 'HRA', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', color: 'var(--text-muted)' }}>{fmtC(v as number)}</span> },
-                    { key: 'da', label: 'DA', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', color: 'var(--text-muted)' }}>{fmtC(v as number)}</span> },
-                    { key: 'pf', label: 'PF', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', color: 'var(--red)' }}>{fmtC(v as number)}</span> },
-                    { key: 'gross', label: 'Gross', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', fontWeight: 500 }}>{fmtC(v as number)}</span> },
-                    { key: 'net', label: 'Net Pay', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', fontWeight: 700, color: 'var(--accent)' }}>{fmtC(v as number)}</span> },
-                ]}
-                rows={STRUCTURES}
-            />
-        </Card>
+        <>
+            {showModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <div className={styles.modalHeader}>
+                            <span>Assign Pay Structure</span>
+                            <button className={styles.modalClose} onClick={() => setShowModal(false)}>×</button>
+                        </div>
+                        <form onSubmit={handleSubmit}>
+                            <div className={styles.modalBody}>
+                                <div className={styles.formGrid}>
+                                    <div className={styles.formField}>
+                                        <label>Emp Code *</label>
+                                        <input required name="empCode" value={formData.empCode} onChange={handleChange} placeholder="e.g. EMP-001" />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Employee Name</label>
+                                        <input disabled value={calculated.name || 'Not found'} style={{ background: 'var(--bg-active)' }} />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Effective Date *</label>
+                                        <input required type="date" name="effDate" value={formData.effDate} onChange={handleChange} />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Basic Salary *</label>
+                                        <input required type="number" min="0" step="0.01" name="basic" value={formData.basic} onChange={handleChange} placeholder="e.g. 45000" />
+                                    </div>
+
+                                    {/* Auto-calculated preview fields */}
+                                    <div className={styles.formField}>
+                                        <label>HRA (40%)</label>
+                                        <input disabled value={fmtC(calculated.hra)} />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>DA (12%)</label>
+                                        <input disabled value={fmtC(calculated.da)} />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>PF (12%)</label>
+                                        <input disabled value={fmtC(calculated.pf)} />
+                                    </div>
+                                    <div className={styles.formField}>
+                                        <label>Gross Salary</label>
+                                        <input disabled value={fmtC(calculated.gross)} style={{ fontWeight: 600 }} />
+                                    </div>
+                                    <div className={styles.formField} style={{ gridColumn: '1 / -1' }}>
+                                        <label>Net Pay</label>
+                                        <input disabled value={fmtC(calculated.net)} style={{ fontWeight: 700, color: 'var(--accent)' }} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={styles.modalFooter}>
+                                <Button variant="secondary" onClick={() => setShowModal(false)} type="button">Cancel</Button>
+                                <Button variant="primary" type="submit" disabled={isSubmitting || !calculated.name}>
+                                    {isSubmitting ? 'Saving...' : 'Assign Pay'}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+            <Card title="Employee Salary Structures" noPad action={<Button variant="primary" size="sm" onClick={() => setShowModal(true)}>+ Assign Structure</Button>}>
+                <Table
+                    columns={[
+                        { key: 'emp', label: 'Employee', render: v => <span style={{ fontWeight: 500 }}>{v as string}</span> },
+                        { key: 'effDate', label: 'Effective From' },
+                        { key: 'basic', label: 'Basic', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)' }}>{fmtC(v as number)}</span> },
+                        { key: 'hra', label: 'HRA', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', color: 'var(--text-muted)' }}>{fmtC(v as number)}</span> },
+                        { key: 'da', label: 'DA', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', color: 'var(--text-muted)' }}>{fmtC(v as number)}</span> },
+                        { key: 'pf', label: 'PF', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', color: 'var(--red)' }}>{fmtC(v as number)}</span> },
+                        { key: 'gross', label: 'Gross', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', fontWeight: 500 }}>{fmtC(v as number)}</span> },
+                        { key: 'net', label: 'Net Pay', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', fontWeight: 700, color: 'var(--accent)' }}>{fmtC(v as number)}</span> },
+                    ]}
+                    rows={structures as unknown as Record<string, unknown>[]}
+                />
+            </Card>
+        </>
     );
 }
 
@@ -238,7 +503,7 @@ function HRAdvances() {
                         { key: 'recovery', label: 'Recovery Month' },
                         { key: 'status', label: 'Status', align: 'c', render: v => <Badge label={v as string} variant={(v === 'Recovered' ? 'success' : 'warning') as BadgeVariant} /> },
                     ]}
-                    rows={ADVANCES}
+                    rows={ADVANCES as unknown as Record<string, unknown>[]}
                 />
             </Card>
         </>

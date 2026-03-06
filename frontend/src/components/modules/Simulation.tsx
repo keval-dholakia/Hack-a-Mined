@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, ReactNode } from 'react';
+import { useState, useRef, ReactNode } from 'react';
 import PageHeader from '@/components/ui/PageHeader';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -370,6 +370,7 @@ function RoutingTab({ r, mpsArr }: { r: SimResult; mpsArr: Array<{ pid: string; 
 interface MPSRow { pid: string; qty: number; }
 
 export default function Simulation() {
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [mps, setMps] = useState<MPSRow[]>([
         { pid: 'ALTO', qty: 20 }, { pid: 'SWIFT', qty: 30 }, { pid: 'BALENO', qty: 25 },
     ]);
@@ -397,6 +398,47 @@ export default function Simulation() {
     const updateRow = (i: number, field: keyof MPSRow, val: string | number) =>
         setMps(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: val } : r));
 
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            const text = evt.target?.result as string;
+            if (!text) return;
+
+            const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+            const newRows: MPSRow[] = [];
+
+            let startIndex = 0;
+            const firstLineCols = lines[0]?.split(',').map(c => c.trim());
+            // Skip header if qty column is not a number
+            if (firstLineCols && isNaN(Number(firstLineCols[1]))) {
+                startIndex = 1;
+            }
+
+            for (let i = startIndex; i < lines.length; i++) {
+                // Handle optional quotes and split by comma
+                const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+                if (cols.length >= 2) {
+                    const pid = cols[0];
+                    const qty = Number(cols[1]);
+                    // Let the user edit invalid products later in the UI if needed, but only add rows with > 0 qty
+                    if (!isNaN(qty) && qty > 0) {
+                        newRows.push({ pid, qty });
+                    }
+                }
+            }
+
+            if (newRows.length > 0) {
+                setMps(prev => [...prev.filter(r => r.pid || r.qty > 0), ...newRows]);
+            }
+
+            e.target.value = '';
+        };
+        reader.readAsText(file);
+    };
+
     return (
         <>
             <PageHeader
@@ -418,16 +460,23 @@ export default function Simulation() {
                         </div>
                         {mps.map((row, i) => (
                             <div key={i} className={styles.mpsRow}>
-                                <select className="inp" value={row.pid} onChange={e => updateRow(i, 'pid', e.target.value)}>
-                                    <option value="">Select product…</option>
-                                    {PRODUCTS.map(p => <option key={p.product_id} value={p.product_id}>{p.name}</option>)}
-                                </select>
+                                <input className="inp mono" type="text" value={row.pid} placeholder="e.g. ALTO or Custom Component" onChange={e => updateRow(i, 'pid', e.target.value)} />
                                 <input className="inp mono" type="number" value={row.qty} min={0}
                                     onChange={e => updateRow(i, 'qty', Number(e.target.value))} />
                                 <button className={styles.removeBtn} onClick={() => removeRow(i)}>×</button>
                             </div>
                         ))}
-                        <button className={styles.addRowBtn} onClick={addRow}>+ Add Product</button>
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                            <button className={styles.addRowBtn} onClick={addRow} style={{ marginTop: 0 }}>+ Add Product</button>
+                            <button className={styles.addRowBtn} onClick={() => fileInputRef.current?.click()} style={{ marginTop: 0 }}>📂 Upload CSV</button>
+                            <input
+                                type="file"
+                                accept=".csv"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                onChange={handleFileUpload}
+                            />
+                        </div>
                     </Card>
 
                     {/* Params Card */}
