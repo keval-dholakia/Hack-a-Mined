@@ -30,9 +30,14 @@ export default function WarehouseList({ warehouses }: Props) {
           <h1 className={styles.title}>Warehouses</h1>
           <p className={styles.subtitle}>{warehouses.length} total warehouses</p>
         </div>
-        <Button onClick={() => router.push('/dashboard/masters/warehouses/new')}>
-          + New Warehouse
-        </Button>
+        <div style={{ display: 'flex', gap: '0.6rem' }}>
+          <Button variant="ghost" onClick={() => router.push('/dashboard/masters/warehouses/analytics')}>
+            ◎ Analytics
+          </Button>
+          <Button onClick={() => router.push('/dashboard/masters/warehouses/new')}>
+            + New Warehouse
+          </Button>
+        </div>
       </div>
 
       <div className={styles.searchBar}>
@@ -47,12 +52,12 @@ export default function WarehouseList({ warehouses }: Props) {
       <Card noPad>
         <Table
           columns={[
-            { key: 'code',           label: 'Code'    },
-            { key: 'name',           label: 'Name'    },
-            { key: 'city',           label: 'City'    },
-            { key: 'state',          label: 'State'   },
-            { key: 'manager_name',   label: 'Manager' },
-            { key: 'manager_mobile', label: 'Mobile'  },
+            { key: 'code', label: 'Code' },
+            { key: 'name', label: 'Name' },
+            { key: 'city', label: 'City' },
+            { key: 'state', label: 'State' },
+            { key: 'manager_name', label: 'Manager' },
+            { key: 'manager_mobile', label: 'Mobile' },
             {
               key: 'is_active', label: 'Status', align: 'c',
               render: v => (

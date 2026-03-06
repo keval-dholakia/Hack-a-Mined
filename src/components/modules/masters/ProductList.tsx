@@ -20,7 +20,7 @@ const STOCK_VARIANT = (p: Product): 'danger' | 'warning' | 'success' => {
 
 export default function ProductList({ products }: Props) {
   const router = useRouter()
-  const [search,   setSearch]   = useState('')
+  const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
 
   const categories = [...new Set(products.map(p => p.category).filter(Boolean))]
@@ -40,9 +40,14 @@ export default function ProductList({ products }: Props) {
           <h1 className={styles.title}>Products</h1>
           <p className={styles.subtitle}>{products.length} total products</p>
         </div>
-        <Button onClick={() => router.push('/dashboard/masters/products/new')}>
-          + New Product
-        </Button>
+        <div style={{ display: 'flex', gap: '0.6rem' }}>
+          <Button variant="ghost" onClick={() => router.push('/dashboard/masters/products/analytics')}>
+            ◎ Analytics
+          </Button>
+          <Button onClick={() => router.push('/dashboard/masters/products/new')}>
+            + New Product
+          </Button>
+        </div>
       </div>
 
       <div className={styles.searchBar}>
@@ -67,18 +72,21 @@ export default function ProductList({ products }: Props) {
       <Card noPad>
         <Table
           columns={[
-            { key: 'code',          label: 'Code'         },
-            { key: 'name',          label: 'Name'         },
-            { key: 'category',      label: 'Category'     },
-            { key: 'unit',          label: 'Unit', align: 'c' },
-            { key: 'hsn_code',      label: 'HSN'          },
-            { key: 'gst_percent',   label: 'GST%', align: 'c',
+            { key: 'code', label: 'Code' },
+            { key: 'name', label: 'Name' },
+            { key: 'category', label: 'Category' },
+            { key: 'unit', label: 'Unit', align: 'c' },
+            { key: 'hsn_code', label: 'HSN' },
+            {
+              key: 'gst_percent', label: 'GST%', align: 'c',
               render: v => `${v}%`
             },
-            { key: 'sale_price',    label: 'Sale Price', align: 'r',
+            {
+              key: 'sale_price', label: 'Sale Price', align: 'r',
               render: v => `₹${Number(v).toLocaleString('en-IN')}`
             },
-            { key: 'current_stock', label: 'Stock', align: 'c',
+            {
+              key: 'current_stock', label: 'Stock', align: 'c',
               render: (v, row) => (
                 <Badge
                   label={`${v} ${row.unit}`}

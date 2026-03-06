@@ -30,9 +30,14 @@ export default function TransportList({ transporters }: Props) {
           <h1 className={styles.title}>Transport Masters</h1>
           <p className={styles.subtitle}>{transporters.length} total transporters</p>
         </div>
-        <Button onClick={() => router.push('/dashboard/masters/transport/new')}>
-          + New Transporter
-        </Button>
+        <div style={{ display: 'flex', gap: '0.6rem' }}>
+          <Button variant="ghost" onClick={() => router.push('/dashboard/masters/transport/analytics')}>
+            ◎ Analytics
+          </Button>
+          <Button onClick={() => router.push('/dashboard/masters/transport/new')}>
+            + New Transporter
+          </Button>
+        </div>
       </div>
 
       <div className={styles.searchBar}>
@@ -47,11 +52,11 @@ export default function TransportList({ transporters }: Props) {
       <Card noPad>
         <Table
           columns={[
-            { key: 'name',       label: 'Transporter Name' },
-            { key: 'owner_name', label: 'Owner'            },
-            { key: 'mobile',     label: 'Mobile'           },
-            { key: 'gstin',      label: 'GSTIN'            },
-            { key: 'address',    label: 'Address'          },
+            { key: 'name', label: 'Transporter Name' },
+            { key: 'owner_name', label: 'Owner' },
+            { key: 'mobile', label: 'Mobile' },
+            { key: 'gstin', label: 'GSTIN' },
+            { key: 'address', label: 'Address' },
             {
               key: 'is_active', label: 'Status', align: 'c',
               render: v => (

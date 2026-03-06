@@ -34,9 +34,14 @@ export default function VendorList({ vendors }: Props) {
           <h1 className={styles.title}>Vendors</h1>
           <p className={styles.subtitle}>{vendors.length} total vendors</p>
         </div>
-        <Button onClick={() => router.push('/dashboard/masters/vendors/new')}>
-          + New Vendor
-        </Button>
+        <div style={{ display: 'flex', gap: '0.6rem' }}>
+          <Button variant="ghost" onClick={() => router.push('/dashboard/masters/vendors/analytics')}>
+            ◎ Analytics
+          </Button>
+          <Button onClick={() => router.push('/dashboard/masters/vendors/new')}>
+            + New Vendor
+          </Button>
+        </div>
       </div>
 
       <div className={styles.searchBar}>
@@ -51,11 +56,11 @@ export default function VendorList({ vendors }: Props) {
       <Card noPad>
         <Table
           columns={[
-            { key: 'code',          label: 'Code'          },
-            { key: 'name',          label: 'Name'          },
-            { key: 'mobile',        label: 'Mobile'        },
-            { key: 'gstin',         label: 'GSTIN'         },
-            { key: 'city',          label: 'City'          },
+            { key: 'code', label: 'Code' },
+            { key: 'name', label: 'Name' },
+            { key: 'mobile', label: 'Mobile' },
+            { key: 'gstin', label: 'GSTIN' },
+            { key: 'city', label: 'City' },
             { key: 'payment_terms', label: 'Payment Days', align: 'c' },
             {
               key: 'is_active', label: 'Status', align: 'c',
