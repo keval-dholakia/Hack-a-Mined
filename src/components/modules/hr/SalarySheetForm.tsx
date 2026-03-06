@@ -249,7 +249,7 @@ export default function SalarySheetForm({ employees, salaryHeads }: Props) {
                             </div>
                             <div className={styles.totalItem}>
                                 <span className={styles.totalLabel}>Net Pay</span>
-                                <span className={styles.totalValue} style={{ color: '#6366f1' }}>
+                                <span className={styles.totalValue} style={{ color: totals.net < 0 ? '#f43f5e' : '#6366f1' }}>
                                     ₹{totals.net.toLocaleString('en-IN')}
                                 </span>
                             </div>
@@ -258,11 +258,12 @@ export default function SalarySheetForm({ employees, salaryHeads }: Props) {
 
                 </div>
 
+                {totals.net < 0 && <p className={styles.error} style={{ marginBottom: '1rem' }}>Net pay cannot be negative! Please adjust deductions.</p>}
                 {error && <p className={styles.error}>{error}</p>}
 
                 <div className={styles.footer}>
                     <Button variant="ghost" type="button" onClick={() => router.back()}>Cancel</Button>
-                    <Button type="submit" disabled={loading || !empId}>
+                    <Button type="submit" disabled={loading || !empId || totals.net < 0}>
                         {loading ? 'Saving...' : 'Generate Salary Sheet'}
                     </Button>
                 </div>

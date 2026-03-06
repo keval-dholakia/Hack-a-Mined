@@ -197,7 +197,12 @@ export async function createSalarySheet(payload: SalarySheetPayload) {
         if (typeMap[item.salary_head_id] === 'Earning') gross += Number(item.amount)
         else deductions += Number(item.amount)
     })
+
     const net_pay = gross - deductions
+
+    if (net_pay < 0) {
+        return { error: 'Net pay cannot be negative. Deductions exceed gross salary.' }
+    }
 
     const { data: sheet, error: sheetErr } = await supabase
         .from('salary_sheets')
@@ -236,6 +241,31 @@ export async function updateSalarySheetStatus(id: number, status: 'Draft' | 'App
         .update({ status })
         .eq('id', id)
     if (error) return { error: error.message }
+
+    // Automated Mail Dispatcher
+    if (status === 'Paid') {
+        try {
+            const { buildSalaryPdfBuffer } = await import('@/lib/pdf/generateSalaryPdf')
+            const { sendPayslipEmail } = await import('@/lib/email')
+
+            const { buffer, fileName, payload } = await buildSalaryPdfBuffer(id)
+            const emailRes = await sendPayslipEmail(
+                payload.employee.email,
+                buffer,
+                fileName,
+                payload.employee.name,
+                payload.salary.month,
+                payload.salary.year
+            )
+
+            if (emailRes?.error) {
+                console.warn('[HR Server]: Payslip generated but email failed:', emailRes.error)
+            }
+        } catch (err) {
+            console.error('[HR Server]: Mail generation/dispatch pipeline crashed', err)
+        }
+    }
+
     revalidatePath('/dashboard/hr/salary-sheet')
     return { success: true }
 }
@@ -301,6 +331,11 @@ export async function saveEmployeeSalaryStructure(
         else ded += Number(it.amount)
     })
 
+    const net_pay = gross - ded
+    if (net_pay < 0) {
+        return { error: 'Net pay cannot be negative. Deductions exceed gross salary.' }
+    }
+
     let sheetId = await getStructureSheetId(employee_id)
 
     if (!sheetId) {
@@ -314,7 +349,7 @@ export async function saveEmployeeSalaryStructure(
                 present_days: 0,
                 gross_salary: gross,
                 total_deductions: ded,
-                net_pay: gross - ded,
+                net_pay: net_pay,
                 status: 'Draft',
             }])
             .select('id')
@@ -324,7 +359,7 @@ export async function saveEmployeeSalaryStructure(
     } else {
         await supabase
             .from('salary_sheets')
-            .update({ gross_salary: gross, total_deductions: ded, net_pay: gross - ded })
+            .update({ gross_salary: gross, total_deductions: ded, net_pay: net_pay })
             .eq('id', sheetId)
         await supabase.from('salary_sheet_items').delete().eq('salary_sheet_id', sheetId)
     }

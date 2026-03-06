@@ -209,11 +209,18 @@ export default function SalarySheetList({ sheets }: Props) {
                                                 </span>
                                             </div>
                                         </div>
-                                        {sheet.status !== 'Paid' && (
-                                            <Button onClick={() => handleStatusChange(sheet.id, sheet.status)}>
-                                                {sheet.status === 'Draft' ? '✓ Approve' : '✓ Mark Paid'}
-                                            </Button>
-                                        )}
+                                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                                            {sheet.status !== 'Paid' && (
+                                                <Button onClick={() => handleStatusChange(sheet.id, sheet.status)}>
+                                                    {sheet.status === 'Draft' ? '✓ Approve' : '✓ Mark Paid'}
+                                                </Button>
+                                            )}
+                                            {sheet.status === 'Paid' && (
+                                                <Button variant="ghost" onClick={() => window.open(`/api/hr/salary-receipt/${sheet.id}`, '_blank')}>
+                                                    📄 Download Payslip
+                                                </Button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             )}
