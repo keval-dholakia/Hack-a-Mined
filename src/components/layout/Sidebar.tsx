@@ -9,19 +9,19 @@ import type { SessionUser } from '@/types/auth'
 
 type SubItem = {
   label: string
-  path:  string
+  path: string
 }
 
 type ModuleItem = {
-  key:       string
-  label:     string
-  icon:      string
-  path:      string
+  key: string
+  label: string
+  icon: string
+  path: string
   subItems?: SubItem[]
 }
 
 type Group = {
-  label:   string
+  label: string
   modules: ModuleItem[]
 }
 
@@ -30,51 +30,51 @@ const NAV_GROUPS: Group[] = [
     label: 'OPERATIONS',
     modules: [
       {
-        key:   MODULES.SALES,
+        key: MODULES.SALES,
         label: 'Sales',
-        icon:  '◈',
-        path:  '/dashboard/sales',
+        icon: '◈',
+        path: '/dashboard/sales',
         subItems: [
-          { label: 'Inquiry',     path: '/dashboard/sales/inquiry'     },
-          { label: 'Quotation',   path: '/dashboard/sales/quotation'   },
-          { label: 'Sale Order',  path: '/dashboard/sales/sale-order'  },
-          { label: 'Invoice',     path: '/dashboard/sales/invoice'     },
+          { label: 'Inquiry', path: '/dashboard/sales/inquiry' },
+          { label: 'Quotation', path: '/dashboard/sales/quotation' },
+          { label: 'Sale Order', path: '/dashboard/sales/sale-order' },
+          { label: 'Invoice', path: '/dashboard/sales/invoice' },
           { label: 'Collections', path: '/dashboard/sales/collections' },
         ],
       },
       {
-        key:   MODULES.PURCHASE,
+        key: MODULES.PURCHASE,
         label: 'Purchase',
-        icon:  '◉',
-        path:  '/dashboard/purchase',
+        icon: '◉',
+        path: '/dashboard/purchase',
         subItems: [
-          { label: 'Indent',   path: '/dashboard/purchase/indent'   },
-          { label: 'PO',       path: '/dashboard/purchase/po'       },
-          { label: 'GRN',      path: '/dashboard/purchase/grn'      },
-          { label: 'IQC',      path: '/dashboard/purchase/iqc'      },
+          { label: 'Indent', path: '/dashboard/purchase/indent' },
+          { label: 'PO', path: '/dashboard/purchase/po' },
+          { label: 'GRN', path: '/dashboard/purchase/grn' },
+          { label: 'IQC', path: '/dashboard/purchase/iqc' },
           { label: 'Billbook', path: '/dashboard/purchase/billbook' },
         ],
       },
       {
-        key:   MODULES.PRODUCTION,
+        key: MODULES.PRODUCTION,
         label: 'Production',
-        icon:  '▣',
-        path:  '/dashboard/production',
+        icon: '▣',
+        path: '/dashboard/production',
         subItems: [
-          { label: 'Route Card',      path: '/dashboard/production/route-card'      },
-          { label: 'Material Issue',  path: '/dashboard/production/material-issue'  },
-          { label: 'Job Order',       path: '/dashboard/production/job-order'       },
-          { label: 'Report',          path: '/dashboard/production/report'          },
+          { label: 'Route Card', path: '/dashboard/production/route-card' },
+          { label: 'Material Issue', path: '/dashboard/production/material-issue' },
+          { label: 'Job Order', path: '/dashboard/production/job-order' },
+          { label: 'Report', path: '/dashboard/production/report' },
         ],
       },
       {
-        key:   MODULES.LOGISTICS,
+        key: MODULES.LOGISTICS,
         label: 'Logistics',
-        icon:  '⬡',
-        path:  '/dashboard/logistics',
+        icon: '⬡',
+        path: '/dashboard/logistics',
         subItems: [
-          { label: 'Transport Order',  path: '/dashboard/logistics/transport-order'  },
-          { label: 'Challan Out',      path: '/dashboard/logistics/challan-out'      },
+          { label: 'Transport Order', path: '/dashboard/logistics/transport-order' },
+          { label: 'Challan Out', path: '/dashboard/logistics/challan-out' },
           { label: 'Freight Billbook', path: '/dashboard/logistics/freight-billbook' },
         ],
       },
@@ -84,10 +84,10 @@ const NAV_GROUPS: Group[] = [
     label: 'MANAGEMENT',
     modules: [
       {
-        key:   MODULES.QUALITY,
+        key: MODULES.QUALITY,
         label: 'Quality',
-        icon:  '◎',
-        path:  '/dashboard/quality',
+        icon: '◎',
+        path: '/dashboard/quality',
         subItems: [
           { label: 'IQC', path: '/dashboard/quality/iqc' },
           { label: 'PQC', path: '/dashboard/quality/pqc' },
@@ -96,36 +96,36 @@ const NAV_GROUPS: Group[] = [
         ],
       },
       {
-        key:   MODULES.STORES,
+        key: MODULES.STORES,
         label: 'Stores',
-        icon:  '▤',
-        path:  '/dashboard/stores',
+        icon: '▤',
+        path: '/dashboard/stores',
         subItems: [
-          { label: 'Opening Stock',   path: '/dashboard/stores/opening-stock'   },
-          { label: 'Stock Transfer',  path: '/dashboard/stores/stock-transfer'  },
-          { label: 'Dispatch SRV',    path: '/dashboard/stores/dispatch-srv'    },
+          { label: 'Opening Stock', path: '/dashboard/stores/opening-stock' },
+          { label: 'Stock Transfer', path: '/dashboard/stores/stock-transfer' },
+          { label: 'Dispatch SRV', path: '/dashboard/stores/dispatch-srv' },
         ],
       },
       {
-        key:   MODULES.MAINTENANCE,
+        key: MODULES.MAINTENANCE,
         label: 'Maintenance',
-        icon:  '◧',
-        path:  '/dashboard/maintenance',
+        icon: '◧',
+        path: '/dashboard/maintenance',
         subItems: [
-          { label: 'Tool Master',   path: '/dashboard/maintenance/tool-master'   },
-          { label: 'Calibration',   path: '/dashboard/maintenance/calibration'   },
+          { label: 'Tool Master', path: '/dashboard/maintenance/tool-master' },
+          { label: 'Calibration', path: '/dashboard/maintenance/calibration' },
           { label: 'Rectification', path: '/dashboard/maintenance/rectification' },
         ],
       },
       {
-        key:   MODULES.ASSETS,
+        key: MODULES.ASSETS,
         label: 'Assets',
-        icon:  '◇',
-        path:  '/dashboard/assets',
+        icon: '◇',
+        path: '/dashboard/assets',
         subItems: [
-          { label: 'Asset Master',  path: '/dashboard/assets/asset-master'  },
-          { label: 'Allocation',    path: '/dashboard/assets/allocation'    },
-          { label: 'Depreciation',  path: '/dashboard/assets/depreciation'  },
+          { label: 'Asset Master', path: '/dashboard/assets/asset-master' },
+          { label: 'Allocation', path: '/dashboard/assets/allocation' },
+          { label: 'Depreciation', path: '/dashboard/assets/depreciation' },
         ],
       },
     ],
@@ -134,47 +134,49 @@ const NAV_GROUPS: Group[] = [
     label: 'FINANCE & HR',
     modules: [
       {
-        key:   MODULES.FINANCE,
+        key: MODULES.FINANCE,
         label: 'Finance',
-        icon:  '◈',
-        path:  '/dashboard/finance',
+        icon: '◈',
+        path: '/dashboard/finance',
         subItems: [
-          { label: 'Journal',         path: '/dashboard/finance/journal'          },
-          { label: 'Payment/Receipt', path: '/dashboard/finance/payment-receipt'  },
-          { label: 'Bank Recon',      path: '/dashboard/finance/bank-recon'       },
-          { label: 'Credit Card',     path: '/dashboard/finance/credit-card'      },
+          { label: 'Journal', path: '/dashboard/finance/journal' },
+          { label: 'Payment/Receipt', path: '/dashboard/finance/payment-receipt' },
+          { label: 'Bank Recon', path: '/dashboard/finance/bank-recon' },
+          { label: 'Credit Card', path: '/dashboard/finance/credit-card' },
         ],
       },
       {
-        key:   MODULES.HR,
+        key: MODULES.HR,
         label: 'HR',
-        icon:  '◉',
-        path:  '/dashboard/hr',
+        icon: '◉',
+        path: '/dashboard/hr',
         subItems: [
-          { label: 'Employees',       path: '/dashboard/hr/employees'        },
-          { label: 'Salary Sheet',    path: '/dashboard/hr/salary-sheet'     },
-          { label: 'Advance Memo',    path: '/dashboard/hr/advance-memo'     },
+          { label: 'Employees', path: '/dashboard/hr/employees' },
+          { label: 'Salary Heads', path: '/dashboard/hr/salary-heads' },
+          { label: 'Salary Structure', path: '/dashboard/hr/salary-structure' },
+          { label: 'Salary Sheet', path: '/dashboard/hr/salary-sheet' },
+          { label: 'Advance Memo', path: '/dashboard/hr/advance-memo' },
         ],
       },
       {
-        key:   MODULES.CONTRACTORS,
+        key: MODULES.CONTRACTORS,
         label: 'Contractors',
-        icon:  '▣',
-        path:  '/dashboard/contractors',
+        icon: '▣',
+        path: '/dashboard/contractors',
         subItems: [
-          { label: 'Workers',      path: '/dashboard/contractors/workers'      },
+          { label: 'Workers', path: '/dashboard/contractors/workers' },
           { label: 'Salary Sheet', path: '/dashboard/contractors/salary-sheet' },
-          { label: 'Payments',     path: '/dashboard/contractors/payments'     },
+          { label: 'Payments', path: '/dashboard/contractors/payments' },
         ],
       },
       {
-        key:   MODULES.STATUTORY,
+        key: MODULES.STATUTORY,
         label: 'Statutory',
-        icon:  '⬡',
-        path:  '/dashboard/statutory',
+        icon: '⬡',
+        path: '/dashboard/statutory',
         subItems: [
-          { label: 'GST',           path: '/dashboard/statutory/gst'           },
-          { label: 'TDS/TCS',       path: '/dashboard/statutory/tds-tcs'       },
+          { label: 'GST', path: '/dashboard/statutory/gst' },
+          { label: 'TDS/TCS', path: '/dashboard/statutory/tds-tcs' },
           { label: 'Balance Sheet', path: '/dashboard/statutory/balance-sheet' },
         ],
       },
@@ -184,13 +186,13 @@ const NAV_GROUPS: Group[] = [
     label: 'INTELLIGENCE',
     modules: [
       {
-        key:   MODULES.FORECASTING,
+        key: MODULES.FORECASTING,
         label: 'Simulation',
-        icon:  '◇',
-        path:  '/dashboard/forecasting',
+        icon: '◇',
+        path: '/dashboard/forecasting',
         subItems: [
-          { label: 'MRP',           path: '/dashboard/forecasting/mrp'           },
-          { label: 'CRP',           path: '/dashboard/forecasting/crp'           },
+          { label: 'MRP', path: '/dashboard/forecasting/mrp' },
+          { label: 'CRP', path: '/dashboard/forecasting/crp' },
           { label: 'Cost Estimate', path: '/dashboard/forecasting/cost-estimate' },
         ],
       },
@@ -199,15 +201,15 @@ const NAV_GROUPS: Group[] = [
 ]
 
 type Props = {
-  permissions:  Permission[]
+  permissions: Permission[]
   isSuperAdmin: boolean
-  user:         SessionUser  // ← add this
+  user: SessionUser  // ← add this
 }
 
 export default function Sidebar({ permissions, isSuperAdmin, user }: Props) {
   const pathname = usePathname()
-  const [collapsed,     setCollapsed]     = useState(false)
-  const [openModules,   setOpenModules]   = useState<string[]>([MODULES.SALES])
+  const [collapsed, setCollapsed] = useState(false)
+  const [openModules, setOpenModules] = useState<string[]>([MODULES.SALES])
 
   function canViewModule(moduleKey: string): boolean {
     if (isSuperAdmin) return true
@@ -270,7 +272,7 @@ export default function Sidebar({ permissions, isSuperAdmin, user }: Props) {
               )}
 
               {visibleModules.map(module => {
-                const open   = isModuleOpen(module.key)
+                const open = isModuleOpen(module.key)
                 const active = isModuleActive(module)
 
                 return (
