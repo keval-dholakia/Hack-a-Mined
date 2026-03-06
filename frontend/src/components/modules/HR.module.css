@@ -1,0 +1,95 @@
+.grid4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* Headcount bars */
+.hbarWrap {
+    margin-bottom: 10px;
+}
+
+.hbarLabel {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.hbarTrack {
+    height: 5px;
+    background: var(--bg-active);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.hbarFill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+/* Activity */
+.activityRow {
+    display: flex;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.activityRow:last-child {
+    border-bottom: none;
+}
+
+/* Salary sheet table */
+.tbl {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tbl th {
+    padding: 9px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.tbl td {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.tbl tbody tr:hover {
+    background: var(--bg-hover);
+}
+
+.tbl tfoot tr {
+    background: var(--bg-elevated);
+}
+
+.tbl tfoot td {
+    border-top: 1px solid var(--border);
+}
+
+.r {
+    text-align: right;
+}

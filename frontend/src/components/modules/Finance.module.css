@@ -1,0 +1,98 @@
+.grid4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* Cash flow */
+.cashRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+}
+
+/* Pending actions */
+.actionRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.actionRow:last-child {
+    border-bottom: none;
+}
+
+/* Bank Recon */
+.reconHeader {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.balanceCard {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md, 10px);
+    padding: 18px 20px;
+}
+
+/* Credit cards */
+.cardTotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-elevated);
+}
+
+.spendTotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    margin-top: 4px;
+}
+
+/* Shared bars */
+.hbarWrap {
+    margin-bottom: 10px;
+}
+
+.hbarLabel {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.hbarTrack {
+    height: 5px;
+    background: var(--bg-active);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.hbarFill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}

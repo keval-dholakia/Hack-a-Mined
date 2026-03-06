@@ -1,0 +1,371 @@
+/* ─── Layout ─────────────────────────────────────────────── */
+.layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.inputCol {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.refCol {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ─── MPS Grid ───────────────────────────────────────────── */
+.mpsHeader {
+    display: grid;
+    grid-template-columns: 1fr 110px 32px;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.mpsRow {
+    display: grid;
+    grid-template-columns: 1fr 110px 32px;
+    gap: 8px;
+    margin-bottom: 6px;
+    align-items: center;
+}
+
+.removeBtn {
+    color: var(--text-muted);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    padding: 0 6px;
+    transition: color 0.1s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+}
+
+.removeBtn:hover {
+    color: var(--red);
+}
+
+.addRowBtn {
+    width: 100%;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    padding: 7px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.1s;
+    margin-top: 4px;
+    background: none;
+    font-family: var(--sans);
+}
+
+.addRowBtn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ─── Params ────────────────────────────────────────────── */
+.paramGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.fieldLabel {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.advToggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--sans);
+}
+
+.advPanel {
+    margin-top: 10px;
+    padding: 12px;
+    background: var(--bg-elevated);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+/* ─── Reference Panel ────────────────────────────────────── */
+.machGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.machCard {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+/* ─── Results Section ────────────────────────────────────── */
+.secSep {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+}
+
+.secSepLine {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.sumGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.sumCard {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+}
+
+.sumLabel {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.sumVal {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.8px;
+    font-family: var(--mono);
+}
+
+.sumSub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 5px;
+}
+
+.overloadAlert {
+    border-radius: 8px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+}
+
+/* ─── Tabs ───────────────────────────────────────────────── */
+.tabs {
+    display: flex;
+    gap: 2px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 8px 18px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+    transition: all 0.1s;
+    background: none;
+    font-family: var(--sans);
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.tabActive {
+    color: var(--text-primary);
+    font-weight: 500;
+    border-bottom-color: var(--accent);
+}
+
+/* ─── MRP Tab ────────────────────────────────────────────── */
+.mrpGrid {
+    display: grid;
+    grid-template-columns: 1fr 190px;
+    gap: 12px;
+}
+
+.coverageCell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 90px;
+}
+
+.tblFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+}
+
+.readinessSidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.detailRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border-light);
+    width: 100%;
+}
+
+.detailRow:last-child {
+    border-bottom: none;
+}
+
+/* ─── CRP Tab ────────────────────────────────────────────── */
+.crpTop {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.hoursBox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--bg-elevated);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+}
+
+.machBars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.barTrack {
+    height: 5px;
+    background: var(--bg-active);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.barFill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+}
+
+.hbar {
+    margin-bottom: 10px;
+}
+
+.hbarRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+/* ─── Costing Tab ────────────────────────────────────────── */
+.costTop {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.donutWrap {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.donutLegend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.legendRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.costBox {
+    padding: 12px 14px;
+    background: var(--bg-elevated);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+}
+
+.costBoxTop {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+}
+
+.costTotal {
+    padding: 12px 14px;
+    background: var(--accent-dim);
+    border-radius: 6px;
+    border: 1px solid var(--accent);
+}
+
+/* ─── Routing Tab ────────────────────────────────────────── */
+.routingTop {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.routingKpi {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+}

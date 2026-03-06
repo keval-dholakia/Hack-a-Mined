@@ -1,0 +1,114 @@
+.header {
+    height: var(--hdr);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+    background: var(--bg-surface);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.breadcrumb {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breadcrumbGroup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bcItem {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.bcLast {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.sep {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.searchBox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 6px 12px;
+    width: 200px;
+}
+
+.searchBox input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 13px;
+    width: 100%;
+}
+
+.kbd {
+    font-size: 10px;
+    color: var(--text-muted);
+    background: var(--bg-active);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    white-space: nowrap;
+}
+
+.iconBtn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    color: var(--text-secondary);
+    font-size: 14px;
+    position: relative;
+    cursor: pointer;
+}
+
+.notifDot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.dateChip {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 6px 10px;
+    white-space: nowrap;
+}
