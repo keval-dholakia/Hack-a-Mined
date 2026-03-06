@@ -1,0 +1,66 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.tabBar {
+    display: flex;
+    gap: 0.35rem;
+    background: #13151f;
+    border: 1px solid #1f2235;
+    border-radius: 12px;
+    padding: 0.4rem;
+    width: fit-content;
+    flex-wrap: wrap;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tab {
+    padding: 0.55rem 1.4rem;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    position: relative;
+
+    &:hover {
+        color: var(--text-primary);
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    &.active {
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(108, 143, 255, 0.25);
+    }
+}
+
+.tabPanel {
+    background: #1a1d27;
+    border: 1px solid #2a2d3e;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at top right, rgba(108, 143, 255, 0.03) 0%, transparent 60%);
+        pointer-events: none;
+        border-radius: 16px;
+    }
+}

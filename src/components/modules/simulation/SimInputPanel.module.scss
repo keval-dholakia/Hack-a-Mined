@@ -1,0 +1,234 @@
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.section {
+    background: #1a1d27;
+    border: 1px solid #2a2d3e;
+    border-radius: 14px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.25s ease;
+
+    &:focus-within {
+        border-color: rgba(108, 143, 255, 0.3);
+    }
+}
+
+.sectionTitle {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    &::before {
+        content: "";
+        width: 4px;
+        height: 1.15rem;
+        background: var(--accent);
+        border-radius: 2px;
+    }
+}
+
+// ── MPS Grid ────────────────────────────
+.gridHeader {
+    display: grid;
+    grid-template-columns: 2fr 1fr 40px;
+    gap: 1.25rem;
+    padding: 0 0.5rem 0.75rem;
+    border-bottom: 1px solid #2a2d3e;
+
+    span {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+}
+
+.gridRow {
+    display: grid;
+    grid-template-columns: 2fr 1fr 40px;
+    gap: 1.25rem;
+    align-items: center;
+
+    input {
+        background: #0f1117;
+        border: 1px solid #2a2d3e;
+        border-radius: 8px;
+        padding: 0.65rem 1rem;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        font-family: inherit;
+        outline: none;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+
+        &:focus {
+            border-color: var(--accent);
+            background: #12141c;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        &::placeholder {
+            color: #4a4d5e;
+        }
+    }
+}
+
+.removeBtn {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    line-height: 1;
+
+    &:hover:not(:disabled) {
+        color: var(--red);
+        transform: scale(1.1);
+    }
+
+    &:disabled {
+        opacity: 0.2;
+        cursor: not-allowed;
+    }
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.25rem;
+}
+
+.btnSec {
+    background: #2a2d3e;
+    color: var(--text-primary);
+    border: 1px solid transparent;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    &:hover {
+        background: #36394e;
+        border-color: #4a4d5e;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+// ── Parameters ──────────────────────────
+.paramsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        margin-left: 0.2rem;
+    }
+
+    input {
+        background: #0f1117;
+        border: 1px solid #2a2d3e;
+        border-radius: 8px;
+        padding: 0.65rem 1rem;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        font-family: inherit;
+        outline: none;
+        transition: all 0.25s ease;
+
+        &:focus {
+            border-color: var(--accent);
+            background: #12141c;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+    }
+}
+
+.advToggle {
+    background: transparent;
+    color: var(--accent);
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.25rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    width: fit-content;
+    transition: background 0.2s;
+
+    &:hover {
+        background: rgba(108, 143, 255, 0.08);
+    }
+}
+
+// ── Run button ──────────────────────────
+.runBtn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.85rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 16px rgba(108, 143, 255, 0.3);
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    &:hover:not(:disabled) {
+        transform: scale(1.05);
+    }
+
+    &:active:not(:disabled) {
+        transform: scale(1);
+    }
+
+    &:disabled {
+        background: #2a2d3e;
+        color: #4a4d5e;
+        box-shadow: none;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+}

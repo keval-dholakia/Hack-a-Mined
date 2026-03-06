@@ -68,8 +68,14 @@
   overflow-x: hidden;
   padding: 0.5rem 0;
 
-  &::-webkit-scrollbar { width: 3px; }
-  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   &::-webkit-scrollbar-thumb {
     background: #2a2d3e;
     border-radius: 4px;
@@ -108,7 +114,7 @@
 
   &:hover {
     color: var(--text-primary);
-    background: rgba(255,255,255,0.03);
+    background: rgba(255, 255, 255, 0.03);
   }
 
   &.moduleActive {
@@ -143,7 +149,19 @@
 }
 
 // ── Sub Items ────────────────────────────────
+.subListContainer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  &.subListOpen {
+    grid-template-rows: 1fr;
+  }
+}
+
 .subList {
+  min-height: 0;
   display: flex;
   flex-direction: column;
   padding-bottom: 0.25rem;
@@ -160,7 +178,7 @@
 
   &:hover {
     color: var(--text-primary);
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.02);
   }
 
   &.subActive {
@@ -226,7 +244,9 @@
   flex-shrink: 0;
   transition: color 0.15s;
 
-  &:hover { color: var(--text-primary); }
+  &:hover {
+    color: var(--text-primary);
+  }
 }
 
 // ── Collapse Button ──────────────────────────
@@ -244,5 +264,7 @@
   transition: color 0.15s;
   flex-shrink: 0;
 
-  &:hover { color: var(--text-primary); }
+  &:hover {
+    color: var(--text-primary);
+  }
 }

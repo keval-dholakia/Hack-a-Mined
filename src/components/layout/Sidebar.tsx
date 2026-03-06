@@ -152,8 +152,6 @@ const NAV_GROUPS: Group[] = [
         path: '/dashboard/hr',
         subItems: [
           { label: 'Employees', path: '/dashboard/hr/employees' },
-          { label: 'Salary Heads', path: '/dashboard/hr/salary-heads' },
-          { label: 'Salary Structure', path: '/dashboard/hr/salary-structure' },
           { label: 'Salary Sheet', path: '/dashboard/hr/salary-sheet' },
           { label: 'Advance Memo', path: '/dashboard/hr/advance-memo' },
         ],
@@ -189,12 +187,7 @@ const NAV_GROUPS: Group[] = [
         key: MODULES.FORECASTING,
         label: 'Simulation',
         icon: '◇',
-        path: '/dashboard/forecasting',
-        subItems: [
-          { label: 'MRP', path: '/dashboard/forecasting/mrp' },
-          { label: 'CRP', path: '/dashboard/forecasting/crp' },
-          { label: 'Cost Estimate', path: '/dashboard/forecasting/cost-estimate' },
-        ],
+        path: '/dashboard/simulation'
       },
     ],
   },
@@ -278,35 +271,47 @@ export default function Sidebar({ permissions, isSuperAdmin, user }: Props) {
                 return (
                   <div key={module.key}>
                     {/* Module row */}
-                    <div
-                      className={`${styles.moduleRow} ${active ? styles.moduleActive : ''}`}
-                      onClick={() => !collapsed && toggleModule(module.key)}
-                    >
-                      <span className={styles.moduleIcon}>{module.icon}</span>
-                      {!collapsed && (
-                        <>
-                          <span className={styles.moduleLabel}>{module.label}</span>
-                          {module.subItems && (
+                    {module.subItems && module.subItems.length > 0 ? (
+                      <div
+                        className={`${styles.moduleRow} ${active ? styles.moduleActive : ''}`}
+                        onClick={() => !collapsed && toggleModule(module.key)}
+                      >
+                        <span className={styles.moduleIcon}>{module.icon}</span>
+                        {!collapsed && (
+                          <>
+                            <span className={styles.moduleLabel}>{module.label}</span>
                             <span className={`${styles.chevron} ${open ? styles.chevronOpen : ''}`}>
                               ›
                             </span>
-                          )}
-                        </>
-                      )}
-                    </div>
+                          </>
+                        )}
+                      </div>
+                    ) : (
+                      <Link
+                        href={module.path}
+                        className={`${styles.moduleRow} ${active ? styles.moduleActive : ''}`}
+                      >
+                        <span className={styles.moduleIcon}>{module.icon}</span>
+                        {!collapsed && (
+                          <span className={styles.moduleLabel}>{module.label}</span>
+                        )}
+                      </Link>
+                    )}
 
                     {/* Sub items */}
-                    {!collapsed && open && module.subItems && (
-                      <div className={styles.subList}>
-                        {module.subItems.map(sub => (
-                          <Link
-                            key={sub.path}
-                            href={sub.path}
-                            className={`${styles.subItem} ${isActive(sub.path) ? styles.subActive : ''}`}
-                          >
-                            {sub.label}
-                          </Link>
-                        ))}
+                    {!collapsed && module.subItems && (
+                      <div className={`${styles.subListContainer} ${open ? styles.subListOpen : ''}`}>
+                        <div className={styles.subList}>
+                          {module.subItems.map(sub => (
+                            <Link
+                              key={sub.path}
+                              href={sub.path}
+                              className={`${styles.subItem} ${isActive(sub.path) ? styles.subActive : ''}`}
+                            >
+                              {sub.label}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
