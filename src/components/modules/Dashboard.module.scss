@@ -1,0 +1,142 @@
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+
+  @media (max-width: 1200px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 640px)  { grid-template-columns: 1fr; }
+}
+
+.row3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  @media (max-width: 1024px) { grid-template-columns: 1fr; }
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 12px;
+
+  @media (max-width: 1024px) { grid-template-columns: 1fr; }
+}
+
+// Trend
+.trendList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.trendRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trendLabel {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  width: 72px;
+  flex-shrink: 0;
+}
+
+.trendVal {
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: var(--mono);
+  color: var(--text-primary);
+  width: 40px;
+  text-align: right;
+}
+
+// Module status
+.modList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modLabel {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  width: 72px;
+  flex-shrink: 0;
+}
+
+.modPct {
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  color: var(--text-muted);
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+// Quick actions
+.quickList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// View all link
+.viewAll {
+  font-size: 0.78rem;
+  color: var(--accent);
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover { opacity: 0.75; }
+}
+
+// Alerts
+.alertList {
+  display: flex;
+  flex-direction: column;
+}
+
+.alertItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+
+  &:last-child { border-bottom: none; }
+  &:first-child { padding-top: 0; }
+}
+
+.alertDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.alertBody {
+  flex: 1;
+}
+
+.alertMsg {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.alertTime {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+}

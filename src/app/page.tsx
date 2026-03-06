@@ -1,9 +1,7 @@
-import TestBox from "@/components/TestBox/TestBox"
+import { createClient } from '@/lib/supabase/server'
 
-export default function Home() {
-  return (
-    <main style={{ padding: "40px" }}>
-      <TestBox />
-    </main>
-  )
+export default async function Home() {
+  const supabase = await createClient()
+  const { data } = await supabase.from('roles').select('*')
+  return <pre>{JSON.stringify(data, null, 2)}</pre>
 }
