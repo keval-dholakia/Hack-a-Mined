@@ -141,6 +141,8 @@ const NAV_GROUPS: Group[] = [
         subItems: [
           { label: 'Journal', path: '/dashboard/finance/journal' },
           { label: 'Payment/Receipt', path: '/dashboard/finance/payment-receipt' },
+          { label: 'Contra', path: '/dashboard/finance/contra' },
+          { label: 'GST Journal', path: '/dashboard/finance/gst-journal' },
           { label: 'Bank Recon', path: '/dashboard/finance/bank-recon' },
           { label: 'Credit Card', path: '/dashboard/finance/credit-card' },
         ],
