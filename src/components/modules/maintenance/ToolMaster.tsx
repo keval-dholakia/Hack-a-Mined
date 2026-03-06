@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
 import type { Tool, ToolFormData } from '@/types/maintenance'
+import { useRouter } from 'next/navigation'
+import { useMemo, useState } from 'react'
 import styles from './ToolMaster.module.scss'
 
 // ── MOCK DATA ─────────────────────────────────────────────
@@ -61,10 +61,10 @@ const EMPTY_FORM: ToolFormData = {
 }
 
 const CONDITION_VARIANT: Record<string, string> = {
-  'Good':         styles.condGood,
-  'Fair':         styles.condFair,
+  'Good': styles.condGood,
+  'Fair': styles.condFair,
   'Needs Repair': styles.condRepair,
-  'Scrapped':     styles.condScrapped,
+  'Scrapped': styles.condScrapped,
 }
 
 function nextCode(tools: Tool[]): string {
@@ -74,15 +74,15 @@ function nextCode(tools: Tool[]): string {
 }
 
 export default function ToolMaster() {
-  const [tools, setTools]         = useState<Tool[]>(SEED_TOOLS)
-  const [search, setSearch]       = useState('')
+  const [tools, setTools] = useState<Tool[]>(SEED_TOOLS)
+  const [search, setSearch] = useState('')
   const [catFilter, setCatFilter] = useState('All')
   const [condFilter, setCondFilter] = useState('All')
   const [statusFilter, setStatusFilter] = useState('All')
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [editId, setEditId]       = useState<number | null>(null)
-  const [form, setForm]           = useState<ToolFormData>(EMPTY_FORM)
-  const [saving, setSaving]       = useState(false)
+  const [editId, setEditId] = useState<number | null>(null)
+  const [form, setForm] = useState<ToolFormData>(EMPTY_FORM)
+  const [saving, setSaving] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null)
 
   // ── Filtered list ──────────────────────────
@@ -92,8 +92,8 @@ export default function ToolMaster() {
       t.tool_code.toLowerCase().includes(q) ||
       (t.make?.toLowerCase().includes(q) ?? false) ||
       (t.location?.toLowerCase().includes(q) ?? false)
-    const matchCat    = catFilter    === 'All' || t.category  === catFilter
-    const matchCond   = condFilter   === 'All' || t.condition === condFilter
+    const matchCat = catFilter === 'All' || t.category === catFilter
+    const matchCond = condFilter === 'All' || t.condition === condFilter
     const matchStatus = statusFilter === 'All' ||
       (statusFilter === 'Active' && t.is_active === 1) ||
       (statusFilter === 'Inactive' && t.is_active === 0)
@@ -102,8 +102,8 @@ export default function ToolMaster() {
 
   // ── Stats ──────────────────────────────────
   const stats = useMemo(() => ({
-    total:      tools.length,
-    active:     tools.filter(t => t.is_active === 1).length,
+    total: tools.length,
+    active: tools.filter(t => t.is_active === 1).length,
     needsRepair: tools.filter(t => t.condition === 'Needs Repair').length,
     totalValue: tools.reduce((s, t) => s + (t.purchase_cost ?? 0), 0),
   }), [tools])
@@ -187,7 +187,7 @@ export default function ToolMaster() {
           <h1 className={styles.title}>Tool Master</h1>
           <p className={styles.subtitle}>{stats.total} tools · {stats.active} active</p>
         </div>
-        <div style={{ display:'flex', gap:'0.6rem' }}>
+        <div style={{ display: 'flex', gap: '0.6rem' }}>
           <button className={styles.ghostBtn} onClick={() => router.push('/dashboard/maintenance/tool-master/analytics')}>
             ◎ Analytics
           </button>
