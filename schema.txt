@@ -1,0 +1,617 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.bank_reconciliations (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  bank_account character varying NOT NULL,
+  statement_date date NOT NULL,
+  system_balance numeric DEFAULT 0,
+  bank_balance numeric DEFAULT 0,
+  unreconciled numeric DEFAULT 0,
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT bank_reconciliations_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.bom_headers (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  product_id bigint NOT NULL,
+  version character varying DEFAULT 'v1'::character varying,
+  process_name character varying,
+  machine character varying,
+  output_qty numeric DEFAULT 1,
+  man_hours_per_unit numeric DEFAULT 0,
+  machine_hours_per_unit numeric DEFAULT 0,
+  is_active smallint DEFAULT 1,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT bom_headers_pkey PRIMARY KEY (id),
+  CONSTRAINT bom_headers_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
+);
+CREATE TABLE public.bom_items (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  bom_id bigint NOT NULL,
+  raw_material_id bigint NOT NULL,
+  quantity_per_unit numeric NOT NULL,
+  unit character varying DEFAULT 'PCS'::character varying,
+  remarks text,
+  CONSTRAINT bom_items_pkey PRIMARY KEY (id),
+  CONSTRAINT bom_items_bom_id_fkey FOREIGN KEY (bom_id) REFERENCES public.bom_headers(id),
+  CONSTRAINT bom_items_raw_material_id_fkey FOREIGN KEY (raw_material_id) REFERENCES public.products(id)
+);
+CREATE TABLE public.credit_card_statements (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  card_no character varying NOT NULL,
+  statement_month character varying NOT NULL,
+  txn_date date NOT NULL,
+  merchant character varying,
+  amount numeric NOT NULL,
+  expense_head character varying,
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT credit_card_statements_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.customers (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  code character varying UNIQUE,
+  name character varying NOT NULL,
+  gstin character varying,
+  pan character varying,
+  contact_person character varying,
+  mobile character varying,
+  email character varying,
+  billing_address text,
+  shipping_address text,
+  city character varying,
+  state character varying,
+  pincode character varying,
+  place_of_supply character varying,
+  credit_period integer DEFAULT 30,
+  credit_limit numeric DEFAULT 0,
+  is_active smallint DEFAULT 1,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT customers_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.dispatch_srvs (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  srv_no character varying NOT NULL UNIQUE,
+  srv_date date NOT NULL DEFAULT CURRENT_DATE,
+  party_name character varying,
+  product_id bigint NOT NULL,
+  qty numeric NOT NULL,
+  returnable smallint DEFAULT 0,
+  return_by_date date,
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT dispatch_srvs_pkey PRIMARY KEY (id),
+  CONSTRAINT dispatch_srvs_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
+);
+CREATE TABLE public.employees (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  emp_code character varying UNIQUE,
+  name character varying NOT NULL,
+  designation character varying,
+  department character varying,
+  mobile character varying,
+  email character varying,
+  joining_date date,
+  basic_salary numeric DEFAULT 0,
+  bank_name character varying,
+  bank_account character varying,
+  bank_ifsc character varying,
+  is_active smallint DEFAULT 1,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT employees_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.freight_bills (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  bill_no character varying NOT NULL UNIQUE,
+  bill_date date NOT NULL DEFAULT CURRENT_DATE,
+  transporter_id bigint NOT NULL,
+  transport_order_id bigint,
+  lr_no character varying,
+  freight_amount numeric DEFAULT 0,
+  gst_amount numeric DEFAULT 0,
+  total_payable numeric DEFAULT 0,
+  payment_status character varying DEFAULT 'Unpaid'::character varying CHECK (payment_status::text = ANY (ARRAY['Unpaid'::character varying, 'Paid'::character varying]::text[])),
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT freight_bills_pkey PRIMARY KEY (id),
+  CONSTRAINT freight_bills_transporter_id_fkey FOREIGN KEY (transporter_id) REFERENCES public.transport_masters(id),
+  CONSTRAINT freight_bills_transport_order_id_fkey FOREIGN KEY (transport_order_id) REFERENCES public.transport_orders(id)
+);
+CREATE TABLE public.grn_items (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  grn_id bigint NOT NULL,
+  product_id bigint NOT NULL,
+  ordered_qty numeric,
+  received_qty numeric NOT NULL,
+  accepted_qty numeric DEFAULT 0,
+  rejected_qty numeric DEFAULT 0,
+  sample_size numeric DEFAULT 0,
+  rack_bin character varying,
+  batch_no character varying,
+  CONSTRAINT grn_items_pkey PRIMARY KEY (id),
+  CONSTRAINT grn_items_grn_id_fkey FOREIGN KEY (grn_id) REFERENCES public.grns(id),
+  CONSTRAINT grn_items_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
+);
+CREATE TABLE public.grns (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  grn_no character varying NOT NULL UNIQUE,
+  po_id bigint NOT NULL,
+  vendor_id bigint NOT NULL,
+  vendor_challan_no character varying,
+  gate_entry_date date NOT NULL DEFAULT CURRENT_DATE,
+  vehicle_no character varying,
+  warehouse_id bigint,
+  status character varying DEFAULT 'Pending'::character varying CHECK (status::text = ANY (ARRAY['Pending'::character varying, 'IQC Done'::character varying, 'Received'::character varying]::text[])),
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT grns_pkey PRIMARY KEY (id),
+  CONSTRAINT grns_po_id_fkey FOREIGN KEY (po_id) REFERENCES public.purchase_orders(id),
+  CONSTRAINT grns_vendor_id_fkey FOREIGN KEY (vendor_id) REFERENCES public.vendors(id),
+  CONSTRAINT grns_warehouse_id_fkey FOREIGN KEY (warehouse_id) REFERENCES public.warehouses(id)
+);
+CREATE TABLE public.inquiries (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  inquiry_no character varying NOT NULL UNIQUE,
+  customer_id bigint NOT NULL,
+  inquiry_date date NOT NULL DEFAULT CURRENT_DATE,
+  sales_person_id bigint,
+  status character varying DEFAULT 'New'::character varying CHECK (status::text = ANY (ARRAY['New'::character varying, 'Processing'::character varying, 'Quoted'::character varying, 'Lost'::character varying]::text[])),
+  delivery_date date,
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT inquiries_pkey PRIMARY KEY (id),
+  CONSTRAINT inquiries_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.customers(id),
+  CONSTRAINT inquiries_sales_person_id_fkey FOREIGN KEY (sales_person_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.inquiry_items (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  inquiry_id bigint NOT NULL,
+  product_id bigint NOT NULL,
+  quantity numeric NOT NULL,
+  target_price numeric,
+  current_stock numeric DEFAULT 0,
+  blocked_stock numeric DEFAULT 0,
+  net_available numeric DEFAULT 0,
+  CONSTRAINT inquiry_items_pkey PRIMARY KEY (id),
+  CONSTRAINT inquiry_items_inquiry_id_fkey FOREIGN KEY (inquiry_id) REFERENCES public.inquiries(id),
+  CONSTRAINT inquiry_items_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
+);
+CREATE TABLE public.invoice_items (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  invoice_id bigint NOT NULL,
+  product_id bigint NOT NULL,
+  quantity numeric NOT NULL,
+  rate numeric NOT NULL,
+  gst_percent numeric DEFAULT 18,
+  taxable_value numeric,
+  gst_amount numeric,
+  total numeric,
+  CONSTRAINT invoice_items_pkey PRIMARY KEY (id),
+  CONSTRAINT invoice_items_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES public.invoices(id),
+  CONSTRAINT invoice_items_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
+);
+CREATE TABLE public.invoices (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  invoice_no character varying NOT NULL UNIQUE,
+  so_id bigint,
+  customer_id bigint NOT NULL,
+  invoice_date date NOT NULL DEFAULT CURRENT_DATE,
+  due_date date,
+  place_of_supply character varying,
+  eway_bill_no character varying,
+  taxable_value numeric DEFAULT 0,
+  gst_amount numeric DEFAULT 0,
+  round_off numeric DEFAULT 0,
+  grand_total numeric DEFAULT 0,
+  payment_status character varying DEFAULT 'Unpaid'::character varying CHECK (payment_status::text = ANY (ARRAY['Unpaid'::character varying, 'Partial'::character varying, 'Paid'::character varying]::text[])),
+  reminder_setting character varying DEFAULT 'Moderate'::character varying CHECK (reminder_setting::text = ANY (ARRAY['Strict'::character varying, 'Moderate'::character varying, 'Lenient'::character varying]::text[])),
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT invoices_pkey PRIMARY KEY (id),
+  CONSTRAINT invoices_so_id_fkey FOREIGN KEY (so_id) REFERENCES public.sale_orders(id),
+  CONSTRAINT invoices_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.customers(id)
+);
+CREATE TABLE public.iqc_entries (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  grn_id bigint NOT NULL,
+  product_id bigint NOT NULL,
+  check_date date DEFAULT CURRENT_DATE,
+  total_qty numeric NOT NULL,
+  sample_size numeric DEFAULT 0,
+  accepted_qty numeric DEFAULT 0,
+  rejected_qty numeric DEFAULT 0,
+  visual_check character varying DEFAULT 'Pass'::character varying CHECK (visual_check::text = ANY (ARRAY['Pass'::character varying, 'Fail'::character varying]::text[])),
+  dimension_check character varying DEFAULT 'Pass'::character varying CHECK (dimension_check::text = ANY (ARRAY['Pass'::character varying, 'Fail'::character varying]::text[])),
+  result character varying DEFAULT 'Pass'::character varying CHECK (result::text = ANY (ARRAY['Pass'::character varying, 'Fail'::character varying, 'Partial'::character varying]::text[])),
+  remarks text,
+  checked_by bigint,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT iqc_entries_pkey PRIMARY KEY (id),
+  CONSTRAINT iqc_entries_grn_id_fkey FOREIGN KEY (grn_id) REFERENCES public.grns(id),
+  CONSTRAINT iqc_entries_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT iqc_entries_checked_by_fkey FOREIGN KEY (checked_by) REFERENCES public.users(id)
+);
+CREATE TABLE public.material_issues (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  issue_no character varying NOT NULL UNIQUE,
+  route_card_id bigint NOT NULL,
+  product_id bigint NOT NULL,
+  warehouse_id bigint,
+  qty_requested numeric NOT NULL,
+  qty_issued numeric DEFAULT 0,
+  issue_date date DEFAULT CURRENT_DATE,
+  issued_by bigint,
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT material_issues_pkey PRIMARY KEY (id),
+  CONSTRAINT material_issues_route_card_id_fkey FOREIGN KEY (route_card_id) REFERENCES public.route_cards(id),
+  CONSTRAINT material_issues_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT material_issues_warehouse_id_fkey FOREIGN KEY (warehouse_id) REFERENCES public.warehouses(id),
+  CONSTRAINT material_issues_issued_by_fkey FOREIGN KEY (issued_by) REFERENCES public.users(id)
+);
+CREATE TABLE public.pdi_entries (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  so_id bigint NOT NULL,
+  check_date date DEFAULT CURRENT_DATE,
+  box_no character varying,
+  packaging_ok smallint DEFAULT 1,
+  label_ok smallint DEFAULT 1,
+  qty_verified numeric DEFAULT 0,
+  result character varying DEFAULT 'Pass'::character varying CHECK (result::text = ANY (ARRAY['Pass'::character varying, 'Fail'::character varying]::text[])),
+  remarks text,
+  checked_by bigint,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT pdi_entries_pkey PRIMARY KEY (id),
+  CONSTRAINT pdi_entries_so_id_fkey FOREIGN KEY (so_id) REFERENCES public.sale_orders(id),
+  CONSTRAINT pdi_entries_checked_by_fkey FOREIGN KEY (checked_by) REFERENCES public.users(id)
+);
+CREATE TABLE public.permissions (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  role_id bigint NOT NULL,
+  module character varying NOT NULL,
+  page character varying NOT NULL,
+  can_view smallint DEFAULT 0,
+  can_create smallint DEFAULT 0,
+  can_edit smallint DEFAULT 0,
+  can_delete smallint DEFAULT 0,
+  CONSTRAINT permissions_pkey PRIMARY KEY (id),
+  CONSTRAINT permissions_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id)
+);
+CREATE TABLE public.po_items (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  po_id bigint NOT NULL,
+  product_id bigint NOT NULL,
+  quantity numeric NOT NULL,
+  rate numeric NOT NULL,
+  gst_percent numeric DEFAULT 18,
+  expected_date date,
+  received_qty numeric DEFAULT 0,
+  CONSTRAINT po_items_pkey PRIMARY KEY (id),
+  CONSTRAINT po_items_po_id_fkey FOREIGN KEY (po_id) REFERENCES public.purchase_orders(id),
+  CONSTRAINT po_items_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
+);
+CREATE TABLE public.pqc_entries (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  route_card_id bigint NOT NULL,
+  product_id bigint NOT NULL,
+  stage_name character varying,
+  check_date date DEFAULT CURRENT_DATE,
+  operator_id bigint,
+  result character varying DEFAULT 'Pass'::character varying CHECK (result::text = ANY (ARRAY['Pass'::character varying, 'Fail'::character varying, 'Rework'::character varying]::text[])),
+  observations text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT pqc_entries_pkey PRIMARY KEY (id),
+  CONSTRAINT pqc_entries_route_card_id_fkey FOREIGN KEY (route_card_id) REFERENCES public.route_cards(id),
+  CONSTRAINT pqc_entries_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT pqc_entries_operator_id_fkey FOREIGN KEY (operator_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.production_reports (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  report_date date NOT NULL DEFAULT CURRENT_DATE,
+  route_card_id bigint,
+  product_id bigint NOT NULL,
+  shift character varying DEFAULT 'Day'::character varying CHECK (shift::text = ANY (ARRAY['Day'::character varying, 'Night'::character varying, 'General'::character varying]::text[])),
+  machine_no character varying,
+  operator_id bigint,
+  production_qty numeric DEFAULT 0,
+  rejection_qty numeric DEFAULT 0,
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT production_reports_pkey PRIMARY KEY (id),
+  CONSTRAINT production_reports_route_card_id_fkey FOREIGN KEY (route_card_id) REFERENCES public.route_cards(id),
+  CONSTRAINT production_reports_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT production_reports_operator_id_fkey FOREIGN KEY (operator_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.products (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  code character varying UNIQUE,
+  name character varying NOT NULL,
+  description text,
+  category character varying,
+  unit character varying DEFAULT 'PCS'::character varying,
+  hsn_code character varying,
+  gst_percent numeric DEFAULT 18,
+  purchase_price numeric DEFAULT 0,
+  sale_price numeric DEFAULT 0,
+  min_stock_level numeric DEFAULT 0,
+  current_stock numeric DEFAULT 0,
+  is_active smallint DEFAULT 1,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT products_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.purchase_bills (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  bill_no character varying NOT NULL UNIQUE,
+  vendor_id bigint NOT NULL,
+  grn_id bigint,
+  vendor_invoice_no character varying,
+  invoice_date date NOT NULL,
+  taxable_value numeric DEFAULT 0,
+  gst_amount numeric DEFAULT 0,
+  total numeric DEFAULT 0,
+  payment_status character varying DEFAULT 'Unpaid'::character varying CHECK (payment_status::text = ANY (ARRAY['Unpaid'::character varying, 'Partial'::character varying, 'Paid'::character varying]::text[])),
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT purchase_bills_pkey PRIMARY KEY (id),
+  CONSTRAINT purchase_bills_vendor_id_fkey FOREIGN KEY (vendor_id) REFERENCES public.vendors(id),
+  CONSTRAINT purchase_bills_grn_id_fkey FOREIGN KEY (grn_id) REFERENCES public.grns(id)
+);
+CREATE TABLE public.purchase_orders (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  po_no character varying NOT NULL UNIQUE,
+  vendor_id bigint NOT NULL,
+  po_date date NOT NULL DEFAULT CURRENT_DATE,
+  valid_until date,
+  delivery_date date,
+  status character varying DEFAULT 'Open'::character varying CHECK (status::text = ANY (ARRAY['Open'::character varying, 'Partial'::character varying, 'Received'::character varying, 'Cancelled'::character varying]::text[])),
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT purchase_orders_pkey PRIMARY KEY (id),
+  CONSTRAINT purchase_orders_vendor_id_fkey FOREIGN KEY (vendor_id) REFERENCES public.vendors(id)
+);
+CREATE TABLE public.receipt_vouchers (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  receipt_no character varying NOT NULL UNIQUE,
+  invoice_id bigint,
+  customer_id bigint NOT NULL,
+  receipt_date date NOT NULL DEFAULT CURRENT_DATE,
+  amount numeric NOT NULL,
+  mode character varying DEFAULT 'NEFT'::character varying CHECK (mode::text = ANY (ARRAY['Cash'::character varying, 'Cheque'::character varying, 'NEFT'::character varying, 'UPI'::character varying]::text[])),
+  ref_no character varying,
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT receipt_vouchers_pkey PRIMARY KEY (id),
+  CONSTRAINT receipt_vouchers_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES public.invoices(id),
+  CONSTRAINT receipt_vouchers_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.customers(id)
+);
+CREATE TABLE public.roles (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  role_name character varying NOT NULL UNIQUE,
+  description text,
+  is_super_admin boolean DEFAULT false,
+  CONSTRAINT roles_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.route_cards (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  route_card_no character varying NOT NULL UNIQUE,
+  product_id bigint NOT NULL,
+  bom_id bigint,
+  batch_no character varying,
+  plan_qty numeric NOT NULL,
+  produced_qty numeric DEFAULT 0,
+  rejection_qty numeric DEFAULT 0,
+  scrap_generated numeric DEFAULT 0,
+  start_date date,
+  end_date date,
+  closed_date date,
+  status character varying DEFAULT 'Open'::character varying CHECK (status::text = ANY (ARRAY['Open'::character varying, 'In Progress'::character varying, 'Closed'::character varying]::text[])),
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT route_cards_pkey PRIMARY KEY (id),
+  CONSTRAINT route_cards_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT route_cards_bom_id_fkey FOREIGN KEY (bom_id) REFERENCES public.bom_headers(id)
+);
+CREATE TABLE public.salary_heads (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  name character varying NOT NULL UNIQUE,
+  type character varying NOT NULL CHECK (type::text = ANY (ARRAY['Earning'::character varying, 'Deduction'::character varying]::text[])),
+  is_active smallint DEFAULT 1,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT salary_heads_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.salary_sheet_items (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  salary_sheet_id bigint NOT NULL,
+  salary_head_id bigint NOT NULL,
+  amount numeric DEFAULT 0,
+  CONSTRAINT salary_sheet_items_pkey PRIMARY KEY (id),
+  CONSTRAINT salary_sheet_items_salary_sheet_id_fkey FOREIGN KEY (salary_sheet_id) REFERENCES public.salary_sheets(id),
+  CONSTRAINT salary_sheet_items_salary_head_id_fkey FOREIGN KEY (salary_head_id) REFERENCES public.salary_heads(id)
+);
+CREATE TABLE public.salary_sheets (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  employee_id bigint NOT NULL,
+  month integer NOT NULL CHECK (month >= 1 AND month <= 12),
+  year integer NOT NULL,
+  total_days integer DEFAULT 30,
+  present_days integer DEFAULT 0,
+  gross_salary numeric DEFAULT 0,
+  total_deductions numeric DEFAULT 0,
+  net_pay numeric DEFAULT 0,
+  status character varying DEFAULT 'Draft'::character varying CHECK (status::text = ANY (ARRAY['Draft'::character varying, 'Approved'::character varying, 'Paid'::character varying]::text[])),
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT salary_sheets_pkey PRIMARY KEY (id),
+  CONSTRAINT salary_sheets_employee_id_fkey FOREIGN KEY (employee_id) REFERENCES public.employees(id)
+);
+CREATE TABLE public.sale_order_items (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  so_id bigint NOT NULL,
+  product_id bigint NOT NULL,
+  quantity numeric NOT NULL,
+  rate numeric NOT NULL,
+  gst_percent numeric DEFAULT 18,
+  taxable_value numeric,
+  gst_amount numeric,
+  total numeric,
+  CONSTRAINT sale_order_items_pkey PRIMARY KEY (id),
+  CONSTRAINT sale_order_items_so_id_fkey FOREIGN KEY (so_id) REFERENCES public.sale_orders(id),
+  CONSTRAINT sale_order_items_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
+);
+CREATE TABLE public.sale_orders (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  so_no character varying NOT NULL UNIQUE,
+  customer_id bigint NOT NULL,
+  inquiry_id bigint,
+  customer_po_no character varying,
+  customer_po_date date,
+  so_date date NOT NULL DEFAULT CURRENT_DATE,
+  delivery_date date,
+  billing_address text,
+  shipping_address text,
+  transporter_id bigint,
+  vehicle_no character varying,
+  driver_name character varying,
+  status character varying DEFAULT 'Pending'::character varying CHECK (status::text = ANY (ARRAY['Pending'::character varying, 'Dispatched'::character varying, 'Closed'::character varying]::text[])),
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT sale_orders_pkey PRIMARY KEY (id),
+  CONSTRAINT sale_orders_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.customers(id),
+  CONSTRAINT sale_orders_inquiry_id_fkey FOREIGN KEY (inquiry_id) REFERENCES public.inquiries(id),
+  CONSTRAINT sale_orders_transporter_id_fkey FOREIGN KEY (transporter_id) REFERENCES public.transport_masters(id)
+);
+CREATE TABLE public.stock_ledger (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  product_id bigint NOT NULL,
+  warehouse_id bigint,
+  txn_date date NOT NULL DEFAULT CURRENT_DATE,
+  txn_type character varying NOT NULL,
+  ref_no character varying,
+  qty_in numeric DEFAULT 0,
+  qty_out numeric DEFAULT 0,
+  balance_qty numeric DEFAULT 0,
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT stock_ledger_pkey PRIMARY KEY (id),
+  CONSTRAINT stock_ledger_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT stock_ledger_warehouse_id_fkey FOREIGN KEY (warehouse_id) REFERENCES public.warehouses(id)
+);
+CREATE TABLE public.stock_transfers (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  transfer_no character varying NOT NULL UNIQUE,
+  from_warehouse_id bigint NOT NULL,
+  to_warehouse_id bigint NOT NULL,
+  product_id bigint NOT NULL,
+  qty numeric NOT NULL,
+  transfer_date date DEFAULT CURRENT_DATE,
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT stock_transfers_pkey PRIMARY KEY (id),
+  CONSTRAINT stock_transfers_from_warehouse_id_fkey FOREIGN KEY (from_warehouse_id) REFERENCES public.warehouses(id),
+  CONSTRAINT stock_transfers_to_warehouse_id_fkey FOREIGN KEY (to_warehouse_id) REFERENCES public.warehouses(id),
+  CONSTRAINT stock_transfers_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
+);
+CREATE TABLE public.transport_masters (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  name character varying NOT NULL,
+  owner_name character varying,
+  mobile character varying,
+  gstin character varying,
+  address text,
+  is_active smallint DEFAULT 1,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT transport_masters_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.transport_orders (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  order_no character varying NOT NULL UNIQUE,
+  transporter_id bigint NOT NULL,
+  so_id bigint,
+  pickup_date date,
+  destination character varying,
+  vehicle_type character varying,
+  vehicle_no character varying,
+  driver_name character varying,
+  driver_mobile character varying,
+  status character varying DEFAULT 'Booked'::character varying CHECK (status::text = ANY (ARRAY['Booked'::character varying, 'In Transit'::character varying, 'Delivered'::character varying]::text[])),
+  remarks text,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT transport_orders_pkey PRIMARY KEY (id),
+  CONSTRAINT transport_orders_so_id_fkey FOREIGN KEY (so_id) REFERENCES public.sale_orders(id),
+  CONSTRAINT transport_orders_transporter_id_fkey FOREIGN KEY (transporter_id) REFERENCES public.transport_masters(id)
+);
+CREATE TABLE public.users (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  name character varying NOT NULL,
+  email character varying NOT NULL UNIQUE,
+  password character varying NOT NULL,
+  role_id bigint NOT NULL,
+  is_active smallint DEFAULT 1,
+  last_login_at timestamp without time zone,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT users_pkey PRIMARY KEY (id),
+  CONSTRAINT users_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id)
+);
+CREATE TABLE public.vendors (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  code character varying UNIQUE,
+  name character varying NOT NULL,
+  gstin character varying,
+  pan character varying,
+  contact_person character varying,
+  mobile character varying,
+  email character varying,
+  address text,
+  city character varying,
+  state character varying,
+  pincode character varying,
+  bank_name character varying,
+  bank_account character varying,
+  bank_ifsc character varying,
+  payment_terms integer DEFAULT 30,
+  is_active smallint DEFAULT 1,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT vendors_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.vouchers (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  voucher_no character varying NOT NULL UNIQUE,
+  voucher_type character varying NOT NULL CHECK (voucher_type::text = ANY (ARRAY['Journal'::character varying, 'Payment'::character varying, 'Receipt'::character varying, 'Contra'::character varying]::text[])),
+  voucher_date date NOT NULL DEFAULT CURRENT_DATE,
+  party_name character varying,
+  debit_account character varying,
+  credit_account character varying,
+  amount numeric NOT NULL,
+  mode character varying DEFAULT 'NEFT'::character varying CHECK (mode::text = ANY (ARRAY['Cash'::character varying, 'Cheque'::character varying, 'NEFT'::character varying, 'UPI'::character varying]::text[])),
+  bank_account character varying,
+  ref_no character varying,
+  narration text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT vouchers_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.warehouses (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  code character varying UNIQUE,
+  name character varying NOT NULL,
+  address text,
+  city character varying,
+  state character varying,
+  manager_name character varying,
+  manager_mobile character varying,
+  is_active smallint DEFAULT 1,
+  created_at timestamp without time zone DEFAULT now(),
+  updated_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT warehouses_pkey PRIMARY KEY (id)
+);

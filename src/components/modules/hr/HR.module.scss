@@ -1,0 +1,450 @@
+// ── HR Module shared SCSS ─────────────────────────────────────────────────────
+
+.container {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 100%;
+    background: #0f1117;
+}
+
+// ── Header ─────────────────────────────────────────────────────────────────
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+}
+
+.subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+}
+
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+// ── Search bar ─────────────────────────────────────────────────────────────
+.searchBar {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.searchInput {
+    flex: 1;
+    min-width: 220px;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid #1f2235;
+    background: #13151f;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &:focus {
+        border-color: var(--accent);
+    }
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+}
+
+.filterSelect {
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #1f2235;
+    background: #13151f;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+
+    &:focus {
+        border-color: var(--accent);
+    }
+}
+
+// ── Actions column ─────────────────────────────────────────────────────────
+.actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.editBtn {
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #2a2d3e;
+    background: rgba(99, 102, 241, 0.08);
+    color: #818cf8;
+    font-size: 0.75rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+        background: rgba(99, 102, 241, 0.18);
+    }
+}
+
+.toggleBtn {
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #2a2d3e;
+    background: rgba(100, 116, 139, 0.1);
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+        background: rgba(100, 116, 139, 0.2);
+    }
+}
+
+// ── Form grid ──────────────────────────────────────────────────────────────
+.formGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    input,
+    select,
+    textarea {
+        padding: 0.55rem 0.8rem;
+        border-radius: 8px;
+        border: 1px solid #1f2235;
+        background: #13151f;
+        color: var(--text-primary);
+        font-size: 0.84rem;
+        font-family: inherit;
+        outline: none;
+        transition: border-color 0.15s;
+
+        &:focus {
+            border-color: var(--accent);
+        }
+
+        &::placeholder {
+            color: #4b5563;
+        }
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 70px;
+    }
+
+    select {
+        cursor: pointer;
+    }
+}
+
+.span2 {
+    grid-column: span 2;
+
+    @media (max-width: 640px) {
+        grid-column: span 1;
+    }
+}
+
+.span3 {
+    grid-column: span 3;
+
+    @media (max-width: 640px) {
+        grid-column: span 1;
+    }
+}
+
+.fields3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.req {
+    color: #f43f5e;
+    margin-left: 0.15rem;
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+}
+
+// ── Form footer ────────────────────────────────────────────────────────────
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #1f2235;
+}
+
+.error {
+    color: #f43f5e;
+    font-size: 0.82rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(244, 63, 94, 0.08);
+    border: 1px solid rgba(244, 63, 94, 0.2);
+    border-radius: 8px;
+}
+
+// ── Salary item table ──────────────────────────────────────────────────────
+.salaryTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+
+    thead tr {
+        border-bottom: 1px solid #1f2235;
+    }
+
+    th {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+    }
+
+    tbody tr {
+        border-bottom: 1px solid rgba(31, 34, 53, 0.5);
+        transition: background 0.1s;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+    }
+
+    td {
+        padding: 0.55rem 0.75rem;
+        color: var(--text-primary);
+        vertical-align: middle;
+    }
+}
+
+.amtInput {
+    width: 120px;
+    padding: 0.4rem 0.65rem;
+    border-radius: 6px;
+    border: 1px solid #1f2235;
+    background: #0f1117;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    font-family: var(--mono);
+    outline: none;
+    transition: border-color 0.15s;
+
+    &:focus {
+        border-color: var(--accent);
+    }
+}
+
+.earningRow td:first-child {
+    border-left: 2px solid #34d399;
+}
+
+.deductionRow td:first-child {
+    border-left: 2px solid #f43f5e;
+}
+
+// ── Totals row ─────────────────────────────────────────────────────────────
+.totalsBar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+    background: #13151f;
+    border: 1px solid #1f2235;
+    border-radius: 10px;
+}
+
+.totalItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.totalLabel {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+}
+
+.totalValue {
+    font-size: 1.2rem;
+    font-weight: 700;
+    font-family: var(--mono);
+    letter-spacing: -0.3px;
+}
+
+// ── Status pill ────────────────────────────────────────────────────────────
+.pill {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+
+    &.draft {
+        background: rgba(100, 116, 139, 0.15);
+        color: #94a3b8;
+    }
+
+    &.approved {
+        background: rgba(34, 211, 238, 0.12);
+        color: #22d3ee;
+    }
+
+    &.paid {
+        background: rgba(52, 211, 153, 0.12);
+        color: #34d399;
+    }
+}
+
+// ── History panel ──────────────────────────────────────────────────────────
+.historySheet {
+    border: 1px solid #1f2235;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.8rem;
+
+    &:hover {
+        border-color: #2a2d3e;
+    }
+}
+
+.historyHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #13151f;
+    cursor: pointer;
+    gap: 1rem;
+}
+
+.historyPeriod {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+}
+
+.historyMeta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.historyAmount {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.historyBody {
+    padding: 1rem;
+    background: #0f1117;
+    border-top: 1px solid #1f2235;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.historyLine {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0.5rem;
+    border-radius: 5px;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.03);
+    }
+}
+
+.historyLineName {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+}
+
+.historyLineAmt {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+// ── Dept badge ─────────────────────────────────────────────────────────────
+.deptBadge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: rgba(99, 102, 241, 0.12);
+    color: #818cf8;
+}
