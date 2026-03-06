@@ -20,6 +20,10 @@ const fmtL = (v: number) => `₹${(v / 100000).toFixed(2)}L`;
 
 const FIN_TABS = ['Dashboard', 'Voucher Journal', 'Payment & Receipt', 'Contra', 'GST Entries', 'Bank Recon', 'Credit Cards'];
 
+interface FinanceProps {
+    initialTab?: string;
+}
+
 // ─── Finance Dashboard ────────────────────────────────────
 function FinDashboard() {
     const CASH_FLOW = [
@@ -83,7 +87,7 @@ function FinJournal() {
                     { key: 'amount', label: 'Amount', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', fontWeight: 500 }}>{fmtC(v as number)}</span> },
                     { key: 'narration', label: 'Narration', render: v => <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{v as string}</span> },
                 ]}
-                rows={JOURNALS}
+                rows={JOURNALS as unknown as Record<string, unknown>[]}
             />
         </Card>
     );
@@ -117,7 +121,7 @@ function FinVouchers() {
                         { key: 'ref', label: 'Ref No', render: v => <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--text-muted)' }}>{v as string}</span> },
                         { key: 'bank', label: 'Bank A/c', render: v => <span style={{ fontSize: 12 }}>{v as string}</span> },
                     ]}
-                    rows={VOUCHERS}
+                    rows={VOUCHERS as unknown as Record<string, unknown>[]}
                 />
             </Card>
         </>
@@ -137,7 +141,7 @@ function FinContra() {
                     { key: 'amount', label: 'Amount', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', fontWeight: 500 }}>{fmtC(v as number)}</span> },
                     { key: 'purpose', label: 'Purpose' },
                 ]}
-                rows={CONTRAS}
+                rows={CONTRAS as unknown as Record<string, unknown>[]}
             />
         </Card>
     );
@@ -158,7 +162,7 @@ function FinGST() {
                     { key: 'amount', label: 'Amount', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', fontWeight: 500 }}>{fmtC(v as number)}</span> },
                     { key: 'remark', label: 'Remark', render: v => <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{v as string}</span> },
                 ]}
-                rows={GST_VOUCHERS}
+                rows={GST_VOUCHERS as unknown as Record<string, unknown>[]}
             />
         </Card>
     );
@@ -223,7 +227,7 @@ function FinRecon() {
                         },
                         { key: 'status', label: 'Status', align: 'c', render: v => <Badge label={v as string} variant={statusVariant(v as string)} /> },
                     ]}
-                    rows={BANK_RECON}
+                    rows={BANK_RECON as unknown as Record<string, unknown>[]}
                 />
             </Card>
         </>
@@ -251,7 +255,7 @@ function FinCards() {
                         { key: 'head', label: 'Category', render: v => <Badge label={v as string} variant="default" /> },
                         { key: 'amount', label: 'Amount', align: 'r', render: v => <span style={{ fontFamily: 'var(--mono)', fontWeight: 500, color: 'var(--red)' }}>−{fmtC(v as number)}</span> },
                     ]}
-                    rows={CREDIT_CARDS}
+                    rows={CREDIT_CARDS as unknown as Record<string, unknown>[]}
                 />
                 <div className={styles.cardTotal}>
                     <span style={{ fontSize: 13, fontWeight: 600 }}>Total Spend</span>
@@ -281,8 +285,10 @@ function FinCards() {
 }
 
 // ─── Main Component ───────────────────────────────────────
-export default function Finance() {
-    const [activeTab, setActiveTab] = useState('Dashboard');
+export default function Finance({ initialTab }: FinanceProps) {
+    const [activeTab, setActiveTab] = useState(
+        () => (initialTab && FIN_TABS.includes(initialTab) ? initialTab : 'Dashboard'),
+    );
 
     const renderContent = () => {
         switch (activeTab) {

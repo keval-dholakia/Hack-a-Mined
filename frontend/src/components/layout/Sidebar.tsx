@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { NAV, NavItem } from '@/lib/nav';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar() {
     const pathname = usePathname();
+    const router = useRouter();
     const [expanded, setExpanded] = useState<Record<string, boolean>>({ sales: true });
 
     const toggle = (id: string) =>
@@ -36,7 +37,10 @@ export default function Sidebar() {
                                 {item.sub ? (
                                     <button
                                         className={`${styles.navItem} ${isActive(item) ? styles.active : ''}`}
-                                        onClick={() => toggle(item.id)}
+                                        onClick={() => {
+                                            toggle(item.id);
+                                            router.push(item.href);
+                                        }}
                                     >
                                         <span className={styles.navIcon}>{item.icon}</span>
                                         <span style={{ flex: 1 }}>{item.label}</span>
