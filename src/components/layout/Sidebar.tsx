@@ -101,9 +101,11 @@ const NAV_GROUPS: Group[] = [
         icon: '▤',
         path: '/dashboard/stores',
         subItems: [
+          { label: 'Warehouse Master', path: '/dashboard/stores/warehouse-master' },
           { label: 'Opening Stock', path: '/dashboard/stores/opening-stock' },
-          { label: 'Stock Transfer', path: '/dashboard/stores/stock-transfer' },
           { label: 'Dispatch SRV', path: '/dashboard/stores/dispatch-srv' },
+          { label: 'Stock Transfer', path: '/dashboard/stores/stock-transfer' },
+          { label: 'Material Receipt', path: '/dashboard/stores/material-receipt' },
         ],
       },
       {
@@ -141,6 +143,8 @@ const NAV_GROUPS: Group[] = [
         subItems: [
           { label: 'Journal', path: '/dashboard/finance/journal' },
           { label: 'Payment/Receipt', path: '/dashboard/finance/payment-receipt' },
+          { label: 'Contra', path: '/dashboard/finance/contra' },
+          { label: 'GST Journal', path: '/dashboard/finance/gst-journal' },
           { label: 'Bank Recon', path: '/dashboard/finance/bank-recon' },
           { label: 'Credit Card', path: '/dashboard/finance/credit-card' },
         ],
@@ -163,7 +167,10 @@ const NAV_GROUPS: Group[] = [
         path: '/dashboard/contractors',
         subItems: [
           { label: 'Workers', path: '/dashboard/contractors/workers' },
+          { label: 'Salary Head Rates', path: '/dashboard/contractors/roles' },
+          { label: 'Salary Structure', path: '/dashboard/contractors/salary-structure' },
           { label: 'Salary Sheet', path: '/dashboard/contractors/salary-sheet' },
+          { label: 'Advance Memo', path: '/dashboard/contractors/advance-memo' },
           { label: 'Payments', path: '/dashboard/contractors/payments' },
         ],
       },

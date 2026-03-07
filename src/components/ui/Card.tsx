@@ -1,15 +1,16 @@
 import styles from './Card.module.scss'
 
 type Props = {
-  title?:    string
-  children:  React.ReactNode
-  noPad?:    boolean
-  action?:   React.ReactNode
+  title?: string
+  children: React.ReactNode
+  noPad?: boolean
+  action?: React.ReactNode
+  style?: React.CSSProperties
 }
 
-export default function Card({ title, children, noPad, action }: Props) {
+export default function Card({ title, children, noPad, action, style }: Props) {
   return (
-    <div className={styles.card}>
+    <div className={styles.card} style={{ ...style }}>
       {(title || action) && (
         <div className={styles.header}>
           {title && <h3 className={styles.title}>{title}</h3>}
