@@ -1,0 +1,144 @@
+﻿frontend/src/app/[module]/page.tsx(1,27): error TS2307: Cannot find module '@/components/modules/GenericModule' or its corresponding type declarations.
+frontend/src/app/finance/page.tsx(1,21): error TS2307: Cannot find module '@/components/modules/Finance' or its corresponding type declarations.
+frontend/src/app/hr/page.tsx(1,16): error TS2307: Cannot find module '@/components/modules/HR' or its corresponding type declarations.
+frontend/src/app/layout.tsx(4,20): error TS2307: Cannot find module '@/components/layout/Header' or its corresponding type declarations.
+frontend/src/app/layout.tsx(16,12): error TS2739: Type '{}' is missing the following properties from type 'Props': permissions, isSuperAdmin, user
+frontend/src/app/production/page.tsx(1,24): error TS2307: Cannot find module '@/components/modules/Production' or its corresponding type declarations.
+frontend/src/app/purchase/page.tsx(1,22): error TS2307: Cannot find module '@/components/modules/Purchase' or its corresponding type declarations.
+frontend/src/app/sales/page.tsx(1,19): error TS2307: Cannot find module '@/components/modules/Sales' or its corresponding type declarations.
+frontend/src/app/simulation/page.tsx(1,24): error TS2307: Cannot find module '@/components/modules/Simulation' or its corresponding type declarations.
+frontend/src/components/layout/Header.tsx(4,29): error TS2307: Cannot find module '@/lib/nav' or its corresponding type declarations.
+frontend/src/components/layout/Header.tsx(20,30): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/components/layout/Header.tsx(20,33): error TS7006: Parameter 'i' implicitly has an 'any' type.
+frontend/src/components/layout/Sidebar.tsx(6,30): error TS2307: Cannot find module '@/lib/nav' or its corresponding type declarations.
+frontend/src/components/layout/Sidebar.tsx(31,26): error TS7006: Parameter 'group' implicitly has an 'any' type.
+frontend/src/components/layout/Sidebar.tsx(34,42): error TS7006: Parameter 'item' implicitly has an 'any' type.
+frontend/src/components/layout/Sidebar.tsx(57,55): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/Finance.tsx(4,24): error TS2307: Cannot find module '@/components/ui/PageHeader' or its corresponding type declarations.
+frontend/src/components/modules/Finance.tsx(10,18): error TS2307: Cannot find module '@/components/ui/Tabs' or its corresponding type declarations.
+frontend/src/components/modules/Finance.tsx(13,8): error TS2307: Cannot find module '@/lib/financeData' or its corresponding type declarations.
+frontend/src/components/modules/Finance.tsx(43,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/Finance.tsx(76,80): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Finance.tsx(94,34): error TS7006: Parameter 'v' implicitly has an 'any' type.
+frontend/src/components/modules/Finance.tsx(94,69): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/Finance.tsx(94,72): error TS7006: Parameter 'v' implicitly has an 'any' type.
+frontend/src/components/modules/Finance.tsx(95,34): error TS7006: Parameter 'v' implicitly has an 'any' type.
+frontend/src/components/modules/Finance.tsx(95,69): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/Finance.tsx(95,72): error TS7006: Parameter 'v' implicitly has an 'any' type.
+frontend/src/components/modules/Finance.tsx(99,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/Finance.tsx(100,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/Finance.tsx(103,94): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Finance.tsx(130,78): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Finance.tsx(151,83): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Finance.tsx(186,53): error TS2322: Type '{ children: string; variant: "secondary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Finance.tsx(187,51): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Finance.tsx(235,40): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/Finance.tsx(235,43): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/components/modules/Finance.tsx(237,26): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/components/modules/Finance.tsx(244,51): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Finance.tsx(305,54): error TS2322: Type '{ children: string; variant: "secondary"; icon: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'icon' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/GenericModule.tsx(2,24): error TS2307: Cannot find module '@/components/ui/PageHeader' or its corresponding type declarations.
+frontend/src/components/modules/HR.tsx(4,24): error TS2307: Cannot find module '@/components/ui/PageHeader' or its corresponding type declarations.
+frontend/src/components/modules/HR.tsx(10,18): error TS2307: Cannot find module '@/components/ui/Tabs' or its corresponding type declarations.
+frontend/src/components/modules/HR.tsx(13,8): error TS2307: Cannot find module '@/lib/hrData' or its corresponding type declarations.
+frontend/src/components/modules/HR.tsx(43,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(45,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(46,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(109,26): error TS7006: Parameter 'prev' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(177,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: any; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(179,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(180,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(182,83): error TS2322: Type '{ children: string; variant: "primary"; size: string; onClick: () => void; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/HR.tsx(276,45): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(310,27): error TS7006: Parameter 'prev' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(311,54): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(390,94): error TS2322: Type '{ children: string; variant: "primary"; size: string; onClick: () => void; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/HR.tsx(411,41): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(411,44): error TS7006: Parameter 'r' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(412,39): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(412,42): error TS7006: Parameter 'r' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(413,38): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(413,41): error TS7006: Parameter 'r' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(414,39): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(414,42): error TS7006: Parameter 'r' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(415,40): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(415,43): error TS7006: Parameter 'r' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(416,38): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(416,41): error TS7006: Parameter 'r' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(417,39): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(417,42): error TS7006: Parameter 'r' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(422,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(424,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(425,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(430,53): error TS2322: Type '{ children: string; variant: "secondary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/HR.tsx(431,51): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/HR.tsx(445,47): error TS7006: Parameter 'r' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(485,34): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(485,71): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(485,74): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(486,35): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(486,74): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(486,77): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(487,36): error TS7006: Parameter 's' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(487,39): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/components/modules/HR.tsx(491,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(492,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(493,18): error TS2741: Property 'trend' is missing in type '{ label: string; value: string; sub: string; }' but required in type 'Props'.
+frontend/src/components/modules/HR.tsx(495,81): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/HR.tsx(534,54): error TS2322: Type '{ children: string; variant: "secondary"; icon: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'icon' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Production.tsx(4,18): error TS2307: Cannot find module '@/components/ui/Tabs' or its corresponding type declarations.
+frontend/src/components/modules/Production.tsx(10,24): error TS2307: Cannot find module '@/components/ui/PageHeader' or its corresponding type declarations.
+frontend/src/components/modules/Production.tsx(34,26): error TS2739: Type '{ label: string; value: string; }' is missing the following properties from type 'Props': trend, sub
+frontend/src/components/modules/Production.tsx(35,26): error TS2741: Property 'sub' is missing in type '{ label: string; value: string; trend: number; }' but required in type 'Props'.
+frontend/src/components/modules/Production.tsx(39,87): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Production.tsx(58,89): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Production.tsx(74,95): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Purchase.tsx(4,18): error TS2307: Cannot find module '@/components/ui/Tabs' or its corresponding type declarations.
+frontend/src/components/modules/Purchase.tsx(9,24): error TS2307: Cannot find module '@/components/ui/PageHeader' or its corresponding type declarations.
+frontend/src/components/modules/Purchase.tsx(25,88): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Purchase.tsx(43,91): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Purchase.tsx(57,96): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Purchase.tsx(75,54): error TS2322: Type '{ children: string; variant: "secondary"; icon: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'icon' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Sales.tsx(4,18): error TS2307: Cannot find module '@/components/ui/Tabs' or its corresponding type declarations.
+frontend/src/components/modules/Sales.tsx(9,19): error TS2307: Cannot find module '@/components/ui/Field' or its corresponding type declarations.
+frontend/src/components/modules/Sales.tsx(11,24): error TS2307: Cannot find module '@/components/ui/PageHeader' or its corresponding type declarations.
+frontend/src/components/modules/Sales.tsx(113,85): error TS2322: Type '{ children: string; variant: "primary"; size: string; onClick: () => void; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Sales.tsx(124,83): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Sales.tsx(135,80): error TS2322: Type '{ children: string; variant: "primary"; size: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Sales.tsx(148,26): error TS2739: Type '{ label: string; value: string; }' is missing the following properties from type 'Props': trend, sub
+frontend/src/components/modules/Sales.tsx(149,26): error TS2739: Type '{ label: string; value: string; }' is missing the following properties from type 'Props': trend, sub
+frontend/src/components/modules/Sales.tsx(150,26): error TS2739: Type '{ label: string; value: string; }' is missing the following properties from type 'Props': trend, sub
+frontend/src/components/modules/Sales.tsx(170,54): error TS2322: Type '{ children: string; variant: "secondary"; icon: string; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'icon' does not exist on type 'IntrinsicAttributes & Props'.
+frontend/src/components/modules/Sales.tsx(172,60): error TS7006: Parameter 't' implicitly has an 'any' type.
+frontend/src/components/modules/Simulation.tsx(4,24): error TS2307: Cannot find module '@/components/ui/PageHeader' or its corresponding type declarations.
+frontend/src/components/modules/Simulation.tsx(145,21): error TS2322: Type 'MRPLine[]' is not assignable to type 'Record<string, unknown>[]'.
+  Type 'MRPLine' is not assignable to type 'Record<string, unknown>'.
+    Index signature for type 'string' is missing in type 'MRPLine'.
+frontend/src/components/modules/Simulation.tsx(532,29): error TS2322: Type 'SimMaterial[]' is not assignable to type 'Record<string, unknown>[]'.
+  Type 'SimMaterial' is not assignable to type 'Record<string, unknown>'.
+    Index signature for type 'string' is missing in type 'SimMaterial'.
