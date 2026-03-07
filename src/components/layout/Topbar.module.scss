@@ -1,0 +1,231 @@
+.topbar {
+  height: 52px;
+  background: #13151f;
+  border-bottom: 1px solid #1f2235;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+// ── Left ─────────────────────────────────────
+.left {
+  display: flex;
+  align-items: center;
+}
+
+.pageTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+// ── Right ────────────────────────────────────
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+// ── Search ───────────────────────────────────
+.searchWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #1a1d27;
+  border: 1px solid #2a2d3e;
+  border-radius: 7px;
+  padding: 0.3rem 0.65rem;
+  transition: border-color 0.15s;
+
+  &:focus-within {
+    border-color: var(--accent);
+  }
+}
+
+.searchIcon {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  width: 140px;
+  font-family: inherit;
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+}
+
+.searchShortcut {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  background: #2a2d3e;
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  font-family: var(--mono);
+  white-space: nowrap;
+}
+
+// ── Icon Button ──────────────────────────────
+.iconBtn {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  border: 1px solid #2a2d3e;
+  background: #1a1d27;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: #3a3d4e;
+  }
+}
+
+.bellIcon {
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.bellDot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 1.5px solid #13151f;
+}
+
+// ── Date Badge ───────────────────────────────
+.dateBadge {
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  color: var(--text-muted);
+  background: #1a1d27;
+  border: 1px solid #2a2d3e;
+  border-radius: 7px;
+  padding: 0.3rem 0.65rem;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+// ── User ─────────────────────────────────────
+.userWrap {
+  position: relative;
+}
+
+.userChip {
+  cursor: pointer;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #2a2d3e;
+  border: 1.5px solid #3a3d4e;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--accent);
+  }
+}
+
+// ── Dropdown ─────────────────────────────────
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: 210px;
+  background: #1a1d27;
+  border: 1px solid #2a2d3e;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  overflow: hidden;
+  z-index: 100;
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+}
+
+.dropdownAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dropdownName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dropdownRole {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #2a2d3e;
+  margin: 0;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--red);
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(248, 113, 113, 0.08);
+  }
+} 

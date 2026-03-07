@@ -1,0 +1,44 @@
+:root {
+  --bg-base:      #0f1117;
+  --bg-surface:   #1a1d27;
+  --bg-elevated:  #1f2235;
+  --border:       #2a2d3e;
+  --text-primary: #e8eaf0;
+  --text-muted:   #8b8fa8;
+  --accent:       #6c8fff;
+  --green:        #4ade80;
+  --amber:        #fbbf24;
+  --red:          #f87171;
+  --mono:         'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; }
+
+.mini-bar {
+  flex: 1;
+  height: 4px;
+  background: #2a2d3e;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mini-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}

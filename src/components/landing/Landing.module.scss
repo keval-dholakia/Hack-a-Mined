@@ -1,0 +1,12 @@
+// src/app/_landing/Landing.module.scss
+// All landing page styles — uses project CSS variables from src/styles/global.scss
+
+@import './base';
+@import './nav';
+@import './hero';
+@import './modules';
+@import './workflow';
+@import './features';
+@import './stack';
+@import './cta';
+@import './footer';

@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.welcome {
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #e8eaf0;
+    margin-bottom: 0.35rem;
+
+    span {
+      color: #6c8fff;
+    }
+  }
+
+  p {
+    color: #8b8fa8;
+    font-size: 0.95rem;
+  }
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.card {
+  background: #1a1d27;
+  border: 1px solid #2a2d3e;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: #6c8fff;
+  }
+}
+
+.cardIcon {
+  font-size: 1.75rem;
+}
+
+.cardValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e8eaf0;
+}
+
+.cardLabel {
+  font-size: 0.8rem;
+  color: #8b8fa8;
+  margin-top: 0.15rem;
+}

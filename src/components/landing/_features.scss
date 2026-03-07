@@ -1,0 +1,158 @@
+// ── Features ──────────────────────────────────────────────
+.features {
+    padding: 80px 48px;
+
+    @media (max-width: 768px) {
+        padding: 60px 24px;
+    }
+}
+
+.featureGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    margin-top: 56px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.featureCard {
+    background: var(--bg-base);
+    padding: 38px 34px;
+    transition: background 0.2s;
+
+    &:hover {
+        background: var(--bg-surface);
+    }
+}
+
+.featureCardLarge {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+
+    @media (max-width: 768px) {
+        grid-column: span 1;
+        grid-template-columns: 1fr;
+    }
+}
+
+.featureTag {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(108, 143, 255, 0.3);
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 18px;
+}
+
+.featureTitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.2;
+}
+
+.featureBody {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+.featureList {
+    list-style: none;
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    li {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        &::before {
+            content: '';
+            width: 16px;
+            height: 1px;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+    }
+}
+
+// Sim preview mini widget
+.simPreview {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    padding: 18px;
+}
+
+.simRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.simBars {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.simBarRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.simBarTrack {
+    flex: 1;
+    height: 4px;
+    background: var(--bg-base);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.simBarFill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--amber);
+    transition: width 1.2s ease;
+}
+
+.simLabel {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.simVal {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber);
+    font-weight: 500;
+}

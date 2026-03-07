@@ -1,0 +1,121 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.alert {
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    border-radius: 14px;
+    padding: 1.15rem 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    animation: slideDown 0.3s ease-out;
+
+    .icon {
+        color: var(--red);
+        font-size: 1.4rem;
+        margin-top: 0.1rem;
+        text-shadow: 0 0 10px rgba(248, 113, 113, 0.3);
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+
+    strong {
+        color: var(--text-primary);
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    p {
+        color: var(--text-muted);
+        font-size: 0.88rem;
+        line-height: 1.5;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1.25rem;
+}
+
+.card {
+    background: linear-gradient(145deg, #1a1d27 0%, #171922 100%);
+    border: 1px solid #2a2d3e;
+    border-radius: 14px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at top left, rgba(108, 143, 255, 0.05) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    &[data-alert="true"] {
+        border-color: rgba(248, 113, 113, 0.3);
+
+        .value {
+            color: var(--red);
+            text-shadow: 0 0 12px rgba(248, 113, 113, 0.2);
+        }
+    }
+
+    &:hover {
+        border-color: var(--accent);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    }
+}
+
+.label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--mono);
+    margin-bottom: 0.35rem;
+    line-height: 1.1;
+}
+
+.sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 450;
+}
