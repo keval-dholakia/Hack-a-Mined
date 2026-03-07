@@ -28,6 +28,12 @@ export default function SalaryStructureList({ employees }: Props) {
                         <span style={{ color: '#facc15' }}>{undefined_} pending</span>
                     </p>
                 </div>
+                <div className={styles.headerRight}>
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/hr/salary-structure/analytics')}
+                        style={{ color: '#22d3ee' }}>
+                        ◎ Analytics
+                    </Button>
+                </div>
             </div>
 
             {/* KPI strip */}

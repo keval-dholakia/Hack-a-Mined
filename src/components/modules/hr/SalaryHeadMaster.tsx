@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createSalaryHead, updateSalaryHead, toggleSalaryHeadStatus } from '@/app/actions/hr'
 import type { SalaryHead } from '@/types/hr'
 import Card from '@/components/ui/Card'
@@ -12,6 +13,7 @@ import styles from './HR.module.scss'
 type Props = { heads: SalaryHead[] }
 
 export default function SalaryHeadMaster({ heads }: Props) {
+    const router = useRouter()
     const [showForm, setShowForm] = useState(false)
     const [editHead, setEditHead] = useState<SalaryHead | null>(null)
     const [name, setName] = useState('')
@@ -56,6 +58,10 @@ export default function SalaryHeadMaster({ heads }: Props) {
                     <p className={styles.subtitle}>Define salary components — {earnings} earnings, {deductions} deductions</p>
                 </div>
                 <div className={styles.headerRight}>
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/hr/salary-heads/analytics')}
+                        style={{ color: '#22d3ee' }}>
+                        ◎ Analytics
+                    </Button>
                     <Button variant="ghost" onClick={openNew}>+ Add Head</Button>
                 </div>
             </div>

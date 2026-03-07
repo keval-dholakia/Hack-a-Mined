@@ -58,6 +58,10 @@ export default function SalarySheetList({ sheets }: Props) {
                     <p className={styles.subtitle}>{sheets.length} sheets · {pending} pending approval</p>
                 </div>
                 <div className={styles.headerRight}>
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/hr/salary-sheet/analytics')}
+                        style={{ color: '#22d3ee' }}>
+                        ◎ Analytics
+                    </Button>
                     <Button variant="ghost" onClick={() => router.push('/dashboard/hr/salary-sheet/new')}>
                         + New Sheet
                     </Button>

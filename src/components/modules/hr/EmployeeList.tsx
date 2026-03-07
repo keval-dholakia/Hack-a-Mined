@@ -47,6 +47,10 @@ export default function EmployeeList({ employees }: Props) {
                     <p className={styles.subtitle}>{employees.length} total employees</p>
                 </div>
                 <div className={styles.headerRight}>
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/hr/employees/analytics')}
+                        style={{ color: '#22d3ee' }}>
+                        ◎ Analytics
+                    </Button>
                     <Button variant="ghost" onClick={() => router.push('/dashboard/hr/employees/new')}>
                         + New Employee
                     </Button>
