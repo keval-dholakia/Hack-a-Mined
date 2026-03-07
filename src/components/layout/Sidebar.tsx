@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Permission, MODULES } from '@/constants/permissions'
+import { Permission, MODULES, PAGES } from '@/constants/permissions'
 import styles from './Sidebar.module.scss'
 import type { SessionUser } from '@/types/auth'
 
 type SubItem = {
   label: string
   path: string
+  key?: string  // ← added this
 }
 
 type ModuleItem = {
@@ -181,6 +182,24 @@ const NAV_GROUPS: Group[] = [
     ],
   },
   {
+    label: 'MASTERS',
+    modules: [
+      {
+        key: MODULES.MASTER,
+        label: 'Master Data',
+        icon: '❑',
+        path: '/dashboard/masters',
+        subItems: [
+          { label: 'Customers', path: '/dashboard/masters/customers', key: PAGES.MASTER.CUSTOMERS },
+          { label: 'Products', path: '/dashboard/masters/products', key: PAGES.MASTER.PRODUCTS },
+          { label: 'Vendors', path: '/dashboard/masters/vendors', key: PAGES.MASTER.VENDORS },
+          { label: 'Warehouses', path: '/dashboard/masters/warehouses', key: PAGES.MASTER.WAREHOUSES },
+          { label: 'Transport', path: '/dashboard/masters/transport', key: PAGES.MASTER.TRANSPORT },
+        ],
+      },
+    ],
+  },
+  {
     label: 'INTELLIGENCE',
     modules: [
       {
@@ -203,6 +222,11 @@ export default function Sidebar({ permissions, isSuperAdmin, user }: Props) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
   const [openModules, setOpenModules] = useState<string[]>([MODULES.SALES])
+
+  function canViewPage(moduleKey: string, pageKey: string): boolean {
+    if (isSuperAdmin) return true
+    return permissions.some(p => p.module === moduleKey && p.page === pageKey && p.can_view === 1)
+  }
 
   function canViewModule(moduleKey: string): boolean {
     if (isSuperAdmin) return true
@@ -302,15 +326,17 @@ export default function Sidebar({ permissions, isSuperAdmin, user }: Props) {
                     {!collapsed && module.subItems && (
                       <div className={`${styles.subListContainer} ${open ? styles.subListOpen : ''}`}>
                         <div className={styles.subList}>
-                          {module.subItems.map(sub => (
-                            <Link
-                              key={sub.path}
-                              href={sub.path}
-                              className={`${styles.subItem} ${isActive(sub.path) ? styles.subActive : ''}`}
-                            >
-                              {sub.label}
-                            </Link>
-                          ))}
+                          {module.subItems
+                            .filter(sub => !sub.key || canViewPage(module.key, sub.key))
+                            .map(sub => (
+                              <Link
+                                key={sub.path}
+                                href={sub.path}
+                                className={`${styles.subItem} ${isActive(sub.path) ? styles.subActive : ''}`}
+                              >
+                                {sub.label}
+                              </Link>
+                            ))}
                         </div>
                       </div>
                     )}

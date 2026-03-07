@@ -15,6 +15,8 @@ import SimInputPanel from '@/components/modules/simulation/SimInputPanel';
 import SimSummaryBar from '@/components/modules/simulation/SimSummaryBar';
 import SimResultTabs from '@/components/modules/simulation/SimResultTabs';
 import styles from './page.module.scss';
+import { usePermission } from '@/hooks/usePermission';
+import { MODULES, PAGES } from '@/constants/permissions';
 
 const DEFAULT_MPS: MPSRow[] = [
     { pid: 'ALTO', qty: 20 },
@@ -23,6 +25,8 @@ const DEFAULT_MPS: MPSRow[] = [
 ];
 
 export default function SimulationPage() {
+    const { allowed, loading } = usePermission(MODULES.FORECASTING, PAGES.FORECASTING.MPS_INPUT, 'can_view');
+
     // ── Input state ──────────────────────────────────────────
     const [mps, setMps] = useState<MPSRow[]>(DEFAULT_MPS);
     const [shift, setShift] = useState<number>(10);
@@ -99,6 +103,9 @@ export default function SimulationPage() {
     };
 
     // ── Render ───────────────────────────────────────────────
+
+    if (loading) return <div className={styles.page}>Loading permissions...</div>;
+    if (!allowed) return <div className={styles.page}>Access Denied. You do not have permission to view this module.</div>;
 
     return (
         <div className={styles.page}>
