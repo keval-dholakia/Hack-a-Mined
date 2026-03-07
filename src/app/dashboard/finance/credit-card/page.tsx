@@ -3,9 +3,14 @@
 import { useState, useEffect } from 'react'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import { useRouter } from 'next/navigation'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
+import { downloadVoucherPdf } from '@/lib/pdf/downloadVoucherPdf'
 import { fetchCcStatements, fetchAccounts, createCcStatement, CreditCardTx, Account } from '@/data/financeMock'
 
 export default function CreditCardPage() {
+    const router = useRouter()
     const [txs, setTxs] = useState<CreditCardTx[]>([])
     const [accounts, setAccounts] = useState<Account[]>([])
     const [loading, setLoading] = useState(false)
@@ -62,9 +67,31 @@ export default function CreditCardPage() {
                     <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0 }}>Credit Card Statements</h1>
                     <p style={{ color: 'var(--text-muted)' }}>Log Corporate Expenses Directly to Statements</p>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)}>
-                    {showForm ? 'Cancel' : '+ Log Expense'}
-                </Button>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Credit Card Statement Records',
+                        subtitle: `${txs.length} transactions logged`,
+                        columns: [
+                            { header: 'Card No', dataKey: 'cardNo' },
+                            { header: 'Merchant', dataKey: 'merchant' },
+                            { header: 'Statement Month', dataKey: 'statementMonth' },
+                            { header: 'Tx Date', dataKey: 'transactionDate' },
+                            { header: 'Expense Ledger', dataKey: 'expenseAcc' },
+                            { header: 'Amount', dataKey: 'amount', format: 'currency', align: 'right' },
+                        ],
+                        rows: txs.map(tx => ({
+                            ...tx,
+                            expenseAcc: accounts.find(a => a.id === tx.expenseHeadId)?.name || 'Unknown'
+                        })),
+                        fileName: 'Credit_Card_Statements'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/finance/credit-card/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => setShowForm(!showForm)}>
+                        {showForm ? 'Cancel' : '+ Log Expense'}
+                    </Button>
+                </div>
             </div>
 
             {showForm && (
@@ -116,6 +143,7 @@ export default function CreditCardPage() {
                             <th style={{ padding: '1rem' }}>Tx Date</th>
                             <th style={{ padding: '1rem' }}>Expense Ledger</th>
                             <th style={{ padding: '1rem', textAlign: 'right' }}>Amount</th>
+                            <th style={{ padding: '1rem', textAlign: 'right' }}></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -135,11 +163,31 @@ export default function CreditCardPage() {
                                     <td style={{ padding: '1rem', textAlign: 'right', fontFamily: 'var(--mono)', color: '#22d3ee' }}>
                                         {fmt(tx.amount)}
                                     </td>
+                                    <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                        <DownloadButton
+                                            variant="voucher"
+                                            onClick={() => downloadVoucherPdf({
+                                                type: 'Credit Card Expense Receipt',
+                                                voucherNo: `CC-${tx.id.substring(0, 4)}`,
+                                                date: tx.transactionDate,
+                                                partyName: tx.merchant,
+                                                amount: tx.amount,
+                                                narration: `Credit Card Expense at ${tx.merchant}`,
+                                                entries: [
+                                                    { label: expAcc, debit: tx.amount, credit: 0 },
+                                                    { label: `Corporate Credit Card (${tx.cardNo})`, debit: 0, credit: tx.amount },
+                                                ],
+                                                extras: {
+                                                    'Statement Month': tx.statementMonth
+                                                }
+                                            })}
+                                        />
+                                    </td>
                                 </tr>
                             )
                         })}
                         {txs.length === 0 && (
-                            <tr><td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No Credit Card transactions logged</td></tr>
+                            <tr><td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No Credit Card transactions logged</td></tr>
                         )}
                     </tbody>
                 </table>

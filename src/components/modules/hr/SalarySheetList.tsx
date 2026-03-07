@@ -9,6 +9,8 @@ import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import styles from './HR.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 type Props = { sheets: any[] }   // any[] because Supabase join returns nested objects
 
@@ -57,7 +59,30 @@ export default function SalarySheetList({ sheets }: Props) {
                     <h1 className={styles.title}>Salary Sheets</h1>
                     <p className={styles.subtitle}>{sheets.length} sheets · {pending} pending approval</p>
                 </div>
-                <div className={styles.headerRight}>
+                <div className={styles.headerRight} style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Salary Sheets Registry',
+                        subtitle: `${filtered.length} sheets`,
+                        columns: [
+                            { header: 'Period', dataKey: 'period' },
+                            { header: 'Code', dataKey: 'emp_code' },
+                            { header: 'Employee', dataKey: 'name' },
+                            { header: 'Department', dataKey: 'department' },
+                            { header: 'Gross Pay', dataKey: 'gross_salary', format: 'currency', align: 'right' },
+                            { header: 'Net Pay', dataKey: 'net_pay', format: 'currency', align: 'right' },
+                            { header: 'Status', dataKey: 'status' },
+                        ],
+                        rows: filtered.map(s => ({
+                            period: `${MONTHS[s.month - 1]} ${s.year}`,
+                            emp_code: s.employees?.emp_code || '—',
+                            name: s.employees?.name || '—',
+                            department: s.employees?.department || '—',
+                            gross_salary: Number(s.gross_salary) || 0,
+                            net_pay: Number(s.net_pay) || 0,
+                            status: s.status || 'Draft'
+                        })),
+                        fileName: 'Salary_Sheets_Registry'
+                    })} />
                     <Button variant="ghost" onClick={() => router.push('/dashboard/hr/salary-sheet/analytics')}
                         style={{ color: '#22d3ee' }}>
                         ◎ Analytics

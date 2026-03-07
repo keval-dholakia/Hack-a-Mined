@@ -4,8 +4,12 @@ import { useState } from 'react'
 import { contractorRoles, ContractorRole } from '@/data/contractorMock'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
+import { useRouter } from 'next/navigation'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 export default function ContractorRolesPage() {
+    const router = useRouter()
     const [roles, setRoles] = useState([...contractorRoles])
     const [showForm, setShowForm] = useState(false)
     const [role, setRole] = useState('')
@@ -30,7 +34,25 @@ export default function ContractorRolesPage() {
                     <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0 }}>Salary Head Master</h1>
                     <p style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>Define role-wise daily rates and overtime rates for contract labour</p>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)}>{showForm ? 'Cancel' : '+ Add Role'}</Button>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Contractor Role Rates',
+                        subtitle: `${roles.length} roles configured`,
+                        columns: [
+                            { header: 'Role', dataKey: 'role' },
+                            { header: 'Daily Rate', dataKey: 'dailyRate', format: 'currency', align: 'right' },
+                            { header: 'OT Rate / hr', dataKey: 'otRate', format: 'currency', align: 'right' },
+                        ],
+                        rows: roles,
+                        fileName: 'Contractor_Role_Rates'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/contractors/roles/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => setShowForm(!showForm)}>
+                        {showForm ? 'Cancel' : '+ Add Role'}
+                    </Button>
+                </div>
             </div>
 
             {showForm && (

@@ -4,10 +4,14 @@ import { useState } from 'react'
 import { contractorWorkers, contractorFirms, contractorStructures, contractorRoles, addWorker, ContractorWorker } from '@/data/contractorMock'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
+import { useRouter } from 'next/navigation'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 const SKILL = ['Skilled', 'Semi-Skilled', 'Unskilled'] as const
 
 export default function ContractorWorkersPage() {
+    const router = useRouter()
     const [workers, setWorkers] = useState([...contractorWorkers])
     const [firms] = useState([...contractorFirms])
     const [showForm, setShowForm] = useState(false)
@@ -47,7 +51,31 @@ export default function ContractorWorkersPage() {
                     <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0 }}>Contractor Workers</h1>
                     <p style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>Register and manage contract labour across firms</p>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)}>{showForm ? 'Cancel' : '+ Register Worker'}</Button>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Contractor Worker Register',
+                        subtitle: `${displayed.length} workers registered`,
+                        columns: [
+                            { header: 'Worker ID', dataKey: 'workerId' },
+                            { header: 'Name', dataKey: 'name' },
+                            { header: 'Contractor Firm', dataKey: 'firm_name' },
+                            { header: 'Trade', dataKey: 'trade' },
+                            { header: 'Skill Level', dataKey: 'skillLevel' },
+                            { header: 'Aadhar No.', dataKey: 'aadhar' },
+                        ],
+                        rows: displayed.map(w => ({
+                            ...w,
+                            firm_name: firms.find(f => f.id === w.firmId)?.name || '—',
+                        })),
+                        fileName: 'Contractor_Worker_Register'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/contractors/workers/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => setShowForm(!showForm)}>
+                        {showForm ? 'Cancel' : '+ Register Worker'}
+                    </Button>
+                </div>
             </div>
 
             {/* KPI Strip */}

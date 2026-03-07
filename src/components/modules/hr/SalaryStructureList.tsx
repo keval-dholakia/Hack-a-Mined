@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import styles from './HR.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 type Props = { employees: any[] }
 
@@ -28,7 +30,28 @@ export default function SalaryStructureList({ employees }: Props) {
                         <span style={{ color: '#facc15' }}>{undefined_} pending</span>
                     </p>
                 </div>
-                <div className={styles.headerRight}>
+                <div className={styles.headerRight} style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Salary Structure Configuration',
+                        subtitle: `${defined} configured, ${undefined_} pending`,
+                        columns: [
+                            { header: 'Code', dataKey: 'emp_code' },
+                            { header: 'Employee', dataKey: 'name' },
+                            { header: 'Department', dataKey: 'department' },
+                            { header: 'Designation', dataKey: 'designation' },
+                            { header: 'Net Pay', dataKey: 'net_pay', format: 'currency', align: 'right' },
+                            { header: 'Status', dataKey: 'status' },
+                        ],
+                        rows: employees.map(e => ({
+                            emp_code: e.emp_code || '—',
+                            name: e.name,
+                            department: e.department || '—',
+                            designation: e.designation || '—',
+                            net_pay: Number(e.structure?.net_pay) || 0,
+                            status: e.structure ? 'Configured' : 'Not Set'
+                        })),
+                        fileName: 'Salary_Structure_Report'
+                    })} />
                     <Button variant="ghost" onClick={() => router.push('/dashboard/hr/salary-structure/analytics')}
                         style={{ color: '#22d3ee' }}>
                         ◎ Analytics

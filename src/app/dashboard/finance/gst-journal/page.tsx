@@ -3,9 +3,14 @@
 import { useState, useEffect } from 'react'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import { useRouter } from 'next/navigation'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
+import { downloadVoucherPdf } from '@/lib/pdf/downloadVoucherPdf'
 import { fetchVouchers, fetchAccounts, createVoucher, Voucher, Account } from '@/data/financeMock'
 
 export default function GSTJournalPage() {
+    const router = useRouter()
     const [vouchers, setVouchers] = useState<Voucher[]>([])
     const [accounts, setAccounts] = useState<Account[]>([])
     const [loading, setLoading] = useState(false)
@@ -69,9 +74,27 @@ export default function GSTJournalPage() {
                     <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0 }}>GST Journal</h1>
                     <p style={{ color: 'var(--text-muted)' }}>Input/Output Tax Adjustments and ITC Reversals</p>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)}>
-                    {showForm ? 'Cancel' : '+ New GST Adjustment'}
-                </Button>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'GST Journal Register',
+                        subtitle: `${vouchers.length} GST adjustments recorded`,
+                        columns: [
+                            { header: 'Voucher No', dataKey: 'voucherNo' },
+                            { header: 'Date', dataKey: 'date' },
+                            { header: 'Adjustment Type', dataKey: 'gstAdjustmentType' },
+                            { header: 'Narration', dataKey: 'narration' },
+                            { header: 'Amount', dataKey: 'totalAmount', format: 'currency', align: 'right' },
+                        ],
+                        rows: vouchers,
+                        fileName: 'GST_Journal_Register'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/finance/gst-journal/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => setShowForm(!showForm)}>
+                        {showForm ? 'Cancel' : '+ New GST Adjustment'}
+                    </Button>
+                </div>
             </div>
 
             {showForm && (
@@ -134,6 +157,7 @@ export default function GSTJournalPage() {
                             <th style={{ padding: '1rem' }}>Adjustment Type</th>
                             <th style={{ padding: '1rem' }}>Narration</th>
                             <th style={{ padding: '1rem', textAlign: 'right' }}>Amount</th>
+                            <th style={{ padding: '1rem', textAlign: 'right' }}></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -149,11 +173,31 @@ export default function GSTJournalPage() {
                                     </td>
                                     <td style={{ padding: '1rem', color: 'var(--text-muted)' }}>{v.narration}</td>
                                     <td style={{ padding: '1rem', textAlign: 'right', fontFamily: 'var(--mono)' }}>{fmt(v.totalAmount)}</td>
+                                    <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                        <DownloadButton
+                                            variant="voucher"
+                                            onClick={() => downloadVoucherPdf({
+                                                type: 'GST Journal Voucher',
+                                                voucherNo: v.voucherNo,
+                                                date: v.date,
+                                                amount: v.totalAmount,
+                                                narration: v.narration,
+                                                entries: v.entries.map(e => ({
+                                                    label: accounts.find(a => a.id === e.accountId)?.name || 'Unknown Account',
+                                                    debit: e.debit,
+                                                    credit: e.credit
+                                                })),
+                                                extras: {
+                                                    'Adjustment Type': v.gstAdjustmentType || '—'
+                                                }
+                                            })}
+                                        />
+                                    </td>
                                 </tr>
                             )
                         })}
                         {vouchers.length === 0 && (
-                            <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No GST Journals found</td></tr>
+                            <tr><td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No GST Journals found</td></tr>
                         )}
                     </tbody>
                 </table>

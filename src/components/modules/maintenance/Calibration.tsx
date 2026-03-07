@@ -4,6 +4,8 @@ import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import type { CalibrationRecord, CalibrationFormData } from '@/types/maintenance'
 import styles from './Calibration.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 // ── SEED TOOLS (mirrors ToolMaster seed) ─────
 const TOOL_OPTIONS = [
@@ -76,31 +78,31 @@ function formatDate(iso: string) {
 }
 
 function getDueStatus(nextDue: string): 'overdue' | 'due-soon' | 'ok' {
-  const today   = new Date()
+  const today = new Date()
   const dueDate = new Date(nextDue)
   const diffDays = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-  if (diffDays < 0)   return 'overdue'
+  if (diffDays < 0) return 'overdue'
   if (diffDays <= 30) return 'due-soon'
   return 'ok'
 }
 
 export default function Calibration() {
-  const [records, setRecords]         = useState<CalibrationRecord[]>(SEED_RECORDS)
-  const [search, setSearch]           = useState('')
+  const [records, setRecords] = useState<CalibrationRecord[]>(SEED_RECORDS)
+  const [search, setSearch] = useState('')
   const [resultFilter, setResultFilter] = useState('All')
-  const [toolFilter, setToolFilter]   = useState('All')
-  const [dueFilter, setDueFilter]     = useState('All')
-  const [drawerOpen, setDrawerOpen]   = useState(false)
-  const [editId, setEditId]           = useState<number | null>(null)
-  const [form, setForm]               = useState<CalibrationFormData>(EMPTY_FORM)
-  const [saving, setSaving]           = useState(false)
+  const [toolFilter, setToolFilter] = useState('All')
+  const [dueFilter, setDueFilter] = useState('All')
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [editId, setEditId] = useState<number | null>(null)
+  const [form, setForm] = useState<CalibrationFormData>(EMPTY_FORM)
+  const [saving, setSaving] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null)
-  const [expandedId, setExpandedId]   = useState<number | null>(null)
+  const [expandedId, setExpandedId] = useState<number | null>(null)
 
   // ── Stats ──────────────────────────────────
   const stats = useMemo(() => {
-    const overdue  = records.filter(r => getDueStatus(r.next_due_date) === 'overdue').length
-    const dueSoon  = records.filter(r => getDueStatus(r.next_due_date) === 'due-soon').length
+    const overdue = records.filter(r => getDueStatus(r.next_due_date) === 'overdue').length
+    const dueSoon = records.filter(r => getDueStatus(r.next_due_date) === 'due-soon').length
     const passRate = records.length
       ? Math.round((records.filter(r => r.result === 'Pass').length / records.length) * 100)
       : 0
@@ -116,13 +118,13 @@ export default function Calibration() {
       r.done_by.toLowerCase().includes(q) ||
       (r.certificate_number?.toLowerCase().includes(q) ?? false)
     const matchResult = resultFilter === 'All' || r.result === resultFilter
-    const matchTool   = toolFilter   === 'All' || r.tool_code === toolFilter
+    const matchTool = toolFilter === 'All' || r.tool_code === toolFilter
     const due = getDueStatus(r.next_due_date)
     const matchDue =
       dueFilter === 'All' ||
-      (dueFilter === 'Overdue'  && due === 'overdue') ||
+      (dueFilter === 'Overdue' && due === 'overdue') ||
       (dueFilter === 'Due Soon' && due === 'due-soon') ||
-      (dueFilter === 'OK'       && due === 'ok')
+      (dueFilter === 'OK' && due === 'ok')
     return matchSearch && matchResult && matchTool && matchDue
   }), [records, search, resultFilter, toolFilter, dueFilter])
 
@@ -136,20 +138,20 @@ export default function Calibration() {
   function openEdit(r: CalibrationRecord) {
     setEditId(r.id)
     setForm({
-      tool_id:            r.tool_id,
-      calibration_date:   r.calibration_date,
-      next_due_date:      r.next_due_date,
-      done_by:            r.done_by,
-      result:             r.result,
+      tool_id: r.tool_id,
+      calibration_date: r.calibration_date,
+      next_due_date: r.next_due_date,
+      done_by: r.done_by,
+      result: r.result,
       certificate_number: r.certificate_number ?? '',
-      remarks:            r.remarks ?? '',
+      remarks: r.remarks ?? '',
     })
     setDrawerOpen(true)
   }
 
   function closeDrawer() { setDrawerOpen(false); setEditId(null) }
   function handleField(key: keyof CalibrationFormData, val: string | number) {
-    setForm(f => ({ ...f, [key]: val }))
+    setForm((f: CalibrationFormData) => ({ ...f, [key]: val }))
   }
 
   function handleSave() {
@@ -170,17 +172,17 @@ export default function Calibration() {
         ))
       } else {
         const newRec: CalibrationRecord = {
-          id:                 Date.now(),
-          tool_id:            Number(form.tool_id),
-          tool_name:          tool?.tool_name ?? '',
-          tool_code:          tool?.tool_code ?? '',
-          calibration_date:   form.calibration_date,
-          next_due_date:      form.next_due_date,
-          done_by:            form.done_by,
-          result:             form.result,
+          id: Date.now(),
+          tool_id: Number(form.tool_id),
+          tool_name: tool?.tool_name ?? '',
+          tool_code: tool?.tool_code ?? '',
+          calibration_date: form.calibration_date,
+          next_due_date: form.next_due_date,
+          done_by: form.done_by,
+          result: form.result,
           certificate_number: form.certificate_number || null,
-          remarks:            form.remarks || null,
-          created_at:         new Date().toISOString(),
+          remarks: form.remarks || null,
+          created_at: new Date().toISOString(),
         }
         setRecords(prev => [newRec, ...prev])
       }
@@ -205,7 +207,27 @@ export default function Calibration() {
           <h1 className={styles.title}>Calibration Records</h1>
           <p className={styles.subtitle}>{records.length} total records</p>
         </div>
-        <div style={{ display:'flex', gap:'0.6rem' }}>
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+          <DownloadButton variant="list" onClick={() => downloadTablePdf({
+            title: 'Calibration Records',
+            subtitle: `${filtered.length} records.`,
+            columns: [
+              { header: 'Tool Code', dataKey: 'tool_code' },
+              { header: 'Tool Name', dataKey: 'tool_name' },
+              { header: 'Calib. Date', dataKey: 'calibration_date' },
+              { header: 'Due Date', dataKey: 'next_due_date' },
+              { header: 'Done By', dataKey: 'done_by' },
+              { header: 'Cert No.', dataKey: 'certificate_number' },
+              { header: 'Result', dataKey: 'result' },
+            ],
+            rows: filtered.map(r => ({
+              ...r,
+              calibration_date: formatDate(r.calibration_date),
+              next_due_date: formatDate(r.next_due_date),
+              certificate_number: r.certificate_number || '—'
+            })),
+            fileName: 'Calibration_Records'
+          })} />
           <button className={styles.ghostBtn} onClick={() => router.push('/dashboard/maintenance/calibration/analytics')}>
             ◎ Analytics
           </button>
@@ -316,8 +338,8 @@ export default function Calibration() {
                         </td>
                         <td className={styles.center}>
                           <span className={`${styles.dueBadge} ${styles[`due${dueStatus.replace('-', '')}`]}`}>
-                            {dueStatus === 'overdue'  ? '⚠ Overdue'  :
-                             dueStatus === 'due-soon' ? '⏱ Due Soon' : '✓ OK'}
+                            {dueStatus === 'overdue' ? '⚠ Overdue' :
+                              dueStatus === 'due-soon' ? '⏱ Due Soon' : '✓ OK'}
                           </span>
                         </td>
                         <td className={styles.center} onClick={e => e.stopPropagation()}>

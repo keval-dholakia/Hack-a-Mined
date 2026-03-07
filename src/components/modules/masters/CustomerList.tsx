@@ -9,6 +9,8 @@ import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import styles from './Masters.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 type Props = { customers: Customer[] }
 
@@ -36,7 +38,22 @@ export default function CustomerList({ customers }: Props) {
           <h1 className={styles.title}>Customers</h1>
           <p className={styles.subtitle}>{customers.length} total customers</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.6rem' }}>
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+          <DownloadButton variant="list" onClick={() => downloadTablePdf({
+            title: 'Customer Register',
+            subtitle: `${filtered.length} customers`,
+            columns: [
+              { header: 'Code', dataKey: 'code' },
+              { header: 'Name', dataKey: 'name' },
+              { header: 'Mobile', dataKey: 'mobile' },
+              { header: 'GSTIN', dataKey: 'gstin' },
+              { header: 'City', dataKey: 'city' },
+              { header: 'Credit Days', dataKey: 'credit_period', align: 'right' },
+              { header: 'Status', dataKey: 'is_active' },
+            ],
+            rows: filtered.map(c => ({ ...c, is_active: c.is_active === 1 ? 'Active' : 'Inactive' })),
+            fileName: 'Customer_Register',
+          })} />
           <Button variant="ghost" onClick={() => router.push('/dashboard/masters/customers/analytics')}>
             ◎ Analytics
           </Button>

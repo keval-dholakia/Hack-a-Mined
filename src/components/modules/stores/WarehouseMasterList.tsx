@@ -8,6 +8,8 @@ import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import styles from './Stores.module.scss'
 import { useState } from 'react'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 type Props = { warehouses: Warehouse[] }
 
@@ -29,9 +31,37 @@ export default function WarehouseMasterList({ warehouses }: Props) {
                     <h1 className={styles.title}>Warehouse Master</h1>
                     <p className={styles.subtitle}>{warehouses.length} warehouses configured</p>
                 </div>
-                <Button onClick={() => router.push('/dashboard/masters/warehouses/new')}>
-                    + New Warehouse
-                </Button>
+                <div className={styles.headerRight} style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Warehouse Master Registry',
+                        subtitle: `${filtered.length} warehouses configured`,
+                        columns: [
+                            { header: 'Code', dataKey: 'code' },
+                            { header: 'Warehouse Name', dataKey: 'name' },
+                            { header: 'City', dataKey: 'city' },
+                            { header: 'State', dataKey: 'state' },
+                            { header: 'Manager', dataKey: 'manager_name' },
+                            { header: 'Mobile', dataKey: 'manager_mobile' },
+                            { header: 'Status', dataKey: 'is_active', align: 'center' },
+                        ],
+                        rows: filtered.map(w => ({
+                            ...w,
+                            code: w.code || '—',
+                            city: w.city || '—',
+                            state: w.state || '—',
+                            manager_name: w.manager_name || '—',
+                            manager_mobile: w.manager_mobile || '—',
+                            is_active: w.is_active === 1 ? 'Active' : 'Inactive'
+                        })),
+                        fileName: 'Warehouse_Master_Registry'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/stores/warehouse-master/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => router.push('/dashboard/masters/warehouses/new')}>
+                        + New Warehouse
+                    </Button>
+                </div>
             </div>
 
             <div className={styles.searchBar}>

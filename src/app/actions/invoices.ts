@@ -19,6 +19,25 @@ export async function getInvoices() {
   return data
 }
 
+export async function getInvoicesWithItems() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('invoices')
+    .select(`
+      *,
+      customer:customers(name, code),
+      sale_order:sale_orders(so_no),
+      items:invoice_items(
+        *,
+        product:products(name, code, unit)
+      )
+    `)
+    .order('created_at', { ascending: false })
+
+  if (error) return []
+  return data
+}
+
 export async function getInvoiceById(id: number) {
   const supabase = await createClient()
   const { data, error } = await supabase

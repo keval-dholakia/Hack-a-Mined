@@ -4,8 +4,13 @@ import { useState } from 'react'
 import { contractorAdvances, contractorFirms, contractorWorkers, addAdvance, ContractorAdvance } from '@/data/contractorMock'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
+import { useRouter } from 'next/navigation'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
+import { downloadVoucherPdf } from '@/lib/pdf/downloadVoucherPdf'
 
 export default function ContractorAdvancePage() {
+    const router = useRouter()
     const [advances, setAdvances] = useState([...contractorAdvances])
     const [showForm, setShowForm] = useState(false)
 
@@ -37,7 +42,38 @@ export default function ContractorAdvancePage() {
                     <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0 }}>Advance Memo</h1>
                     <p style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>Advances disbursed to contractor workers against upcoming wages</p>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)}>{showForm ? 'Cancel' : '+ Issue Advance'}</Button>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Contractor Advance Register',
+                        subtitle: `${advances.length} advance memos tracked`,
+                        columns: [
+                            { header: 'Memo No', dataKey: 'memoNo' },
+                            { header: 'Date', dataKey: 'date' },
+                            { header: 'Firm', dataKey: 'firm_name' },
+                            { header: 'Worker', dataKey: 'worker_name' },
+                            { header: 'Amount', dataKey: 'amount', format: 'currency', align: 'right' },
+                            { header: 'Remarks', dataKey: 'remarks' },
+                            { header: 'Status', dataKey: 'statusName' },
+                        ],
+                        rows: advances.map(a => {
+                            const firm = contractorFirms.find(f => f.id === a.firmId)
+                            const worker = contractorWorkers.find(w => w.id === a.workerId)
+                            return {
+                                ...a,
+                                firm_name: firm?.name || '—',
+                                worker_name: worker?.name || '—',
+                                statusName: a.recovered ? 'Recovered' : 'Outstanding',
+                            }
+                        }),
+                        fileName: 'Contractor_Advance_Register'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/contractors/advance-memo/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => setShowForm(!showForm)}>
+                        {showForm ? 'Cancel' : '+ Issue Advance'}
+                    </Button>
+                </div>
             </div>
 
             {/* KPIs */}
@@ -102,7 +138,7 @@ export default function ContractorAdvancePage() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.84rem' }}>
                     <thead>
                         <tr style={{ background: '#0f1117', color: 'var(--text-muted)', textAlign: 'left' }}>
-                            {['Memo No', 'Contractor Firm', 'Worker', 'Date', 'Amount', 'Remarks', 'Status'].map(h => (
+                            {['Memo No', 'Contractor Firm', 'Worker', 'Date', 'Amount', 'Remarks', 'Status', ''].map(h => (
                                 <th key={h} style={{ padding: '0.9rem 1rem', fontWeight: 500 }}>{h}</th>
                             ))}
                         </tr>
@@ -127,6 +163,28 @@ export default function ContractorAdvancePage() {
                                         }}>
                                             {a.recovered ? 'Recovered' : 'Outstanding'}
                                         </span>
+                                    </td>
+                                    <td style={{ padding: '0.85rem 1rem' }}>
+                                        <DownloadButton
+                                            variant="voucher"
+                                            onClick={() => downloadVoucherPdf({
+                                                type: 'Advance Memo',
+                                                voucherNo: a.memoNo,
+                                                date: a.date,
+                                                partyName: worker?.name || 'Unknown',
+                                                amount: a.amount,
+                                                narration: a.remarks,
+                                                entries: [
+                                                    { label: `Advance Given to ${worker?.name}`, debit: a.amount, credit: 0 },
+                                                    { label: 'Cash / Bank Account', debit: 0, credit: a.amount },
+                                                ],
+                                                extras: {
+                                                    'Contractor Firm': firm?.name || '—',
+                                                    'Worker ID': worker?.workerId || '—',
+                                                    'Status': a.recovered ? 'Recovered' : 'Outstanding',
+                                                }
+                                            })}
+                                        />
                                     </td>
                                 </tr>
                             )

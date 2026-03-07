@@ -7,6 +7,9 @@ import Card from '@/components/ui/Card'
 import Table from '@/components/ui/Table'
 import Button from '@/components/ui/Button'
 import styles from './Stores.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
+import { fmtDate } from '@/lib/pdf/pdfConstants'
 
 type Props = { receipts: MaterialReceipt[] }
 
@@ -33,9 +36,36 @@ export default function MaterialReceiptList({ receipts }: Props) {
                     <h1 className={styles.title}>Warehouse Material Receipt</h1>
                     <p className={styles.subtitle}>{receipts.length} receipt entries</p>
                 </div>
-                <Button onClick={() => router.push('/dashboard/stores/material-receipt/new')}>
-                    + New Receipt
-                </Button>
+                <div className={styles.headerRight} style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Warehouse Material Receipts Registry',
+                        subtitle: `${filtered.length} receipt entries`,
+                        columns: [
+                            { header: 'Source Doc Ref', dataKey: 'source_doc_ref' },
+                            { header: 'Receipt Date', dataKey: 'receipt_date' },
+                            { header: 'Warehouse', dataKey: 'warehouse_name' },
+                            { header: 'Item', dataKey: 'product_name' },
+                            { header: 'Qty Received', dataKey: 'qty_received', align: 'right' },
+                            { header: 'Remarks', dataKey: 'remarks' },
+                        ],
+                        rows: filtered.map(r => ({
+                            ...r,
+                            source_doc_ref: r.source_doc_ref || '—',
+                            receipt_date: r.receipt_date ? fmtDate(r.receipt_date) : '—',
+                            warehouse_name: r.warehouse_name || '—',
+                            product_name: r.product_name || '—',
+                            qty_received: Number(r.qty_received) || 0,
+                            remarks: r.remarks || '—'
+                        })),
+                        fileName: 'Material_Receipts_Registry'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/stores/material-receipt/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => router.push('/dashboard/stores/material-receipt/new')}>
+                        + New Receipt
+                    </Button>
+                </div>
             </div>
 
             <div className={styles.searchBar}>

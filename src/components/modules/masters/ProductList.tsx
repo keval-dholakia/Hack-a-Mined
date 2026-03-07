@@ -9,6 +9,8 @@ import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import styles from './Masters.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 type Props = { products: Product[] }
 
@@ -40,7 +42,24 @@ export default function ProductList({ products }: Props) {
           <h1 className={styles.title}>Products</h1>
           <p className={styles.subtitle}>{products.length} total products</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.6rem' }}>
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+          <DownloadButton variant="list" onClick={() => downloadTablePdf({
+            title: 'Product Catalogue',
+            subtitle: `${filtered.length} products`,
+            columns: [
+              { header: 'Code', dataKey: 'code' },
+              { header: 'Name', dataKey: 'name' },
+              { header: 'Category', dataKey: 'category' },
+              { header: 'Unit', dataKey: 'unit', align: 'center' },
+              { header: 'HSN', dataKey: 'hsn_code' },
+              { header: 'GST%', dataKey: 'gst_percent', align: 'right' },
+              { header: 'Sale Price', dataKey: 'sale_price', format: 'currency', align: 'right' },
+              { header: 'Stock', dataKey: 'current_stock', format: 'number', align: 'right' },
+              { header: 'Status', dataKey: 'is_active' },
+            ],
+            rows: filtered.map(p => ({ ...p, is_active: p.is_active === 1 ? 'Active' : 'Inactive' })),
+            fileName: 'Product_Catalogue',
+          })} />
           <Button variant="ghost" onClick={() => router.push('/dashboard/masters/products/analytics')}>
             ◎ Analytics
           </Button>
