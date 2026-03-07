@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createCustomer, updateCustomer } from '@/app/actions/customers'
 import type { Customer, CustomerFormData } from '@/types/customer'
+import { getReminderConfig, upsertReminderConfig } from '@/app/actions/reminders'
+import type { ReminderMode } from '@/types/reminder'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import styles from './Masters.module.scss'
@@ -28,8 +30,8 @@ const EMPTY: CustomerFormData = {
 }
 
 export default function CustomerForm({ customer }: Props) {
-  const router  = useRouter()
-  const isEdit  = !!customer
+  const router = useRouter()
+  const isEdit = !!customer
 
   const [form, setForm] = useState<CustomerFormData>(
     customer ? {
@@ -51,11 +53,38 @@ export default function CustomerForm({ customer }: Props) {
     } : EMPTY
   )
 
+  const [reminderConfig, setReminderConfig] = useState({
+    is_active:        false,
+    reminder_mode:    'Moderate' as ReminderMode,
+    contact_email:    '',
+    contact_whatsapp: '',
+  })
+
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState<string | null>(null)
 
+  // Load existing reminder config on edit
+  useEffect(() => {
+    if (customer?.id) {
+      getReminderConfig(customer.id).then(config => {
+        if (config) {
+          setReminderConfig({
+            is_active:        config.is_active,
+            reminder_mode:    config.reminder_mode as ReminderMode,
+            contact_email:    config.contact_email    ?? '',
+            contact_whatsapp: config.contact_whatsapp ?? '',
+          })
+        }
+      })
+    }
+  }, [customer?.id])
+
   function set(key: keyof CustomerFormData, value: string | number) {
     setForm(prev => ({ ...prev, [key]: value }))
+  }
+
+  function setReminder(key: string, value: any) {
+    setReminderConfig(prev => ({ ...prev, [key]: value }))
   }
 
   function copyBillingToShipping() {
@@ -75,6 +104,13 @@ export default function CustomerForm({ customer }: Props) {
       setError(result.error)
       setLoading(false)
       return
+    }
+
+    // Save reminder config
+    // For new customer, get the id from result
+    const savedId = isEdit ? customer!.id : (result as any).id
+    if (savedId) {
+      await upsertReminderConfig(savedId, reminderConfig)
     }
 
     router.push('/dashboard/masters/customers')
@@ -269,6 +305,89 @@ export default function CustomerForm({ customer }: Props) {
                   onChange={e => set('credit_limit', Number(e.target.value))}
                 />
               </div>
+            </div>
+          </Card>
+
+          {/* Payment Reminder Configuration */}
+          <Card title="Payment Reminder Settings">
+            <div className={styles.fields}>
+
+              {/* Toggle */}
+              <div className={`${styles.field} ${styles.span2}`}>
+                <label>Auto Reminders</label>
+                <div className={styles.toggleRow}>
+                  <button
+                    type="button"
+                    className={`${styles.toggleChip} ${reminderConfig.is_active ? styles.toggleOn : ''}`}
+                    onClick={() => setReminder('is_active', !reminderConfig.is_active)}
+                  >
+                    {reminderConfig.is_active ? '● Enabled' : '○ Disabled'}
+                  </button>
+                  <span className={styles.toggleHint}>
+                    Automatically notify this customer when payment is due
+                  </span>
+                </div>
+              </div>
+
+              {reminderConfig.is_active && (
+                <>
+                  {/* Mode selector */}
+                  <div className={styles.field}>
+                    <label>Reminder Mode</label>
+                    <select
+                      value={reminderConfig.reminder_mode}
+                      onChange={e => setReminder('reminder_mode', e.target.value as ReminderMode)}
+                    >
+                      <option value="Strict">Strict</option>
+                      <option value="Moderate">Moderate</option>
+                      <option value="Lenient">Lenient</option>
+                    </select>
+                  </div>
+
+                  {/* Mode trigger badges */}
+                  <div className={styles.field}>
+                    <label>Active Triggers</label>
+                    <div className={styles.modeBadges}>
+                      {['Strict', 'Moderate'].includes(reminderConfig.reminder_mode) && (
+                        <span className={styles.modeBadge}>7 days before</span>
+                      )}
+                      {['Strict', 'Moderate'].includes(reminderConfig.reminder_mode) && (
+                        <span className={styles.modeBadge}>3 days before</span>
+                      )}
+                      <span className={styles.modeBadge}>Due day</span>
+                      <span className={styles.modeBadge}>Daily overdue</span>
+                    </div>
+                  </div>
+
+                  {/* Contact overrides */}
+                  <div className={styles.field}>
+                    <label>Reminder Email</label>
+                    <input
+                      type="email"
+                      placeholder={form.email || 'Leave blank to use customer email'}
+                      value={reminderConfig.contact_email}
+                      onChange={e => setReminder('contact_email', e.target.value)}
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <label>Reminder WhatsApp No</label>
+                    <input
+                      type="tel"
+                      placeholder={form.mobile || '+91XXXXXXXXXX'}
+                      value={reminderConfig.contact_whatsapp}
+                      onChange={e => setReminder('contact_whatsapp', e.target.value)}
+                    />
+                  </div>
+
+                  {/* Info note */}
+                  <div className={`${styles.field} ${styles.span2}`}>
+                    <div className={styles.reminderNote}>
+                      ℹ If reminder email/WhatsApp are left blank, the customer's
+                      email and mobile will be used automatically.
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </Card>
 

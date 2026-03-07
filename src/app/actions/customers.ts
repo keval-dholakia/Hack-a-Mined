@@ -30,14 +30,16 @@ export async function getCustomerById(id: number) {
 export async function createCustomer(formData: CustomerFormData) {
   const supabase = await createClient()
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('customers')
-    .insert([{ ...formData, is_active: 1 }])
+    .insert([formData])
+    .select()        
+    .single()        
 
   if (error) return { error: error.message }
 
   revalidatePath('/dashboard/masters/customers')
-  return { success: true }
+  return { success: true, id: data.id } 
 }
 
 export async function updateCustomer(id: number, formData: CustomerFormData) {

@@ -197,3 +197,60 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+// ── Reminder Config ───────────────────────────
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toggleChip {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 0.35rem 1rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+
+  &.toggleOn {
+    background: rgba(74, 222, 128, 0.12);
+    border-color: rgba(74, 222, 128, 0.4);
+    color: var(--green);
+  }
+}
+
+.toggleHint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.modeBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding-top: 0.25rem;
+}
+
+.modeBadge {
+  background: rgba(108, 143, 255, 0.1);
+  border: 1px solid rgba(108, 143, 255, 0.25);
+  color: var(--accent);
+  border-radius: 5px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.reminderNote {
+  background: rgba(108, 143, 255, 0.06);
+  border: 1px solid rgba(108, 143, 255, 0.2);
+  border-radius: 7px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}

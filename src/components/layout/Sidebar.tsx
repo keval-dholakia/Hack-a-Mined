@@ -41,6 +41,7 @@ const NAV_GROUPS: Group[] = [
           { label: 'Sale Order', path: '/dashboard/sales/sale-order' },
           { label: 'Invoice', path: '/dashboard/sales/invoice' },
           { label: 'Collections', path: '/dashboard/sales/collections' },
+          { label: 'Reminders', path: '/dashboard/sales/reminders' }
         ],
       },
       {
