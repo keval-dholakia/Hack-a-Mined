@@ -1,0 +1,310 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 200px;
+  max-width: 380px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+
+  &::placeholder { color: var(--text-muted); }
+  &:focus { border-color: var(--accent); }
+}
+
+.filterSelect {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:focus { border-color: var(--accent); }
+  option  { background: var(--bg-surface); }
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.editBtn {
+  background: rgba(108, 143, 255, 0.1);
+  color: var(--accent);
+  border: none;
+  border-radius: 5px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+
+  &:hover { background: rgba(108, 143, 255, 0.2); }
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  &.span2 { grid-column: span 2; }
+
+  label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  input, select, textarea {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+
+    &::placeholder { color: var(--text-muted); }
+    &:focus { border-color: var(--accent); }
+  }
+
+  select option { background: var(--bg-surface); }
+  textarea { resize: vertical; }
+}
+
+.req { color: var(--red); }
+
+.itemsTable {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.itemsHeader {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0 0.25rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+
+  span {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
+.itemRow {
+  display: grid;
+  gap: 0.5rem;
+  align-items: center;
+
+  input, select {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s;
+
+    &:focus { border-color: var(--accent); }
+    option  { background: var(--bg-surface); }
+  }
+}
+
+.readOnly {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+  background: var(--bg-elevated) !important;
+}
+
+.removeBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+
+  &:hover {
+    color: var(--red);
+    background: rgba(248, 113, 113, 0.1);
+  }
+}
+
+.addRowBtn {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s, color 0.15s;
+
+  &:hover { border-color: var(--accent); color: var(--accent); }
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.error {
+  font-size: 0.85rem;
+  color: var(--red);
+  background: rgba(248, 113, 113, 0.08);
+  padding: 0.6rem 0.9rem;
+  border-radius: 7px;
+  margin-top: 0.5rem;
+}
+
+// ── Progress Bar ──────────────────────────────
+.progressBar {
+  height: 8px;
+  background: var(--bg-elevated);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 0.25rem;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.progressLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+
+// ── Rejection Rate ────────────────────────────
+.rejectionRate {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+
+  span { font-size: 0.9rem; font-weight: 700; min-width: 50px; }
+}
+
+.rejectionBar {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-elevated);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.rejectionFill {
+  height: 100%;
+  background: var(--red);
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+// ── Stock Info ────────────────────────────────
+.stockInfoGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stockInfoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+
+  &:last-child { border-bottom: none; }
+
+  span   { color: var(--text-muted); }
+  strong { color: var(--text-primary); font-family: var(--mono); }
+}
+
+.stockWarning {
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: var(--amber);
+  border-radius: 7px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
