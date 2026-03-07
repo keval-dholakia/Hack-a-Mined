@@ -1,0 +1,124 @@
+// ── Modules ───────────────────────────────────────────────
+.modules {
+    padding: 80px 48px;
+
+    @media (max-width: 768px) {
+        padding: 60px 24px;
+    }
+}
+
+.moduleGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+
+    @media (max-width: 1100px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.moduleCard {
+    background: var(--bg-base);
+    padding: 26px 22px;
+    position: relative;
+    cursor: default;
+    overflow: hidden;
+    z-index: 1;
+
+    &::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 0;
+        background: var(--bg-surface);
+        z-index: -1;
+        transition: height 0.3s ease;
+    }
+
+    &:hover {
+        &::before {
+            height: 100%;
+        }
+
+        .moduleNum {
+            color: var(--accent);
+            opacity: 1;
+        }
+
+        .moduleIcon {
+            filter: saturate(1.4) brightness(1.1);
+        }
+    }
+}
+
+.moduleCardHighlight {
+    background: rgba(108, 143, 255, 0.04);
+    border: 1px solid rgba(108, 143, 255, 0.2);
+
+    .moduleNum {
+        color: var(--accent);
+        opacity: 1;
+    }
+
+    .moduleName {
+        color: var(--accent);
+    }
+
+    .moduleCount {
+        border-color: rgba(108, 143, 255, 0.2);
+        color: var(--accent);
+        opacity: 0.7;
+    }
+}
+
+.moduleNum {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    margin-bottom: 14px;
+    transition: color 0.2s, opacity 0.2s;
+}
+
+.moduleIcon {
+    font-size: 20px;
+    margin-bottom: 10px;
+    display: block;
+    line-height: 1;
+}
+
+.moduleName {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+    letter-spacing: -0.01em;
+}
+
+.moduleDesc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.moduleCount {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    opacity: 0.7;
+}

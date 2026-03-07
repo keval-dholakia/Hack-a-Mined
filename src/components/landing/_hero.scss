@@ -1,0 +1,401 @@
+// ── Hero ──────────────────────────────────────────────────
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-80%);
+        width: 800px;
+        height: 400px;
+        background: radial-gradient(ellipse, rgba(108, 143, 255, 0.07) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+        padding: 100px 24px 60px;
+    }
+}
+
+.heroEyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+}
+
+.eyebrowDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(108, 143, 255, 0.4);
+    }
+
+    50% {
+        opacity: 0.7;
+        box-shadow: 0 0 0 6px rgba(108, 143, 255, 0);
+    }
+}
+
+.eyebrowText {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.eyebrowLine {
+    flex: 1;
+    height: 1px;
+    max-width: 120px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0.5;
+}
+
+.heroHeading {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(52px, 7vw, 92px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+    max-width: 900px;
+    animation: fadeUp 0.6s 0.1s ease both;
+}
+
+.accent {
+    color: var(--amber);
+}
+
+.dim {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.52em;
+    letter-spacing: -0.01em;
+    display: block;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.heroSub {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s 0.2s ease both;
+}
+
+.heroActions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 80px;
+    animation: fadeUp 0.6s 0.3s ease both;
+}
+
+.btnHero {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bg-base);
+    background: var(--amber);
+    border: none;
+    padding: 14px 32px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
+
+    &:hover {
+        background: #fcd34d;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(251, 191, 36, 0.25);
+    }
+}
+
+.btnHeroOutline {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 13px 32px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: border-color 0.25s, color 0.25s;
+
+    &:hover {
+        border-color: var(--text-muted);
+        color: var(--text-primary);
+    }
+}
+
+// ── Hero Stats ────────────────────────────────────────────
+.heroStats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--border);
+    max-width: 720px;
+    animation: fadeUp 0.6s 0.4s ease both;
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.stat {
+    padding: 24px 28px;
+    border-right: 1px solid var(--border);
+    position: relative;
+    transition: background 0.2s;
+
+    &:last-child {
+        border-right: none;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--accent);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.35s ease;
+    }
+
+    &:hover {
+        background: var(--bg-surface);
+
+        &::before {
+            transform: scaleX(1);
+        }
+    }
+}
+
+.statVal {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+
+    span {
+        color: var(--accent);
+    }
+}
+
+.statLabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+// ── Hero Visual (mock dashboard) ──────────────────────────
+.heroVisual {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 500px;
+    opacity: 0;
+    animation: slideIn 0.8s 0.5s ease forwards;
+
+    @media (max-width: 1100px) {
+        display: none;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+    }
+}
+
+.dashboardMock {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow:
+        0 0 0 1px rgba(108, 143, 255, 0.05),
+        0 32px 80px rgba(0, 0, 0, 0.5);
+}
+
+.mockTopbar {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mockDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.mockTitle {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-left: 8px;
+}
+
+.mockBody {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mockKpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.mockKpi {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--amber);
+    padding: 10px;
+}
+
+.mockKpiVal {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.mockKpiLbl {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-top: 3px;
+}
+
+.mockChart {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    padding: 10px;
+    height: 72px;
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.mockBar {
+    flex: 1;
+    background: var(--accent);
+    opacity: 0.4;
+    border-radius: 1px;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.mockTable {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+}
+
+.mockRow {
+    display: flex;
+    align-items: center;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.mockPill {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+}
+
+.pillGreen {
+    background: rgba(74, 222, 128, 0.12);
+    color: var(--green);
+}
+
+.pillAmber {
+    background: rgba(251, 191, 36, 0.12);
+    color: var(--amber);
+}
+
+.pillRed {
+    background: rgba(248, 113, 113, 0.12);
+    color: var(--red);
+}
+
+.mockRowText {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    flex: 1;
+}
+
+.mockRowVal {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+}
