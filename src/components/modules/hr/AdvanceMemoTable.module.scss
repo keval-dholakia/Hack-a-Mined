@@ -1,0 +1,273 @@
+// src/app/dashboard/hr/advance-memo/_components/AdvanceMemoTable.module.scss
+
+.tableWrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1100px;
+
+    thead tr {
+        background: var(--bg-surface);
+        border-bottom: 1px solid var(--border);
+    }
+
+    th {
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 11px 14px;
+        text-align: left;
+        white-space: nowrap;
+        font-weight: 500;
+    }
+}
+
+// ── Rows ──────────────────────────────────────────────────────────────────────
+.row {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s ease;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &:hover {
+        background: var(--bg-surface);
+    }
+
+    td {
+        padding: 13px 14px;
+        vertical-align: middle;
+    }
+}
+
+// ── Cells ─────────────────────────────────────────────────────────────────────
+.memoNo {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.empCell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.empAvatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 2px;
+    background: rgba(108, 143, 255, 0.12);
+    border: 1px solid rgba(108, 143, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+}
+
+.empName {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+.empCode {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+}
+
+.dept {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+}
+
+.date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.amount {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.purpose {
+    font-size: 12px;
+    color: var(--text-muted);
+    max-width: 130px;
+}
+
+.mono {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+// ── Recovery bar ──────────────────────────────────────────────────────────────
+.barWrap {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 120px;
+}
+
+.barTrack {
+    flex: 1;
+    height: 4px;
+    background: var(--bg-elevated);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.barFill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+}
+
+.barGreen {
+    background: var(--green);
+}
+
+.barAmber {
+    background: var(--amber);
+}
+
+.barRed {
+    background: var(--red);
+}
+
+.barPct {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 30px;
+}
+
+.recoveredSub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+}
+
+// ── Balance ───────────────────────────────────────────────────────────────────
+.balOut {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--amber);
+    white-space: nowrap;
+}
+
+.balZero {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--green);
+    white-space: nowrap;
+}
+
+// ── Status badge ──────────────────────────────────────────────────────────────
+.badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 2px;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.badgeAmber {
+    background: rgba(251, 191, 36, 0.12);
+    color: var(--amber);
+}
+
+.badgeGreen {
+    background: rgba(74, 222, 128, 0.12);
+    color: var(--green);
+}
+
+.badgeRed {
+    background: rgba(248, 113, 113, 0.12);
+    color: var(--red);
+}
+
+// ── Action buttons ────────────────────────────────────────────────────────────
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.actionBtn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(108, 143, 255, 0.06);
+    }
+}
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 72px 24px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+
+    p {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.06em;
+    }
+}

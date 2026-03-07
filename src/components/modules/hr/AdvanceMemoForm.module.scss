@@ -1,0 +1,314 @@
+// src/app/dashboard/hr/advance-memo/_components/AdvanceMemoForm.module.scss
+
+// ── Overlay ───────────────────────────────────────────────────────────────────
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 11, 14, 0.72);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex;
+    justify-content: flex-end;
+}
+
+// ── Drawer ────────────────────────────────────────────────────────────────────
+.drawer {
+    width: 520px;
+    max-width: 100vw;
+    height: 100%;
+    background: var(--bg-base);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    animation: slideDrawer 0.25s ease;
+
+    @media (max-width: 560px) {
+        width: 100vw;
+    }
+}
+
+@keyframes slideDrawer {
+    from {
+        transform: translateX(40px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+// ── Drawer header ─────────────────────────────────────────────────────────────
+.drawerHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.drawerEye {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+}
+
+.drawerTitle {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.drawerSub {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+}
+
+.closeBtn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.15s;
+
+    &:hover {
+        border-color: var(--red);
+        color: var(--red);
+    }
+}
+
+// ── Drawer body ───────────────────────────────────────────────────────────────
+.drawerBody {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+// ── Fields ────────────────────────────────────────────────────────────────────
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.req {
+    color: var(--amber);
+}
+
+.input,
+.select,
+.textarea {
+    font-size: 12px;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    padding: 9px 12px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s;
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+
+    &:focus {
+        border-color: var(--accent);
+    }
+}
+
+.select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b8fa8' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.inputErr {
+    border-color: var(--red) !important;
+}
+
+.err {
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing: 0.04em;
+}
+
+// ── Employee strip ────────────────────────────────────────────────────────────
+.empStrip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+}
+
+.empStripAvatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 2px;
+    background: rgba(108, 143, 255, 0.12);
+    border: 1px solid rgba(108, 143, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+}
+
+.empStripName {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.empStripSub {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+}
+
+// ── Section dividers ──────────────────────────────────────────────────────────
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+}
+
+.sectionLabel {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+}
+
+// ── Recovery callout ──────────────────────────────────────────────────────────
+.callout {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(108, 143, 255, 0.06);
+    border: 1px solid rgba(108, 143, 255, 0.2);
+    color: var(--accent);
+
+    svg {
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    p {
+        font-size: 11px;
+        line-height: 1.6;
+        color: var(--text-muted);
+
+        strong {
+            color: var(--accent);
+        }
+    }
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+.drawerFooter {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 18px 28px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+    background: var(--bg-surface);
+}
+
+.cancelBtn {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover {
+        border-color: var(--text-muted);
+        color: var(--text-primary);
+    }
+}
+
+.saveBtn {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bg-base);
+    background: var(--amber);
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.2s, transform 0.2s;
+
+    &:hover {
+        background: #fcd34d;
+        transform: translateY(-1px);
+    }
+}
