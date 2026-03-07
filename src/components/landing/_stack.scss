@@ -1,0 +1,54 @@
+// ── Stack ─────────────────────────────────────────────────
+.stack {
+    padding: 56px 48px;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+        padding: 40px 24px;
+    }
+}
+
+.stackLabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.stackDivider {
+    width: 1px;
+    height: 36px;
+    background: var(--border);
+    flex-shrink: 0;
+}
+
+.stackItems {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.stackItem {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, color 0.2s;
+    cursor: default;
+
+    &:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+}

@@ -14,7 +14,7 @@ const MODULES = [
     { num: '10', icon: '📦', name: 'Stores Management', desc: 'Multi-warehouse stock, transfers, gate pass management', count: '5 sub-modules · Real-time ledger' },
     { num: '11', icon: '🏗️', name: 'Asset Management', desc: 'Fixed asset register, depreciation, allocation tracking', count: '5 sub-modules · Auto depreciation' },
     { num: '12', icon: '📊', name: 'Statutory Management', desc: 'GST filing, TDS/TCS, GSTR-1/2A reconciliation', count: '9 sub-modules · India compliant' },
-    { num: '13', icon: '🔮', name: 'Production Simulation', desc: 'MRP + CRP + Cost estimation from MPS input', count: 'BOM explosion · Real-time forecast', highlight: true },
+    { num: '13', icon: '🔮', name: 'Production Simulation', desc: 'MRP + CRP + Cost estimation from MPS input', count: 'BOM explosion · Real-time forecast' },
     { num: '∞', icon: '🛡️', name: 'RBAC & Admin', desc: 'Super admin, 15 roles, per-page permission matrix', count: 'Granular access control' },
 ];
 
@@ -38,7 +38,7 @@ export default function LandingModules() {
                 {MODULES.map((m) => (
                     <div
                         key={m.num}
-                        className={`${styles.moduleCard} ${m.highlight ? styles.moduleCardHighlight : ''}`}
+                        className={`${styles.moduleCard}`}
                     >
                         <div className={styles.moduleNum}>{m.num}</div>
                         <span className={styles.moduleIcon}>{m.icon}</span>
