@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Inquiry } from '@/types/inquiry'
 import Card from '@/components/ui/Card'
 import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
+import InquiryAnalytics from './InquiryAnalytics'
 import styles from './Sales.module.scss'
 
 type Props = { inquiries: any[] }
@@ -20,8 +20,14 @@ const STATUS_VARIANT: Record<string, 'default' | 'info' | 'success' | 'danger' |
 
 export default function InquiryList({ inquiries }: Props) {
   const router  = useRouter()
-  const [search,  setSearch]  = useState('')
-  const [status,  setStatus]  = useState('')
+  const [search,        setSearch]        = useState('')
+  const [status,        setStatus]        = useState('')
+  const [showAnalytics, setShowAnalytics] = useState(false)
+
+  // ── Analytics view (full replacement, has its own Back button) ──
+  if (showAnalytics) {
+    return <InquiryAnalytics inquiries={inquiries} onClose={() => setShowAnalytics(false)} />
+  }
 
   const filtered = inquiries.filter(i => {
     const matchSearch =
@@ -38,9 +44,17 @@ export default function InquiryList({ inquiries }: Props) {
           <h1 className={styles.title}>Inquiries</h1>
           <p className={styles.subtitle}>{inquiries.length} total inquiries</p>
         </div>
-        <Button onClick={() => router.push('/dashboard/sales/inquiry/new')}>
-          + New Inquiry
-        </Button>
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+          <button
+            onClick={() => setShowAnalytics(true)}
+            className={styles.analyticsBtn}
+          >
+            Analytics
+          </button>
+          <Button onClick={() => router.push('/dashboard/sales/inquiry/new')}>
+            + New Inquiry
+          </Button>
+        </div>
       </div>
 
       <div className={styles.toolbar}>
@@ -79,19 +93,14 @@ export default function InquiryList({ inquiries }: Props) {
             },
             { key: 'status', label: 'Status', align: 'c',
               render: v => (
-                <Badge
-                  label={v as string}
-                  variant={STATUS_VARIANT[v as string]}
-                />
+                <Badge label={v as string} variant={STATUS_VARIANT[v as string]} />
               )
             },
             { key: 'id', label: 'Actions', align: 'c',
               render: v => (
                 <div className={styles.actions}>
-                  <button
-                    className={styles.editBtn}
-                    onClick={() => router.push(`/dashboard/sales/inquiry/${v}`)}
-                  >
+                  <button className={styles.editBtn}
+                    onClick={() => router.push(`/dashboard/sales/inquiry/${v}`)}>
                     Edit
                   </button>
                 </div>

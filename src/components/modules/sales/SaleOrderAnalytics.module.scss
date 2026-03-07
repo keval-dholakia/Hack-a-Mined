@@ -1,0 +1,153 @@
+// ─── SaleOrderAnalytics.module.scss ───────────────────────────────────────
+// Mirrors CustomerAnalytics / InquiryAnalytics SCSS pattern
+
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 100%;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.title    { font-size: 1.35rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.3px; }
+.subtitle { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+.headerActions { display: flex; align-items: center; gap: 0.75rem; }
+
+.backBtn {
+    padding: 0.5rem 1.1rem;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    &:hover { color: var(--text-primary); border-color: var(--accent); background: rgba(108,143,255,0.06); }
+}
+
+// ── KPI Strip ─────────────────────────────────────────────────────────────
+.kpiStrip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.kpi {
+    background: #13151f;
+    border: 1px solid #1f2235;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    transition: border-color 0.2s, transform 0.2s;
+    &:hover { border-color: #3a3d4e; transform: translateY(-1px); }
+}
+.kpiIcon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+}
+.kpiLabel {
+    font-size: 0.72rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 500; white-space: nowrap;
+}
+.kpiValue {
+    font-size: 1.3rem; font-weight: 700;
+    font-family: var(--mono); letter-spacing: -0.5px;
+    line-height: 1.1; margin-top: 0.1rem;
+}
+
+// ── Tab bar ───────────────────────────────────────────────────────────────
+.tabBar {
+    display: flex; gap: 0.25rem;
+    background: #13151f; border: 1px solid #1f2235;
+    border-radius: 10px; padding: 0.3rem; width: fit-content;
+}
+.tab {
+    padding: 0.45rem 1.1rem; border-radius: 7px; border: none;
+    background: transparent; color: var(--text-muted);
+    font-size: 0.82rem; font-weight: 500; font-family: inherit;
+    cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap;
+    &:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+    &.tabActive { background: var(--accent); color: #fff; font-weight: 600; }
+}
+
+// ── Chart grids ───────────────────────────────────────────────────────────
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    @media (max-width: 1000px) { grid-template-columns: 1fr; }
+}
+.chartWrap     { height: 280px; width: 100%; }
+.chartWrapTall { height: 380px; width: 100%; padding-top: 0.5rem; }
+
+// ── Badge ─────────────────────────────────────────────────────────────────
+.badge {
+    font-size: 0.7rem; color: var(--text-muted);
+    background: #1a1d27; border: 1px solid #2a2d3e;
+    border-radius: 5px; padding: 0.15rem 0.5rem;
+    font-family: var(--mono); letter-spacing: 0.02em;
+}
+
+// ── Dark tooltip ──────────────────────────────────────────────────────────
+.tooltip {
+    background: #1a1d27; border: 1px solid #2a2d3e;
+    border-radius: 8px; padding: 0.6rem 0.85rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    font-size: 0.8rem; line-height: 1.6; color: var(--text-muted);
+    strong { color: var(--text-primary); font-family: var(--mono); }
+}
+.tooltipLabel {
+    font-size: 0.75rem; font-weight: 600; color: var(--text-primary);
+    margin-bottom: 0.25rem; padding-bottom: 0.25rem; border-bottom: 1px solid #2a2d3e;
+}
+
+// ── Summary table ─────────────────────────────────────────────────────────
+.summaryTable {
+    overflow-x: auto; max-height: 400px; overflow-y: auto;
+    &::-webkit-scrollbar { width: 4px; height: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: #2a2d3e; border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    thead tr { border-bottom: 1px solid #1f2235; }
+    th { text-align: left; padding: 0.5rem 0.75rem; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid #13151f; transition: background 0.1s; &:hover { background: rgba(255,255,255,0.025); } &:last-child { border-bottom: none; } }
+    td { padding: 0.6rem 0.75rem; color: var(--text-primary); vertical-align: middle; }
+}
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.5rem; flex-shrink: 0; }
+
+// ── Inline bar in table ───────────────────────────────────────────────────
+.barCell { display: flex; align-items: center; gap: 0.5rem; min-width: 90px;
+    span { font-size: 0.75rem; color: var(--text-muted); font-family: var(--mono); white-space: nowrap; }
+}
+.barFill { height: 6px; border-radius: 3px; max-width: 80px; min-width: 2px; transition: width 0.4s ease; }
+
+// ── Risk / Status pill ────────────────────────────────────────────────────
+.riskPill { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 5px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; }
+
+// ── Health panel ──────────────────────────────────────────────────────────
+.healthPanel { display: flex; flex-direction: column; gap: 1.1rem; }
+.healthRow   { display: flex; align-items: center; gap: 0.85rem; }
+.healthLabel { font-size: 0.8rem; color: var(--text-muted); width: 160px; flex-shrink: 0; }
+.healthBar   { flex: 1; height: 8px; background: #1f2235; border-radius: 4px; overflow: hidden; }
+.healthFill  { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.healthPct   { font-size: 0.78rem; font-weight: 600; font-family: var(--mono); width: 60px; text-align: right; flex-shrink: 0; }
+
+.insight {
+    margin-top: 0.5rem; padding: 0.8rem 1rem;
+    background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 8px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;
+    strong { color: var(--text-primary); }
+}

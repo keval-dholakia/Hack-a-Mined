@@ -1,33 +1,27 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useCallback } from 'react'
+import { getGRNItems } from '@/app/actions/quality'
 import styles from './Quality.module.scss'
 
-// ── Pre-defined choices (no Supabase needed) ─────────────
-const GRNS = [
-  { id: 1, grn_no: 'GRN-2024-001', vendor: 'Apex Metals Pvt Ltd',    date: '14 Feb 2024' },
-  { id: 2, grn_no: 'GRN-2024-002', vendor: 'Shree Polymers & Co.',   date: '24 Feb 2024' },
-  { id: 3, grn_no: 'GRN-2024-003', vendor: 'National Fasteners Ltd', date: '09 Mar 2024' },
-  { id: 4, grn_no: 'GRN-2024-004', vendor: 'Apex Metals Pvt Ltd',    date: '22 Mar 2024' },
-]
-
-const GRN_PRODUCTS: Record<number, { id: number; code: string; name: string; recv_qty: number }[]> = {
-  1: [
-    { id: 1, code: 'P-001', name: 'MS Flat Bar 50×6mm',   recv_qty: 500 },
-    { id: 4, code: 'P-004', name: 'MS Sheet 2mm (CRCA)',   recv_qty: 200 },
-  ],
-  2: [
-    { id: 2, code: 'P-002', name: 'HDPE Granules (Natural)', recv_qty: 295 },
-  ],
-  3: [
-    { id: 3, code: 'P-003', name: 'M8 Hex Bolt 40mm (SS)',  recv_qty: 1000 },
-  ],
-  4: [
-    { id: 1, code: 'P-001', name: 'MS Flat Bar 50×6mm',   recv_qty: 300 },
-    { id: 4, code: 'P-004', name: 'MS Sheet 2mm (CRCA)',   recv_qty: 150 },
-  ],
+// ── Types ─────────────────────────────────────────────────
+interface GRNOption {
+  id: number
+  grn_no: string
+  vendor_name: string
+  gate_entry_date: string | null
 }
 
+interface GRNProduct {
+  id: number
+  grn_id: number
+  product_id: number
+  product_code: string
+  product_name: string
+  received_qty: number
+}
+
+// ── Static choices (non-GRN) ─────────────────────────────
 const CHECKERS = [
   { id: 1, name: 'Raj Mehta'   },
   { id: 2, name: 'Priya Shah'  },
@@ -58,30 +52,6 @@ interface IQCEntry {
   created_at: string
 }
 
-const SEED: IQCEntry[] = [
-  {
-    id: 1, grn_id: 1, grn_no: 'GRN-2024-001', vendor_name: 'Apex Metals Pvt Ltd',
-    product_id: 1, product_code: 'P-001', product_name: 'MS Flat Bar 50×6mm',
-    total_qty: 500, sample_size: 50, accepted_qty: 50, rejected_qty: 0,
-    visual_check: true, dimension_check: true, result: 'Pass',
-    checked_by: 1, checker_name: 'Raj Mehta', created_at: '2024-02-14T10:00:00Z',
-  },
-  {
-    id: 2, grn_id: 1, grn_no: 'GRN-2024-001', vendor_name: 'Apex Metals Pvt Ltd',
-    product_id: 4, product_code: 'P-004', product_name: 'MS Sheet 2mm (CRCA)',
-    total_qty: 200, sample_size: 20, accepted_qty: 18, rejected_qty: 2,
-    visual_check: false, dimension_check: true, result: 'Rework',
-    checked_by: 2, checker_name: 'Priya Shah', created_at: '2024-02-14T11:00:00Z',
-  },
-  {
-    id: 3, grn_id: 2, grn_no: 'GRN-2024-002', vendor_name: 'Shree Polymers & Co.',
-    product_id: 2, product_code: 'P-002', product_name: 'HDPE Granules (Natural)',
-    total_qty: 295, sample_size: 30, accepted_qty: 15, rejected_qty: 15,
-    visual_check: true, dimension_check: false, result: 'Fail',
-    checked_by: 3, checker_name: 'Arjun Patel', created_at: '2024-02-24T09:30:00Z',
-  },
-]
-
 const EMPTY_FORM = {
   grn_id: 0,
   product_id: 0,
@@ -91,7 +61,7 @@ const EMPTY_FORM = {
   checked_by: 1,
 }
 
-let nextId = SEED.length + 1
+let nextId = 1
 
 const RESULT_COLOR: Record<string, string> = {
   Pass:   styles.resultPass,
@@ -112,37 +82,55 @@ function autoResult(accepted: number, rejected: number, sample: number, visual: 
   return 'Pass'
 }
 
-export default function IQC() {
-  const [entries, setEntries] = useState<IQCEntry[]>(SEED)
-  const [search, setSearch]   = useState('')
-  const [resultF, setResultF] = useState('All')
-  const [open, setOpen]       = useState(false)
-  const [editId, setEditId]   = useState<number | null>(null)
-  const [form, setForm]       = useState(EMPTY_FORM)
-  const [saving, setSaving]   = useState(false)
+// ── Props from server ─────────────────────────────────────
+interface Props {
+  initialGRNs: GRNOption[]
+}
+
+export default function IQC({ initialGRNs }: Props) {
+  const [entries, setEntries]   = useState<IQCEntry[]>([])
+  const [search, setSearch]     = useState('')
+  const [resultF, setResultF]   = useState('All')
+  const [open, setOpen]         = useState(false)
+  const [editId, setEditId]     = useState<number | null>(null)
+  const [form, setForm]         = useState(EMPTY_FORM)
+  const [saving, setSaving]     = useState(false)
   const [deleteId, setDeleteId] = useState<number | null>(null)
 
-  // Products available for selected GRN
-  const grnProducts = form.grn_id ? (GRN_PRODUCTS[form.grn_id] ?? []) : []
-  const selectedGRN = GRNS.find(g => g.id === form.grn_id)
-  const selectedProduct = grnProducts.find(p => p.id === form.product_id)
+  // Live GRN products (fetched when a GRN is selected)
+  const [grnProducts, setGrnProducts]   = useState<GRNProduct[]>([])
+  const [loadingItems, setLoadingItems] = useState(false)
 
-  function set<K extends keyof typeof EMPTY_FORM>(k: K, v: (typeof EMPTY_FORM)[K]) {
-    setForm(f => {
-      const next = { ...f, [k]: v }
-      // Auto-derive result whenever qty or checks change
-      next.result = autoResult(next.accepted_qty, next.rejected_qty, next.sample_size, next.visual_check, next.dimension_check)
-      return next
-    })
-  }
+  const selectedGRN     = initialGRNs.find(g => g.id === form.grn_id)
+  const selectedProduct = grnProducts.find(p => p.product_id === form.product_id)
 
-  function handleGRNChange(grnId: number) {
+  // Fetch products from Supabase when GRN changes
+  const handleGRNChange = useCallback(async (grnId: number) => {
     setForm(f => ({ ...f, grn_id: grnId, product_id: 0, total_qty: 0, sample_size: 0, accepted_qty: 0, rejected_qty: 0 }))
-  }
+    setGrnProducts([])
+    if (!grnId) return
+    setLoadingItems(true)
+    try {
+      const items = await getGRNItems(grnId)
+      // getGRNItems returns: { id, grn_id, product_id, received_qty, product_code, product_name, ... }
+      setGrnProducts(items.map((i: any) => ({
+        id: i.id,
+        grn_id: i.grn_id,
+        product_id: i.product_id,
+        product_code: i.product_code,
+        product_name: i.product_name,
+        received_qty: i.received_qty ?? 0,
+      })))
+    } catch {
+      setGrnProducts([])
+    } finally {
+      setLoadingItems(false)
+    }
+  }, [])
 
   function handleProductChange(prodId: number) {
-    const p = grnProducts.find(x => x.id === prodId)
-    const tq = p?.recv_qty ?? 0
+    const p = grnProducts.find(x => x.product_id === prodId)
+    const tq = p?.received_qty ?? 0
     const ss = Math.max(1, Math.ceil(tq * 0.1))
     setForm(f => ({
       ...f, product_id: prodId,
@@ -152,7 +140,21 @@ export default function IQC() {
     }))
   }
 
-  function openCreate() { setForm(EMPTY_FORM); setEditId(null); setOpen(true) }
+  function setField<K extends keyof typeof EMPTY_FORM>(k: K, v: (typeof EMPTY_FORM)[K]) {
+    setForm(f => {
+      const next = { ...f, [k]: v }
+      next.result = autoResult(next.accepted_qty, next.rejected_qty, next.sample_size, next.visual_check, next.dimension_check)
+      return next
+    })
+  }
+
+  function openCreate() {
+    setForm(EMPTY_FORM)
+    setGrnProducts([])
+    setEditId(null)
+    setOpen(true)
+  }
+
   function openEdit(e: IQCEntry) {
     setForm({
       grn_id: e.grn_id, product_id: e.product_id,
@@ -161,38 +163,53 @@ export default function IQC() {
       visual_check: e.visual_check, dimension_check: e.dimension_check,
       result: e.result, checked_by: e.checked_by,
     })
-    setEditId(e.id); setOpen(true)
+    // Pre-populate products for the selected GRN
+    handleGRNChange(e.grn_id)
+    setEditId(e.id)
+    setOpen(true)
   }
 
   function handleSave() {
+    if (!form.grn_id || !form.product_id) return
     setSaving(true)
-    const grn     = GRNS.find(g => g.id === form.grn_id)!
-    const product = grnProducts.find(p => p.id === form.product_id)
-        || GRN_PRODUCTS[form.grn_id]?.find(p => p.id === form.product_id)
-        || { id: form.product_id, code: '—', name: '—', recv_qty: 0 }
+
+    const grn     = initialGRNs.find(g => g.id === form.grn_id)!
+    const product = grnProducts.find(p => p.product_id === form.product_id)
     const checker = CHECKERS.find(c => c.id === form.checked_by)!
 
     if (editId !== null) {
       setEntries(es => es.map(e => e.id === editId ? {
         ...e, ...form,
-        grn_no: grn.grn_no, vendor_name: grn.vendor,
-        product_code: product.code, product_name: product.name,
+        grn_no:       grn.grn_no,
+        vendor_name:  grn.vendor_name,
+        product_code: product?.product_code ?? '—',
+        product_name: product?.product_name ?? '—',
         checker_name: checker.name,
       } : e))
     } else {
       const entry: IQCEntry = {
         id: nextId++,
-        grn_id: form.grn_id, grn_no: grn.grn_no, vendor_name: grn.vendor,
-        product_id: form.product_id, product_code: product.code, product_name: product.name,
-        total_qty: form.total_qty, sample_size: form.sample_size,
-        accepted_qty: form.accepted_qty, rejected_qty: form.rejected_qty,
-        visual_check: form.visual_check, dimension_check: form.dimension_check,
-        result: form.result, checked_by: form.checked_by, checker_name: checker.name,
-        created_at: new Date().toISOString(),
+        grn_id:       form.grn_id,
+        grn_no:       grn.grn_no,
+        vendor_name:  grn.vendor_name,
+        product_id:   form.product_id,
+        product_code: product?.product_code ?? '—',
+        product_name: product?.product_name ?? '—',
+        total_qty:    form.total_qty,
+        sample_size:  form.sample_size,
+        accepted_qty: form.accepted_qty,
+        rejected_qty: form.rejected_qty,
+        visual_check:    form.visual_check,
+        dimension_check: form.dimension_check,
+        result:       form.result,
+        checked_by:   form.checked_by,
+        checker_name: checker.name,
+        created_at:   new Date().toISOString(),
       }
       setEntries(es => [entry, ...es])
     }
-    setSaving(false); setOpen(false)
+    setSaving(false)
+    setOpen(false)
   }
 
   const filtered = entries.filter(e => {
@@ -202,11 +219,11 @@ export default function IQC() {
       (resultF === 'All' || e.result === resultF)
   })
 
-  const pass    = entries.filter(e => e.result === 'Pass').length
-  const fail    = entries.filter(e => e.result === 'Fail').length
-  const rework  = entries.filter(e => e.result === 'Rework').length
+  const pass     = entries.filter(e => e.result === 'Pass').length
+  const fail     = entries.filter(e => e.result === 'Fail').length
+  const rework   = entries.filter(e => e.result === 'Rework').length
   const passRate = entries.length ? Math.round(pass / entries.length * 100) : 0
-  const canSave = form.grn_id > 0 && form.product_id > 0 && form.sample_size > 0
+  const canSave  = form.grn_id > 0 && form.product_id > 0 && form.sample_size > 0
 
   return (
     <div className={styles.container}>
@@ -215,10 +232,23 @@ export default function IQC() {
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>Incoming Quality Control (IQC)</h1>
-          <p className={styles.subtitle}>{entries.length} inspections · {passRate}% pass rate</p>
+          <p className={styles.subtitle}>
+            {entries.length} inspection{entries.length !== 1 ? 's' : ''}{entries.length ? ` · ${passRate}% pass rate` : ''}
+            {initialGRNs.length > 0
+              ? ` · ${initialGRNs.length} GRN${initialGRNs.length !== 1 ? 's' : ''} available`
+              : ' · No pending GRNs'}
+          </p>
         </div>
         <button className={styles.primaryBtn} onClick={openCreate}>+ New IQC Entry</button>
       </div>
+
+      {/* No-GRN notice */}
+      {initialGRNs.length === 0 && (
+        <div className={styles.infoNotice}>
+          <span>ℹ️</span>
+          <span>No pending GRNs found in Supabase. Create a GRN first, then return here to raise an IQC check.</span>
+        </div>
+      )}
 
       {/* Stat Cards */}
       <div className={styles.statRow}>
@@ -246,7 +276,10 @@ export default function IQC() {
       {/* Table */}
       <div className={styles.tableCard}>
         {filtered.length === 0 ? (
-          <div className={styles.empty}><span className={styles.emptyIcon}>🔬</span><p>No IQC entries match your filter.</p></div>
+          <div className={styles.empty}>
+            <span className={styles.emptyIcon}>🔬</span>
+            <p>{entries.length === 0 ? 'No IQC entries yet. Select a GRN and start inspection.' : 'No entries match your filter.'}</p>
+          </div>
         ) : (
           <div className={styles.tableWrap}>
             <table className={styles.table}>
@@ -298,37 +331,52 @@ export default function IQC() {
             </div>
             <div className={styles.drawerBody}>
 
-              {/* GRN */}
+              {/* GRN — from Supabase */}
               <div className={styles.dField}>
-                <label>GRN Reference *</label>
-                <select value={form.grn_id} onChange={e => handleGRNChange(Number(e.target.value))}>
-                  <option value={0} disabled>— select GRN —</option>
-                  {GRNS.map(g => (
-                    <option key={g.id} value={g.id}>{g.grn_no} — {g.vendor} ({g.date})</option>
-                  ))}
-                </select>
+                <label>GRN Reference * <span style={{ color:'#4ade80', fontWeight:400, textTransform:'none' }}>— live from Supabase</span></label>
+                {initialGRNs.length === 0 ? (
+                  <div className={styles.dWarning}>No GRNs available. Please create a GRN first.</div>
+                ) : (
+                  <select value={form.grn_id} onChange={e => handleGRNChange(Number(e.target.value))}>
+                    <option value={0} disabled>— select GRN —</option>
+                    {initialGRNs.map(g => (
+                      <option key={g.id} value={g.id}>
+                        {g.grn_no} — {g.vendor_name}
+                        {g.gate_entry_date ? ` (${new Date(g.gate_entry_date).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })})` : ''}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
 
-              {/* Product */}
+              {/* Product — loaded from Supabase grn_items */}
               <div className={styles.dField}>
                 <label>Product *</label>
-                <select
-                  value={form.product_id}
-                  onChange={e => handleProductChange(Number(e.target.value))}
-                  disabled={!form.grn_id}
-                >
-                  <option value={0} disabled>{form.grn_id ? '— select product —' : '— select GRN first —'}</option>
-                  {grnProducts.map(p => (
-                    <option key={p.id} value={p.id}>{p.code} — {p.name} (received: {p.recv_qty})</option>
-                  ))}
-                </select>
+                {loadingItems ? (
+                  <div className={styles.dLoading}>⏳ Loading products from GRN…</div>
+                ) : (
+                  <select
+                    value={form.product_id}
+                    onChange={e => handleProductChange(Number(e.target.value))}
+                    disabled={!form.grn_id || grnProducts.length === 0}
+                  >
+                    <option value={0} disabled>
+                      {!form.grn_id ? '— select GRN first —' : grnProducts.length === 0 ? '— no items in this GRN —' : '— select product —'}
+                    </option>
+                    {grnProducts.map(p => (
+                      <option key={p.product_id} value={p.product_id}>
+                        {p.product_code} — {p.product_name} (received: {p.received_qty})
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
 
               {/* Vendor (read-only) */}
               {selectedGRN && (
                 <div className={styles.dField}>
                   <label>Vendor</label>
-                  <input value={selectedGRN.vendor} disabled />
+                  <input value={selectedGRN.vendor_name} disabled />
                 </div>
               )}
 
@@ -337,12 +385,12 @@ export default function IQC() {
                 <div className={styles.dField}>
                   <label>Total Received Qty *</label>
                   <input type="number" min={0} value={form.total_qty || ''}
-                    onChange={e => set('total_qty', Number(e.target.value))} />
+                    onChange={e => setField('total_qty', Number(e.target.value))} />
                 </div>
                 <div className={styles.dField}>
                   <label>Sample Size *</label>
                   <input type="number" min={1} value={form.sample_size || ''}
-                    onChange={e => set('sample_size', Number(e.target.value))} />
+                    onChange={e => setField('sample_size', Number(e.target.value))} />
                   {form.total_qty > 0 && form.sample_size > 0 &&
                     <span className={styles.dHint}>{((form.sample_size / form.total_qty) * 100).toFixed(0)}% of batch</span>}
                 </div>
@@ -366,7 +414,7 @@ export default function IQC() {
                 <div className={styles.dField}>
                   <label>Rejected Qty</label>
                   <input type="number" min={0} value={form.rejected_qty}
-                    onChange={e => set('rejected_qty', Number(e.target.value))}
+                    onChange={e => setField('rejected_qty', Number(e.target.value))}
                     style={form.rejected_qty > 0 ? { borderColor: 'rgba(248,113,113,0.5)' } : undefined} />
                   {form.rejected_qty > 0 && form.sample_size > 0 &&
                     <span className={styles.dHintDanger}>{((form.rejected_qty / form.sample_size) * 100).toFixed(1)}% rejection</span>}
@@ -376,7 +424,7 @@ export default function IQC() {
               {/* Quality Checks */}
               <div className={styles.dCheckRow}>
                 <label className={styles.dCheckCard} style={form.visual_check ? { borderColor:'rgba(74,222,128,0.4)', background:'rgba(74,222,128,0.05)' } : undefined}>
-                  <input type="checkbox" checked={form.visual_check} onChange={e => set('visual_check', e.target.checked)} />
+                  <input type="checkbox" checked={form.visual_check} onChange={e => setField('visual_check', e.target.checked)} />
                   <span style={{ fontSize:'1.2rem' }}>👁</span>
                   <div>
                     <p style={{ fontWeight:600, fontSize:'0.82rem' }}>Visual Check</p>
@@ -388,7 +436,7 @@ export default function IQC() {
                 </label>
 
                 <label className={styles.dCheckCard} style={form.dimension_check ? { borderColor:'rgba(74,222,128,0.4)', background:'rgba(74,222,128,0.05)' } : undefined}>
-                  <input type="checkbox" checked={form.dimension_check} onChange={e => set('dimension_check', e.target.checked)} />
+                  <input type="checkbox" checked={form.dimension_check} onChange={e => setField('dimension_check', e.target.checked)} />
                   <span style={{ fontSize:'1.2rem' }}>📐</span>
                   <div>
                     <p style={{ fontWeight:600, fontSize:'0.82rem' }}>Dimension Check</p>
@@ -418,7 +466,7 @@ export default function IQC() {
               {/* Checked By */}
               <div className={styles.dField}>
                 <label>Checked By</label>
-                <select value={form.checked_by} onChange={e => set('checked_by', Number(e.target.value))}>
+                <select value={form.checked_by} onChange={e => setField('checked_by', Number(e.target.value))}>
                   {CHECKERS.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>

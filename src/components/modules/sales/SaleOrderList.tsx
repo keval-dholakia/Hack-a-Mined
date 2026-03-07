@@ -6,6 +6,7 @@ import Card from '@/components/ui/Card'
 import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
+import SaleOrderAnalytics from './SaleOrderAnalytics'
 import styles from './Sales.module.scss'
 
 type Props = { saleOrders: any[] }
@@ -18,8 +19,14 @@ const STATUS_VARIANT: Record<string, 'warning' | 'info' | 'success'> = {
 
 export default function SaleOrderList({ saleOrders }: Props) {
   const router = useRouter()
-  const [search, setSearch] = useState('')
-  const [status, setStatus] = useState('')
+  const [search,        setSearch]        = useState('')
+  const [status,        setStatus]        = useState('')
+  const [showAnalytics, setShowAnalytics] = useState(false)
+
+  // ── Analytics view (full replacement, has its own Back button) ──
+  if (showAnalytics) {
+    return <SaleOrderAnalytics saleOrders={saleOrders} onClose={() => setShowAnalytics(false)} />
+  }
 
   const filtered = saleOrders.filter(so => {
     const matchSearch =
@@ -37,9 +44,17 @@ export default function SaleOrderList({ saleOrders }: Props) {
           <h1 className={styles.title}>Sale Orders</h1>
           <p className={styles.subtitle}>{saleOrders.length} total orders</p>
         </div>
-        <Button onClick={() => router.push('/dashboard/sales/sale-order/new')}>
-          + New Sale Order
-        </Button>
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+          <button
+            onClick={() => setShowAnalytics(true)}
+            className={styles.analyticsBtn}
+          >
+            Analytics
+          </button>
+          <Button onClick={() => router.push('/dashboard/sales/sale-order/new')}>
+            + New Sale Order
+          </Button>
+        </div>
       </div>
 
       <div className={styles.toolbar}>
@@ -80,19 +95,14 @@ export default function SaleOrderList({ saleOrders }: Props) {
             },
             { key: 'status', label: 'Status', align: 'c',
               render: v => (
-                <Badge
-                  label={v as string}
-                  variant={STATUS_VARIANT[v as string]}
-                />
+                <Badge label={v as string} variant={STATUS_VARIANT[v as string]} />
               )
             },
             { key: 'id', label: 'Actions', align: 'c',
               render: v => (
                 <div className={styles.actions}>
-                  <button
-                    className={styles.editBtn}
-                    onClick={() => router.push(`/dashboard/sales/sale-order/${v}`)}
-                  >
+                  <button className={styles.editBtn}
+                    onClick={() => router.push(`/dashboard/sales/sale-order/${v}`)}>
                     Edit
                   </button>
                 </div>
