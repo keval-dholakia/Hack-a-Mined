@@ -64,3 +64,37 @@
         border-radius: 16px;
     }
 }
+
+// ── Append to existing SimResultTabs.module.scss ──────────────────────────────
+
+// AI Insight tab — visually distinguished from the data tabs
+.aiTab {
+    position: relative;
+
+    // Subtle accent underline when inactive
+    &:not(.active) {
+        color: var(--accent);
+        opacity: 0.7;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    // Glowing accent when active
+    &.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent); // assumes your active tab uses border-bottom
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 8px rgba(108, 143, 255, 0.5);
+        }
+    }
+}
