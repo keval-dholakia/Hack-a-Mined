@@ -101,9 +101,11 @@ const NAV_GROUPS: Group[] = [
         icon: '▤',
         path: '/dashboard/stores',
         subItems: [
+          { label: 'Warehouse Master', path: '/dashboard/stores/warehouse-master' },
           { label: 'Opening Stock', path: '/dashboard/stores/opening-stock' },
-          { label: 'Stock Transfer', path: '/dashboard/stores/stock-transfer' },
           { label: 'Dispatch SRV', path: '/dashboard/stores/dispatch-srv' },
+          { label: 'Stock Transfer', path: '/dashboard/stores/stock-transfer' },
+          { label: 'Material Receipt', path: '/dashboard/stores/material-receipt' },
         ],
       },
       {
