@@ -1,0 +1,216 @@
+// Depreciation.module.scss — styles for Depreciation sub-module
+
+// ── Asset Depreciation Card Grid ──────────────────────────
+.depGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  @media (max-width: 1100px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 700px)  { grid-template-columns: 1fr; }
+}
+
+.depCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+
+  &:hover       { border-color: #3a3d4e; transform: translateY(-1px); }
+  &.depCardActive { border-color: var(--accent); background: rgba(108,143,255,0.04); }
+}
+
+// ── Card Header ───────────────────────────────────────────
+.depCardHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.depIcon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.depAssetInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.depName {
+  font-size: 0.87rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Method Badge ──────────────────────────────────────────
+.methodBadge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.67rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.methodSLM { background: rgba(96,165,250,0.14); color: #60a5fa; }
+.methodWDV { background: rgba(167,139,250,0.14); color: #a78bfa; }
+
+// ── Progress Bar ──────────────────────────────────────────
+.progressWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.progressTrack {
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+
+.progressBlue  { background: linear-gradient(to right, #6096ff, #818cf8); }
+.progressAmber { background: linear-gradient(to right, #f59e0b, #fbbf24); }
+.progressRed   { background: linear-gradient(to right, #ef4444, #f87171); }
+
+.progressPct {
+  font-size: 0.69rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-align: right;
+}
+
+// ── Value Breakdown ───────────────────────────────────────
+.depValues {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.depValItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.55rem 0.65rem;
+  border-right: 1px solid var(--border);
+  &:last-child { border-right: none; }
+}
+
+.depValLabel {
+  font-size: 0.63rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.depValNum {
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: var(--mono);
+  color: var(--text-primary);
+}
+
+.numAmber { color: #fbbf24; }
+.numGreen { color: #4ade80; }
+
+// ── Card Footer ───────────────────────────────────────────
+.depCardFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.depCardFootNote {
+  font-size: 0.69rem;
+  color: var(--text-muted);
+}
+
+.fullyDepTag {
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #9ca3af;
+  background: rgba(156,163,175,0.1);
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+}
+
+.annualDepTag {
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(251,191,36,0.1);
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+}
+
+.clickHint {
+  font-size: 0.67rem;
+  color: var(--text-muted);
+  text-align: center;
+  opacity: 0.55;
+}
+
+// ── Schedule Panel ────────────────────────────────────────
+.schedulePanel {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--accent);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(108,143,255,0.08);
+}
+
+.schedulePanelHead {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  background: rgba(108,143,255,0.04);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.schedIcon { font-size: 1.4rem; flex-shrink: 0; }
+
+.schedTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.schedSub {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+// ── Table extras ──────────────────────────────────────────
+.currentYearRow {
+  background: rgba(108,143,255,0.04);
+  td { font-weight: 600 !important; }
+}
+
+.totalRow {
+  background: var(--bg-elevated);
+  td { font-size: 0.82rem; padding: 0.75rem 0.85rem; border-top: 2px solid var(--border); }
+}

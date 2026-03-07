@@ -1,0 +1,200 @@
+// Allocation.module.scss — Allocation-specific styles
+
+// ── Unallocated Banner ────────────────────────────────────
+.unallocBanner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(248,113,113,0.05);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.unallocIcon { font-size: 1.4rem; flex-shrink: 0; }
+
+.unallocTitle {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #f87171;
+  margin-bottom: 0.15rem;
+}
+
+.unallocList {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+
+// ── Allocation Card Grid ──────────────────────────────────
+.allocGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  @media (max-width: 1100px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 700px)  { grid-template-columns: 1fr; }
+}
+
+.allocCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  transition: border-color 0.2s, transform 0.15s;
+  &:hover { border-color: #3a3d4e; transform: translateY(-1px); }
+}
+
+.allocCardReturned {
+  opacity: 0.65;
+  border-style: dashed;
+}
+
+// ── Card Top (asset info + status) ────────────────────────
+.allocCardTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.allocIcon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.allocAssetInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.allocAssetName {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.allocCategory {
+  font-size: 0.7rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+// ── Status Badge ──────────────────────────────────────────
+.allocStatusBadge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 5px;
+  font-size: 0.67rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.statusAllocated   { background: rgba(74,222,128,0.12);  color: #4ade80; }
+.statusReturned    { background: rgba(156,163,175,0.12); color: #9ca3af; }
+.statusTransferred { background: rgba(251,191,36,0.12);  color: #fbbf24; }
+
+// ── Card Divider ──────────────────────────────────────────
+.allocDivider {
+  height: 1px;
+  background: var(--border);
+}
+
+// ── Allocated To ──────────────────────────────────────────
+.allocTo {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.allocToIcon { font-size: 1rem; margin-top: 1px; flex-shrink: 0; }
+
+.allocToName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.allocToDept {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+// ── Dates ─────────────────────────────────────────────────
+.allocDates {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.allocDateItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.allocDateLabel {
+  font-size: 0.67rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.allocDateVal {
+  font-size: 0.78rem;
+  font-family: var(--mono);
+  color: var(--text-primary);
+}
+
+// ── Purpose ───────────────────────────────────────────────
+.allocPurpose {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+// ── Card Footer ───────────────────────────────────────────
+.allocCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.allocNo {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+// ── Asset Preview (drawer) ────────────────────────────────
+.assetPreviewCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(108,143,255,0.06);
+  border: 1px solid rgba(108,143,255,0.2);
+  border-radius: 8px;
+}
+
+// ── Hint text ─────────────────────────────────────────────
+.hint {
+  font-size: 0.71rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+// Expose dHint alias for Assets.module.scss import
+.dHint { @extend .hint; }
