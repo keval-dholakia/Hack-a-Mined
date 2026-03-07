@@ -3,9 +3,14 @@
 import { useState, useEffect } from 'react'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import { useRouter } from 'next/navigation'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
+import { downloadVoucherPdf } from '@/lib/pdf/downloadVoucherPdf'
 import { fetchVouchers, fetchAccounts, createVoucher, Voucher, Account } from '@/data/financeMock'
 
 export default function ContraPage() {
+    const router = useRouter()
     const [vouchers, setVouchers] = useState<Voucher[]>([])
     const [accounts, setAccounts] = useState<Account[]>([])
     const [loading, setLoading] = useState(false)
@@ -64,9 +69,28 @@ export default function ContraPage() {
                     <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0 }}>Voucher Contra</h1>
                     <p style={{ color: 'var(--text-muted)' }}>Deposit/Withdrawal between Cash & Bank ledgers</p>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)}>
-                    {showForm ? 'Cancel' : '+ New Contra'}
-                </Button>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Contra Register',
+                        subtitle: `${vouchers.length} contra entries recorded`,
+                        columns: [
+                            { header: 'Voucher No', dataKey: 'voucherNo' },
+                            { header: 'Date', dataKey: 'date' },
+                            { header: 'From Account ↓', dataKey: 'fromAccount' },
+                            { header: 'To Account ↑', dataKey: 'toAccount' },
+                            { header: 'Narration', dataKey: 'narration' },
+                            { header: 'Amount', dataKey: 'totalAmount', format: 'currency', align: 'right' },
+                        ],
+                        rows: vouchers,
+                        fileName: 'Contra_Register'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/finance/contra/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => setShowForm(!showForm)}>
+                        {showForm ? 'Cancel' : '+ New Contra'}
+                    </Button>
+                </div>
             </div>
 
             {showForm && (
@@ -119,6 +143,7 @@ export default function ContraPage() {
                             <th style={{ padding: '1rem' }}>To Account ↑</th>
                             <th style={{ padding: '1rem' }}>Narration</th>
                             <th style={{ padding: '1rem', textAlign: 'right' }}>Amount</th>
+                            <th style={{ padding: '1rem', textAlign: 'right' }}></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -130,10 +155,26 @@ export default function ContraPage() {
                                 <td style={{ padding: '1rem', color: '#34d399' }}>{v.toAccount}</td>
                                 <td style={{ padding: '1rem', color: 'var(--text-muted)' }}>{v.narration}</td>
                                 <td style={{ padding: '1rem', textAlign: 'right', fontFamily: 'var(--mono)' }}>{fmt(v.totalAmount)}</td>
+                                <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                    <DownloadButton
+                                        variant="voucher"
+                                        onClick={() => downloadVoucherPdf({
+                                            type: 'Contra Voucher',
+                                            voucherNo: v.voucherNo,
+                                            date: v.date,
+                                            amount: v.totalAmount,
+                                            narration: v.narration,
+                                            entries: [
+                                                { label: v.toAccount || 'Unknown Account', debit: v.totalAmount, credit: 0 },
+                                                { label: v.fromAccount || 'Unknown Account', debit: 0, credit: v.totalAmount },
+                                            ]
+                                        })}
+                                    />
+                                </td>
                             </tr>
                         ))}
                         {vouchers.length === 0 && (
-                            <tr><td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No Contra entries found</td></tr>
+                            <tr><td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No Contra entries found</td></tr>
                         )}
                     </tbody>
                 </table>

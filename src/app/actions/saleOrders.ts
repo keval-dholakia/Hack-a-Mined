@@ -19,6 +19,25 @@ export async function getSaleOrders() {
   return data
 }
 
+export async function getSaleOrdersWithItems() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('sale_orders')
+    .select(`
+      *,
+      customer:customers(name, code),
+      transporter:transport_masters(name),
+      items:sale_order_items(
+        *,
+        product:products(name, code, unit)
+      )
+    `)
+    .order('created_at', { ascending: false })
+
+  if (error) return []
+  return data
+}
+
 export async function getSaleOrderById(id: number) {
   const supabase = await createClient()
   const { data, error } = await supabase

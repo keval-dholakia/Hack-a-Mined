@@ -20,6 +20,24 @@ export async function getBOMs() {
   return data
 }
 
+export async function getBOMsWithItems() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('bom_headers')
+    .select(`
+      *,
+      product:products(name, code, unit),
+      items:bom_items(
+        *,
+        raw_material:products(name, code, unit)
+      )
+    `)
+    .order('created_at', { ascending: false })
+
+  if (error) return []
+  return data
+}
+
 export async function getBOMById(id: number) {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -273,18 +291,18 @@ export async function createProductionReport(formData: ProductionReportFormData)
       .single()
 
     if (rc) {
-      const newProduced  = Number(rc.produced_qty)  + Number(formData.production_qty)
+      const newProduced = Number(rc.produced_qty) + Number(formData.production_qty)
       const newRejection = Number(rc.rejection_qty) + Number(formData.rejection_qty)
-      const isComplete   = newProduced >= Number(rc.plan_qty)
+      const isComplete = newProduced >= Number(rc.plan_qty)
 
       await supabase
         .from('route_cards')
         .update({
-          produced_qty:  newProduced,
+          produced_qty: newProduced,
           rejection_qty: newRejection,
-          status:        isComplete ? 'Closed' : 'In Progress',
-          closed_date:   isComplete ? new Date().toISOString().split('T')[0] : null,
-          updated_at:    new Date().toISOString(),
+          status: isComplete ? 'Closed' : 'In Progress',
+          closed_date: isComplete ? new Date().toISOString().split('T')[0] : null,
+          updated_at: new Date().toISOString(),
         })
         .eq('id', formData.route_card_id)
     }

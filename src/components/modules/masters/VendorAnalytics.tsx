@@ -1,10 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Vendor } from '@/types/vendor'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadAnalysisPdf } from '@/lib/pdf/downloadAnalysisPdf'
 import styles from './MasterAnalytics.module.scss'
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -56,6 +58,7 @@ type Tab = typeof TABS[number]['id']
 
 export default function VendorAnalytics({ vendors }: Props) {
     const router = useRouter()
+    const reportRef = useRef<HTMLDivElement>(null)
     const [tab, setTab] = useState<Tab>('overview')
 
     const s = useMemo(() => {
@@ -108,13 +111,18 @@ export default function VendorAnalytics({ vendors }: Props) {
     }, [vendors])
 
     return (
-        <div className={styles.page}>
+        <div className={styles.page} ref={reportRef}>
             <div className={styles.header}>
                 <div>
                     <h1 className={styles.title}>Vendor Analytics</h1>
                     <p className={styles.subtitle}>Supply-side intelligence · {s.total} vendors</p>
                 </div>
-                <Button variant="ghost" onClick={() => router.push('/dashboard/masters/vendors')}>← Back to List</Button>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <DownloadButton variant="analytics" onClick={() => downloadAnalysisPdf(reportRef, 'Vendor_Analytics')} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/masters/vendors')}>
+                        ← Back to List
+                    </Button>
+                </div>
             </div>
 
             <div className={styles.kpiStrip}>

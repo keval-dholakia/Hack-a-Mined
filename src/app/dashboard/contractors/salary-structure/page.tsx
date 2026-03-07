@@ -4,8 +4,12 @@ import { useState } from 'react'
 import { contractorWorkers, contractorStructures, contractorRoles, contractorFirms, addStructure } from '@/data/contractorMock'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
+import { useRouter } from 'next/navigation'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 export default function ContractorStructurePage() {
+    const router = useRouter()
     const [structures, setStructures] = useState([...contractorStructures])
     const [showForm, setShowForm] = useState(false)
     const [workerId, setWorkerId] = useState('')
@@ -37,7 +41,35 @@ export default function ContractorStructurePage() {
                     <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0 }}>Salary Structure</h1>
                     <p style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>Map each worker to a role with applicable daily rates</p>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)}>{showForm ? 'Cancel' : '+ Map Worker'}</Button>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Contractor Salary Structure',
+                        subtitle: `${enriched.length} mapped structures`,
+                        columns: [
+                            { header: 'Worker ID', dataKey: 'workerId' },
+                            { header: 'Worker Name', dataKey: 'workerName' },
+                            { header: 'Firm', dataKey: 'firmName' },
+                            { header: 'Role', dataKey: 'roleName' },
+                            { header: 'Daily Rate', dataKey: 'dailyRate', format: 'currency', align: 'right' },
+                            { header: 'OT Rate/hr', dataKey: 'otRate', format: 'currency', align: 'right' },
+                        ],
+                        rows: enriched.map(s => ({
+                            ...s,
+                            workerId: s.worker?.workerId || '—',
+                            workerName: s.worker?.name || '—',
+                            firmName: contractorFirms.find(f => f.id === s.worker?.firmId)?.name || '—',
+                            roleName: s.role?.role || '—',
+                            otRate: s.role?.otRate || 0,
+                        })),
+                        fileName: 'Contractor_Salary_Structure'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/contractors/salary-structure/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => setShowForm(!showForm)}>
+                        {showForm ? 'Cancel' : '+ Map Worker'}
+                    </Button>
+                </div>
             </div>
 
             {showForm && (

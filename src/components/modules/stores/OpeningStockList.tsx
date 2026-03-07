@@ -7,6 +7,9 @@ import Card from '@/components/ui/Card'
 import Table from '@/components/ui/Table'
 import Button from '@/components/ui/Button'
 import styles from './Stores.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
+import { fmtDate } from '@/lib/pdf/pdfConstants'
 
 type Props = { rows: WarehouseOpeningRow[] }
 
@@ -33,9 +36,36 @@ export default function OpeningStockList({ rows }: Props) {
                     <h1 className={styles.title}>Warehouse Opening Stock</h1>
                     <p className={styles.subtitle}>{rows.length} opening entries</p>
                 </div>
-                <Button onClick={() => router.push('/dashboard/stores/opening-stock/new')}>
-                    + Add Opening Entry
-                </Button>
+                <div className={styles.headerRight} style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Warehouse Opening Stock Registry',
+                        subtitle: `${filtered.length} opening entries`,
+                        columns: [
+                            { header: 'Warehouse', dataKey: 'warehouse_name' },
+                            { header: 'Item Code', dataKey: 'product_code' },
+                            { header: 'Item Name', dataKey: 'product_name' },
+                            { header: 'Opening Qty', dataKey: 'opening_qty', align: 'right' },
+                            { header: 'Date', dataKey: 'opening_date' },
+                            { header: 'Remarks', dataKey: 'remarks' },
+                        ],
+                        rows: filtered.map(r => ({
+                            ...r,
+                            warehouse_name: r.warehouse_name || '—',
+                            product_code: r.product_code || '—',
+                            product_name: r.product_name || '—',
+                            opening_qty: Number(r.opening_qty) || 0,
+                            opening_date: r.opening_date ? fmtDate(r.opening_date) : '—',
+                            remarks: r.remarks || '—'
+                        })),
+                        fileName: 'Opening_Stock_Registry'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/stores/opening-stock/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => router.push('/dashboard/stores/opening-stock/new')}>
+                        + Add Opening Entry
+                    </Button>
+                </div>
             </div>
 
             <div className={styles.searchBar}>

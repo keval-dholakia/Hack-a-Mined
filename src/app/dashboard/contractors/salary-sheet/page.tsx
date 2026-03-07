@@ -7,10 +7,15 @@ import {
 } from '@/data/contractorMock'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
+import { useRouter } from 'next/navigation'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
+import { downloadVoucherPdf } from '@/lib/pdf/downloadVoucherPdf'
 
 const STATUS_COLORS: Record<ContractorSheet['status'], string> = { Draft: '#facc15', Approved: '#6366f1', Paid: '#34d399' }
 
 export default function ContractorSalarySheetPage() {
+    const router = useRouter()
     const [sheets, setSheets] = useState([...contractorSheets])
     const [showForm, setShowForm] = useState(false)
     const [filterFirm, setFilterFirm] = useState('')
@@ -74,7 +79,37 @@ export default function ContractorSalarySheetPage() {
                         Generate and track payout: (Days × Daily Rate) + (OT hrs × OT Rate) − Advance
                     </p>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)}>{showForm ? 'Cancel' : '+ New Sheet'}</Button>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Contractor Salary Sheet Register',
+                        subtitle: `${displayed.length} salary sheets generated`,
+                        columns: [
+                            { header: 'Sheet No', dataKey: 'sheetNo' },
+                            { header: 'Contractor', dataKey: 'firm_name' },
+                            { header: 'Worker', dataKey: 'worker_name' },
+                            { header: 'Month', dataKey: 'month' },
+                            { header: 'Gross Pay', dataKey: 'grossPay', format: 'currency', align: 'right' },
+                            { header: 'Net Payable', dataKey: 'netPayable', format: 'currency', align: 'right' },
+                            { header: 'Status', dataKey: 'status' },
+                        ],
+                        rows: displayed.map(s => {
+                            const firm = contractorFirms.find(f => f.id === s.firmId)
+                            const worker = contractorWorkers.find(w => w.id === s.workerId)
+                            return {
+                                ...s,
+                                firm_name: firm?.name || '—',
+                                worker_name: worker?.name || '—',
+                            }
+                        }),
+                        fileName: 'Contractor_Salary_Sheet_Register'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/contractors/salary-sheet/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => setShowForm(!showForm)}>
+                        {showForm ? 'Cancel' : '+ New Sheet'}
+                    </Button>
+                </div>
             </div>
 
             {showForm && (
@@ -186,11 +221,36 @@ export default function ContractorSalarySheetPage() {
                                         </span>
                                     </td>
                                     <td style={{ padding: '0.8rem 0.85rem' }}>
-                                        {s.status !== 'Paid' && (
-                                            <Button variant="ghost" onClick={() => handleStatus(s.id, s.status)}>
-                                                {s.status === 'Draft' ? '✓ Approve' : '✓ Mark Paid'}
-                                            </Button>
-                                        )}
+                                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                            {s.status !== 'Paid' && (
+                                                <Button variant="ghost" onClick={() => handleStatus(s.id, s.status)}>
+                                                    {s.status === 'Draft' ? '✓ Approve' : '✓ Mark Paid'}
+                                                </Button>
+                                            )}
+                                            <DownloadButton
+                                                variant="voucher"
+                                                onClick={() => downloadVoucherPdf({
+                                                    type: 'Contractor Payslip',
+                                                    voucherNo: s.sheetNo,
+                                                    date: new Date().toISOString().substring(0, 10), // mock current date as generated date
+                                                    partyName: worker?.name || 'Unknown',
+                                                    amount: s.netPayable,
+                                                    narration: `Payslip for ${s.month}. Worked: ${s.daysWorked} days, OT: ${s.otHours} hrs.`,
+                                                    entries: [
+                                                        { label: `Basic Pay (${s.daysWorked} days @ ${s.dailyRate}/day)`, debit: s.daysWorked * s.dailyRate, credit: 0 },
+                                                        { label: `OT Pay (${s.otHours} hrs @ ${s.otRate}/hr)`, debit: s.otHours * s.otRate, credit: 0 },
+                                                        { label: 'Advance Deducted', debit: 0, credit: s.advanceDeducted },
+                                                        { label: 'TDS Deducted', debit: 0, credit: s.tdsDeducted },
+                                                        { label: 'Net Payable', debit: 0, credit: s.netPayable },
+                                                    ],
+                                                    extras: {
+                                                        'Contractor Firm': firm?.name || '—',
+                                                        'Worker ID': worker?.workerId || '—',
+                                                        'Payout Month': s.month,
+                                                    }
+                                                })}
+                                            />
+                                        </div>
                                     </td>
                                 </tr>
                             )

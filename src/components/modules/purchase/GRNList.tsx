@@ -7,13 +7,16 @@ import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import styles from './Purchase.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
+import { fmtDate } from '@/lib/pdf/pdfConstants'
 
 type Props = { grns: any[] }
 
 const STATUS_VARIANT: Record<string, any> = {
-  Pending:    'warning',
+  Pending: 'warning',
   'IQC Done': 'info',
-  Received:   'success',
+  Received: 'success',
 }
 
 export default function GRNList({ grns }: Props) {
@@ -36,7 +39,35 @@ export default function GRNList({ grns }: Props) {
           <h1 className={styles.title}>GRN</h1>
           <p className={styles.subtitle}>{grns.length} total receipts</p>
         </div>
-        <Button onClick={() => router.push('/dashboard/purchase/grn/new')}>+ New GRN</Button>
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+          <DownloadButton variant="list" onClick={() => downloadTablePdf({
+            title: 'GRN Registry',
+            subtitle: `${filtered.length} receipts`,
+            columns: [
+              { header: 'GRN No', dataKey: 'grn_no' },
+              { header: 'Vendor', dataKey: 'vendor_name' },
+              { header: 'PO Ref', dataKey: 'po_no' },
+              { header: 'Entry Date', dataKey: 'gate_entry_date' },
+              { header: 'Challan No', dataKey: 'vendor_challan_no' },
+              { header: 'Warehouse', dataKey: 'warehouse_name' },
+              { header: 'Status', dataKey: 'status' },
+            ],
+            rows: filtered.map(g => ({
+              ...g,
+              vendor_name: g.vendor?.name || '—',
+              po_no: g.purchase_order?.po_no || '—',
+              gate_entry_date: g.gate_entry_date ? fmtDate(g.gate_entry_date) : '—',
+              vendor_challan_no: g.vendor_challan_no || '—',
+              warehouse_name: g.warehouse?.name || '—',
+              status: g.status || '—'
+            })),
+            fileName: 'GRN_Registry'
+          })} />
+          <Button variant="ghost" onClick={() => router.push('/dashboard/purchase/grn/analytics')}>
+            ◎ Analytics
+          </Button>
+          <Button onClick={() => router.push('/dashboard/purchase/grn/new')}>+ New GRN</Button>
+        </div>
       </div>
 
       <div className={styles.toolbar}>
@@ -55,16 +86,18 @@ export default function GRNList({ grns }: Props) {
       <Card noPad>
         <Table
           columns={[
-            { key: 'grn_no',           label: 'GRN No'    },
-            { key: 'vendor',           label: 'Vendor',       render: v => (v as any)?.name ?? '—' },
-            { key: 'purchase_order',   label: 'PO Ref',       render: v => (v as any)?.po_no ?? '—' },
-            { key: 'gate_entry_date',  label: 'Entry Date' },
-            { key: 'vendor_challan_no',label: 'Challan No',   render: v => v as string || '—' },
-            { key: 'warehouse',        label: 'Warehouse',    render: v => (v as any)?.name ?? '—' },
-            { key: 'status', label: 'Status', align: 'c',
+            { key: 'grn_no', label: 'GRN No' },
+            { key: 'vendor', label: 'Vendor', render: v => (v as any)?.name ?? '—' },
+            { key: 'purchase_order', label: 'PO Ref', render: v => (v as any)?.po_no ?? '—' },
+            { key: 'gate_entry_date', label: 'Entry Date' },
+            { key: 'vendor_challan_no', label: 'Challan No', render: v => v as string || '—' },
+            { key: 'warehouse', label: 'Warehouse', render: v => (v as any)?.name ?? '—' },
+            {
+              key: 'status', label: 'Status', align: 'c',
               render: v => <Badge label={v as string} variant={STATUS_VARIANT[v as string]} />
             },
-            { key: 'id', label: 'Actions', align: 'c',
+            {
+              key: 'id', label: 'Actions', align: 'c',
               render: v => (
                 <div className={styles.actions}>
                   <button className={styles.editBtn}

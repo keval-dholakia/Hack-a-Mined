@@ -19,6 +19,24 @@ export async function getPurchaseOrders() {
   return data
 }
 
+export async function getPurchaseOrdersWithItems() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('purchase_orders')
+    .select(`
+      *,
+      vendor:vendors(name, code),
+      items:po_items(
+        *,
+        product:products(name, code, unit)
+      )
+    `)
+    .order('created_at', { ascending: false })
+
+  if (error) return []
+  return data
+}
+
 export async function getPurchaseOrderById(id: number) {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -90,6 +108,26 @@ export async function getPOsForSelect() {
     .from('purchase_orders')
     .select('id, po_no, vendor_id, vendor:vendors(name)')
     .in('status', ['Open', 'Partial'])
+    .order('created_at', { ascending: false })
+
+  if (error) return []
+  return data
+}
+
+export async function getGRNsWithItems() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('grns')
+    .select(`
+      *,
+      vendor:vendors(name, code),
+      purchase_order:purchase_orders(po_no, items:po_items(quantity)),
+      warehouse:warehouses(name),
+      items:grn_items(
+        *,
+        product:products(name, code, unit)
+      )
+    `)
     .order('created_at', { ascending: false })
 
   if (error) return []

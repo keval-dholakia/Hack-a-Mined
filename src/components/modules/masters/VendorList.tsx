@@ -9,6 +9,8 @@ import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import styles from './Masters.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 type Props = { vendors: Vendor[] }
 
@@ -34,7 +36,18 @@ export default function VendorList({ vendors }: Props) {
           <h1 className={styles.title}>Vendors</h1>
           <p className={styles.subtitle}>{vendors.length} total vendors</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.6rem' }}>
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+          <DownloadButton variant="list" onClick={() => downloadTablePdf({
+            title: 'Vendor Directory', subtitle: `${filtered.length} vendors`,
+            columns: [
+              { header: 'Code', dataKey: 'code' }, { header: 'Name', dataKey: 'name' },
+              { header: 'Mobile', dataKey: 'mobile' }, { header: 'GSTIN', dataKey: 'gstin' },
+              { header: 'City', dataKey: 'city' }, { header: 'Payment Days', dataKey: 'payment_terms', align: 'right' },
+              { header: 'Status', dataKey: 'is_active' },
+            ],
+            rows: filtered.map(v => ({ ...v, is_active: v.is_active === 1 ? 'Active' : 'Inactive' })),
+            fileName: 'Vendor_Directory',
+          })} />
           <Button variant="ghost" onClick={() => router.push('/dashboard/masters/vendors/analytics')}>
             ◎ Analytics
           </Button>

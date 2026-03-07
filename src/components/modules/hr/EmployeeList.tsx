@@ -9,6 +9,8 @@ import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import styles from './HR.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 type Props = { employees: Employee[] }
 
@@ -46,7 +48,30 @@ export default function EmployeeList({ employees }: Props) {
                     <h1 className={styles.title}>Employees</h1>
                     <p className={styles.subtitle}>{employees.length} total employees</p>
                 </div>
-                <div className={styles.headerRight}>
+                <div className={styles.headerRight} style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Employee Register',
+                        subtitle: `${filtered.length} employees`,
+                        columns: [
+                            { header: 'Code', dataKey: 'emp_code' },
+                            { header: 'Name', dataKey: 'name' },
+                            { header: 'Department', dataKey: 'department' },
+                            { header: 'Designation', dataKey: 'designation' },
+                            { header: 'Mobile', dataKey: 'mobile' },
+                            { header: 'Basic Salary', dataKey: 'basic_salary', format: 'currency', align: 'right' },
+                            { header: 'Status', dataKey: 'is_active' },
+                        ],
+                        rows: filtered.map(e => ({
+                            ...e,
+                            is_active: e.is_active === 1 ? 'Active' : 'Inactive',
+                            basic_salary: Number(e.basic_salary) || 0
+                        })),
+                        fileName: 'Employee_Register'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/hr/employees/analytics')}
+                        style={{ color: '#22d3ee' }}>
+                        ◎ Analytics
+                    </Button>
                     <Button variant="ghost" onClick={() => router.push('/dashboard/hr/employees/new')}>
                         + New Employee
                     </Button>

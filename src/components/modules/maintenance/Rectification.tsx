@@ -4,6 +4,8 @@ import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import type { RectificationMemo, RectificationFormData } from '@/types/maintenance'
 import styles from './Rectification.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 // ── SEED TOOLS ────────────────────────────────
 const TOOL_OPTIONS = [
@@ -83,7 +85,7 @@ const SEED_MEMOS: RectificationMemo[] = [
   },
 ]
 
-const STATUSES  = ['Open', 'In Progress', 'Resolved', 'Scrapped']
+const STATUSES = ['Open', 'In Progress', 'Resolved', 'Scrapped']
 const EMPTY_FORM: RectificationFormData = {
   tool_id: 0, issue_date: '', issue_desc: '',
   action_taken: '', resolved_date: '', cost: null,
@@ -106,30 +108,30 @@ function nextMemoNumber(memos: RectificationMemo[]): string {
 }
 
 const STATUS_CLASS: Record<string, string> = {
-  'Open':        styles.statusOpen,
+  'Open': styles.statusOpen,
   'In Progress': styles.statusInProgress,
-  'Resolved':    styles.statusResolved,
-  'Scrapped':    styles.statusScrapped,
+  'Resolved': styles.statusResolved,
+  'Scrapped': styles.statusScrapped,
 }
 
 export default function Rectification() {
-  const [memos, setMemos]             = useState<RectificationMemo[]>(SEED_MEMOS)
-  const [search, setSearch]           = useState('')
+  const [memos, setMemos] = useState<RectificationMemo[]>(SEED_MEMOS)
+  const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
-  const [toolFilter, setToolFilter]   = useState('All')
-  const [drawerOpen, setDrawerOpen]   = useState(false)
-  const [editId, setEditId]           = useState<number | null>(null)
-  const [form, setForm]               = useState<RectificationFormData>(EMPTY_FORM)
-  const [saving, setSaving]           = useState(false)
+  const [toolFilter, setToolFilter] = useState('All')
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [editId, setEditId] = useState<number | null>(null)
+  const [form, setForm] = useState<RectificationFormData>(EMPTY_FORM)
+  const [saving, setSaving] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null)
-  const [expandedId, setExpandedId]   = useState<number | null>(null)
+  const [expandedId, setExpandedId] = useState<number | null>(null)
 
   // ── Stats ──────────────────────────────────
   const stats = useMemo(() => ({
-    total:      memos.length,
-    open:       memos.filter(m => m.status === 'Open').length,
+    total: memos.length,
+    open: memos.filter(m => m.status === 'Open').length,
     inProgress: memos.filter(m => m.status === 'In Progress').length,
-    totalCost:  memos.reduce((s, m) => s + (m.cost ?? 0), 0),
+    totalCost: memos.reduce((s, m) => s + (m.cost ?? 0), 0),
   }), [memos])
 
   // ── Filtered ───────────────────────────────
@@ -141,7 +143,7 @@ export default function Rectification() {
       m.tool_code?.toLowerCase().includes(q) ||
       m.issue_desc.toLowerCase().includes(q)
     const matchStatus = statusFilter === 'All' || m.status === statusFilter
-    const matchTool   = toolFilter   === 'All' || m.tool_code === toolFilter
+    const matchTool = toolFilter === 'All' || m.tool_code === toolFilter
     return matchSearch && matchStatus && matchTool
   }), [memos, search, statusFilter, toolFilter])
 
@@ -155,21 +157,21 @@ export default function Rectification() {
   function openEdit(m: RectificationMemo) {
     setEditId(m.id)
     setForm({
-      tool_id:       m.tool_id,
-      issue_date:    m.issue_date,
-      issue_desc:    m.issue_desc,
-      action_taken:  m.action_taken ?? '',
+      tool_id: m.tool_id,
+      issue_date: m.issue_date,
+      issue_desc: m.issue_desc,
+      action_taken: m.action_taken ?? '',
       resolved_date: m.resolved_date ?? '',
-      cost:          m.cost,
-      status:        m.status,
-      remarks:       m.remarks ?? '',
+      cost: m.cost,
+      status: m.status,
+      remarks: m.remarks ?? '',
     })
     setDrawerOpen(true)
   }
 
   function closeDrawer() { setDrawerOpen(false); setEditId(null) }
   function handleField(key: keyof RectificationFormData, val: string | number | null) {
-    setForm(f => ({ ...f, [key]: val }))
+    setForm((f: RectificationFormData) => ({ ...f, [key]: val }))
   }
 
   function handleSave() {
@@ -181,31 +183,31 @@ export default function Rectification() {
         setMemos(prev => prev.map(m =>
           m.id === editId ? {
             ...m, ...form,
-            tool_id:      Number(form.tool_id),
-            tool_name:    tool?.tool_name ?? m.tool_name,
-            tool_code:    tool?.tool_code ?? m.tool_code,
-            action_taken: form.action_taken  || null,
+            tool_id: Number(form.tool_id),
+            tool_name: tool?.tool_name ?? m.tool_name,
+            tool_code: tool?.tool_code ?? m.tool_code,
+            action_taken: form.action_taken || null,
             resolved_date: form.resolved_date || null,
-            remarks:       form.remarks || null,
-            updated_at:    new Date().toISOString(),
+            remarks: form.remarks || null,
+            updated_at: new Date().toISOString(),
           } : m
         ))
       } else {
         const newMemo: RectificationMemo = {
-          id:            Date.now(),
-          memo_number:   nextMemoNumber(memos),
-          tool_id:       Number(form.tool_id),
-          tool_name:     tool?.tool_name ?? '',
-          tool_code:     tool?.tool_code ?? '',
-          issue_date:    form.issue_date,
-          issue_desc:    form.issue_desc,
-          action_taken:  form.action_taken  || null,
+          id: Date.now(),
+          memo_number: nextMemoNumber(memos),
+          tool_id: Number(form.tool_id),
+          tool_name: tool?.tool_name ?? '',
+          tool_code: tool?.tool_code ?? '',
+          issue_date: form.issue_date,
+          issue_desc: form.issue_desc,
+          action_taken: form.action_taken || null,
           resolved_date: form.resolved_date || null,
-          cost:          form.cost,
-          status:        form.status,
-          remarks:       form.remarks || null,
-          created_at:    new Date().toISOString(),
-          updated_at:    new Date().toISOString(),
+          cost: form.cost,
+          status: form.status,
+          remarks: form.remarks || null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         }
         setMemos(prev => [newMemo, ...prev])
       }
@@ -232,7 +234,27 @@ export default function Rectification() {
           <h1 className={styles.title}>Rectification Memos</h1>
           <p className={styles.subtitle}>{memos.length} total memos</p>
         </div>
-        <div style={{ display:'flex', gap:'0.6rem' }}>
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+          <DownloadButton variant="list" onClick={() => downloadTablePdf({
+            title: 'Rectification Memos',
+            subtitle: `${filtered.length} memos.`,
+            columns: [
+              { header: 'Memo No.', dataKey: 'memo_number' },
+              { header: 'Tool Code', dataKey: 'tool_code' },
+              { header: 'Tool Name', dataKey: 'tool_name' },
+              { header: 'Issue Date', dataKey: 'issue_date' },
+              { header: 'Status', dataKey: 'status' },
+              { header: 'Resolved Date', dataKey: 'resolved_date' },
+              { header: 'Cost', dataKey: 'cost', format: 'currency', align: 'right' },
+            ],
+            rows: filtered.map(r => ({
+              ...r,
+              issue_date: formatDate(r.issue_date) || '',
+              resolved_date: r.resolved_date ? formatDate(r.resolved_date) || '' : '—',
+              cost: Number(r.cost) || 0,
+            })),
+            fileName: 'Rectification_Memos'
+          })} />
           <button className={styles.ghostBtn} onClick={() => router.push('/dashboard/maintenance/rectification/analytics')}>
             ◎ Analytics
           </button>

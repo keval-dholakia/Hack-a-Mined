@@ -19,6 +19,25 @@ export async function getInquiries() {
   return data
 }
 
+export async function getInquiriesWithItems() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('inquiries')
+    .select(`
+      *,
+      customer:customers(name, code),
+      sales_person:users(name),
+      items:inquiry_items(
+        *,
+        product:products(name, code)
+      )
+    `)
+    .order('created_at', { ascending: false })
+
+  if (error) return []
+  return data
+}
+
 export async function getInquiryById(id: number) {
   const supabase = await createClient()
   const { data, error } = await supabase

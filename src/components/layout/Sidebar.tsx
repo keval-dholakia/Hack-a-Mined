@@ -158,6 +158,8 @@ const NAV_GROUPS: Group[] = [
         path: '/dashboard/hr',
         subItems: [
           { label: 'Employees', path: '/dashboard/hr/employees' },
+          { label: 'Salary Heads', path: '/dashboard/hr/salary-heads' },
+          { label: 'Salary Structure', path: '/dashboard/hr/salary-structure' },
           { label: 'Salary Sheet', path: '/dashboard/hr/salary-sheet' },
           { label: 'Advance Memo', path: '/dashboard/hr/advance-memo' },
         ],

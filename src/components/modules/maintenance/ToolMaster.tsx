@@ -4,6 +4,8 @@ import type { Tool, ToolFormData } from '@/types/maintenance'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import styles from './ToolMaster.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 // ── MOCK DATA ─────────────────────────────────────────────
 const SEED_TOOLS: Tool[] = [
@@ -131,7 +133,7 @@ export default function ToolMaster() {
   function closeDrawer() { setDrawerOpen(false); setEditId(null) }
 
   function handleField(key: keyof ToolFormData, val: string | number | null) {
-    setForm(f => ({ ...f, [key]: val }))
+    setForm((f: ToolFormData) => ({ ...f, [key]: val }))
   }
 
   function handleSave() {
@@ -187,7 +189,27 @@ export default function ToolMaster() {
           <h1 className={styles.title}>Tool Master</h1>
           <p className={styles.subtitle}>{stats.total} tools · {stats.active} active</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.6rem' }}>
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+          <DownloadButton variant="list" onClick={() => downloadTablePdf({
+            title: 'Tool Master Directory',
+            subtitle: `${filtered.length} tools`,
+            columns: [
+              { header: 'Code', dataKey: 'tool_code' },
+              { header: 'Tool Name', dataKey: 'tool_name' },
+              { header: 'Category', dataKey: 'category' },
+              { header: 'Location', dataKey: 'location' },
+              { header: 'Condition', dataKey: 'condition' },
+              { header: 'Value', dataKey: 'purchase_cost', format: 'currency', align: 'right' },
+              { header: 'Status', dataKey: 'is_active' },
+            ],
+            rows: filtered.map(t => ({
+              ...t,
+              location: t.location || '—',
+              purchase_cost: Number(t.purchase_cost) || 0,
+              is_active: t.is_active === 1 ? 'Active' : 'Inactive'
+            })),
+            fileName: 'Tool_Master_Directory'
+          })} />
           <button className={styles.ghostBtn} onClick={() => router.push('/dashboard/maintenance/tool-master/analytics')}>
             ◎ Analytics
           </button>

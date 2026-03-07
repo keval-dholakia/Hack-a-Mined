@@ -7,10 +7,14 @@ import {
 } from '@/data/contractorMock'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
+import { useRouter } from 'next/navigation'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 const MODES = ['NEFT', 'RTGS', 'Cheque', 'Cash'] as const
 
 export default function ContractorPaymentsPage() {
+    const router = useRouter()
     const [payments, setPayments] = useState([...contractorPayments])
     const [showForm, setShowForm] = useState(false)
 
@@ -49,7 +53,38 @@ export default function ContractorPaymentsPage() {
                     <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0 }}>Contractor Payments</h1>
                     <p style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>Issue payment vouchers against approved salary sheets with TDS deduction</p>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)}>{showForm ? 'Cancel' : '+ Make Payment'}</Button>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Contractor Payment Register',
+                        subtitle: `${payments.length} payment vouchers`,
+                        columns: [
+                            { header: 'Voucher No', dataKey: 'voucherNo' },
+                            { header: 'Date', dataKey: 'date' },
+                            { header: 'Firm', dataKey: 'firm_name' },
+                            { header: 'Worker', dataKey: 'worker_name' },
+                            { header: 'Mode', dataKey: 'paymentMode' },
+                            { header: 'TDS Deducted', dataKey: 'tdsDeducted', format: 'currency', align: 'right' },
+                            { header: 'Net Paid', dataKey: 'netAmountPaid', format: 'currency', align: 'right' },
+                        ],
+                        rows: payments.map(p => {
+                            const firm = contractorFirms.find(f => f.id === p.firmId)
+                            const sheet = contractorSheets.find(s => s.id === p.sheetId)
+                            const worker = contractorWorkers.find(w => w.id === sheet?.workerId)
+                            return {
+                                ...p,
+                                firm_name: firm?.name || '—',
+                                worker_name: worker?.name || '—',
+                            }
+                        }),
+                        fileName: 'Contractor_Payment_Register'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/contractors/payments/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => setShowForm(!showForm)}>
+                        {showForm ? 'Cancel' : '+ Make Payment'}
+                    </Button>
+                </div>
             </div>
 
             {/* KPIs */}
@@ -139,6 +174,7 @@ export default function ContractorPaymentsPage() {
                         {payments.map(p => {
                             const firm = contractorFirms.find(f => f.id === p.firmId)
                             const sheet = contractorSheets.find(s => s.id === p.sheetId)
+                            const w = contractorWorkers.find(x => x.id === sheet?.workerId)
                             return (
                                 <tr key={p.id} style={{ borderBottom: '1px solid #1a1d27' }}>
                                     <td style={{ padding: '0.85rem 1rem', fontFamily: 'var(--mono)', color: '#22d3ee' }}>{p.voucherNo}</td>

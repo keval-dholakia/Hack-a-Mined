@@ -1,10 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Customer } from '@/types/customer'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadAnalysisPdf } from '@/lib/pdf/downloadAnalysisPdf'
 import styles from './CustomerAnalytics.module.scss'
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -50,6 +52,7 @@ function DarkTooltip({ active, payload, label, formatter }: any) {
 /* ═══════════════════════════════════════════════════════════════════════ */
 export default function CustomerAnalytics({ customers }: Props) {
     const router = useRouter()
+    const reportRef = useRef<HTMLDivElement>(null)
     const [activeTab, setActiveTab] = useState<'overview' | 'geography' | 'financial' | 'risk'>('overview')
 
     /* ── Derived stats ────────────────────────────────────────────────── */
@@ -165,7 +168,7 @@ export default function CustomerAnalytics({ customers }: Props) {
     ] as const
 
     return (
-        <div className={styles.page}>
+        <div className={styles.page} ref={reportRef}>
 
             {/* ── Header ───────────────────────────────────────────── */}
             <div className={styles.header}>
@@ -173,7 +176,8 @@ export default function CustomerAnalytics({ customers }: Props) {
                     <h1 className={styles.title}>Customer Analytics</h1>
                     <p className={styles.subtitle}>360° data visualization · {stats.total} customers</p>
                 </div>
-                <div className={styles.headerActions}>
+                <div className={styles.headerActions} style={{ display: 'flex', gap: '0.5rem' }}>
+                    <DownloadButton variant="analytics" onClick={() => downloadAnalysisPdf(reportRef, 'Customer_Analytics')} />
                     <Button variant="ghost" onClick={() => router.push('/dashboard/masters/customers')}>
                         ← Back to List
                     </Button>

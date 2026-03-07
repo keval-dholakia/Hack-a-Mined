@@ -3,9 +3,13 @@
 import { useState, useEffect } from 'react'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import { useRouter } from 'next/navigation'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 import { fetchBankRecon, fetchAccounts, updateBankRecon, BankReconLine, Account } from '@/data/financeMock'
 
 export default function BankReconPage() {
+    const router = useRouter()
     const [lines, setLines] = useState<BankReconLine[]>([])
     const [accounts, setAccounts] = useState<Account[]>([])
     const [loading, setLoading] = useState(false)
@@ -40,6 +44,28 @@ export default function BankReconPage() {
                 <div>
                     <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0 }}>Bank Reconciliation</h1>
                     <p style={{ color: 'var(--text-muted)' }}>Match system balances against actual bank statements</p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Bank Reconciliation Statement',
+                        subtitle: `${lines.length} reconciliation records`,
+                        columns: [
+                            { header: 'Bank Account', dataKey: 'bankName' },
+                            { header: 'Statement Date', dataKey: 'statementDate' },
+                            { header: 'Status', dataKey: 'status' },
+                            { header: 'System Balance', dataKey: 'systemBalance', format: 'currency', align: 'right' },
+                            { header: 'Bank Balance', dataKey: 'bankBalance', format: 'currency', align: 'right' },
+                            { header: 'Unreconciled', dataKey: 'unreconciledAmount', format: 'currency', align: 'right' },
+                        ],
+                        rows: lines.map(line => ({
+                            ...line,
+                            bankName: accounts.find(a => a.id === line.bankAccountId)?.name || 'Unknown'
+                        })),
+                        fileName: 'Bank_Reconciliation_Statement'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/finance/bank-recon/analytics')}>
+                        ◎ Analytics
+                    </Button>
                 </div>
             </div>
 

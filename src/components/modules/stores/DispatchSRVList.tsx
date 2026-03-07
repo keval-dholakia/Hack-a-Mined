@@ -8,6 +8,9 @@ import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import styles from './Stores.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
+import { fmtDate } from '@/lib/pdf/pdfConstants'
 
 type Props = { srvs: DispatchSRV[] }
 
@@ -32,9 +35,37 @@ export default function DispatchSRVList({ srvs }: Props) {
                     <h1 className={styles.title}>Dispatch SRV</h1>
                     <p className={styles.subtitle}>{srvs.length} dispatch vouchers</p>
                 </div>
-                <Button onClick={() => router.push('/dashboard/stores/dispatch-srv/new')}>
-                    + New SRV
-                </Button>
+                <div className={styles.headerRight} style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <DownloadButton variant="list" onClick={() => downloadTablePdf({
+                        title: 'Stores Dispatch SRV Registry',
+                        subtitle: `${filtered.length} dispatch vouchers`,
+                        columns: [
+                            { header: 'SRV No', dataKey: 'srv_no' },
+                            { header: 'Date', dataKey: 'srv_date' },
+                            { header: 'Party', dataKey: 'party_name' },
+                            { header: 'Item', dataKey: 'product_name' },
+                            { header: 'Qty', dataKey: 'qty', align: 'right' },
+                            { header: 'Returnable', dataKey: 'returnable', align: 'center' },
+                            { header: 'Return By', dataKey: 'return_by_date' },
+                        ],
+                        rows: filtered.map(s => ({
+                            ...s,
+                            srv_date: s.srv_date ? fmtDate(s.srv_date) : '—',
+                            party_name: s.party_name || '—',
+                            product_name: s.product_name || '—',
+                            qty: Number(s.qty) || 0,
+                            returnable: s.returnable === 1 ? 'Yes' : 'No',
+                            return_by_date: s.return_by_date ? fmtDate(s.return_by_date) : '—',
+                        })),
+                        fileName: 'Dispatch_SRV_Registry'
+                    })} />
+                    <Button variant="ghost" onClick={() => router.push('/dashboard/stores/dispatch-srv/analytics')}>
+                        ◎ Analytics
+                    </Button>
+                    <Button onClick={() => router.push('/dashboard/stores/dispatch-srv/new')}>
+                        + New SRV
+                    </Button>
+                </div>
             </div>
 
             <div className={styles.searchBar}>

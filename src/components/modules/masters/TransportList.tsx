@@ -9,6 +9,8 @@ import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import styles from './Masters.module.scss'
+import DownloadButton from '@/components/ui/DownloadButton'
+import { downloadTablePdf } from '@/lib/pdf/downloadTablePdf'
 
 type Props = { transporters: TransportMaster[] }
 
@@ -30,7 +32,17 @@ export default function TransportList({ transporters }: Props) {
           <h1 className={styles.title}>Transport Masters</h1>
           <p className={styles.subtitle}>{transporters.length} total transporters</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.6rem' }}>
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+          <DownloadButton variant="list" onClick={() => downloadTablePdf({
+            title: 'Transport Register', subtitle: `${filtered.length} transporters`,
+            columns: [
+              { header: 'Name', dataKey: 'name' }, { header: 'Owner', dataKey: 'owner_name' },
+              { header: 'Mobile', dataKey: 'mobile' }, { header: 'GSTIN', dataKey: 'gstin' },
+              { header: 'Address', dataKey: 'address' }, { header: 'Status', dataKey: 'is_active' },
+            ],
+            rows: filtered.map(t => ({ ...t, is_active: t.is_active === 1 ? 'Active' : 'Inactive' })),
+            fileName: 'Transport_Register',
+          })} />
           <Button variant="ghost" onClick={() => router.push('/dashboard/masters/transport/analytics')}>
             ◎ Analytics
           </Button>
