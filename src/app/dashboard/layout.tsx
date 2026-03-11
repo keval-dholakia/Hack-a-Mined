@@ -3,6 +3,7 @@ import { getSessionUser } from '@/app/actions/auth'
 import { getPermissionsByRole } from '@/app/actions/permissions'
 import Sidebar from '@/components/layout/Sidebar'
 import Topbar from '@/components/layout/Topbar'
+import ChatbotPanel from '@/components/modules/chatbot/ChatbotPanel'
 import styles from './dashboard.module.scss'
 
 export default async function DashboardLayout({
@@ -28,6 +29,7 @@ export default async function DashboardLayout({
           {children}
         </main>
       </div>
+      <ChatbotPanel roleId={user.role_id} />
     </div>
   )
 }
