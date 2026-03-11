@@ -1,10 +1,6 @@
-// src/app/dashboard/simulation/_components/tabs/AIInsightTab.tsx
-// AI Insight tab — calls Gemini, renders structured markdown-style output.
-// Handles loading, error, and idle states internally.
-
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useCallback, useState, type ReactNode } from 'react';
 import type { SimResult } from '@/types/simulation';
 import { fetchGeminiInsights } from '@/lib/geminiInsights';
 import styles from './AIInsightTab.module.scss';
@@ -15,18 +11,13 @@ interface Props {
 
 type Status = 'idle' | 'loading' | 'done' | 'error';
 
-// ── Markdown-lite renderer ────────────────────────────────────────────────────
-// Gemini returns **bold** headings and bullet lists. We parse these minimally
-// without pulling in a full markdown library.
-
-function renderInsight(raw: string): React.ReactNode {
+function renderInsight(raw: string): ReactNode {
     const lines = raw.split('\n');
 
     return lines.map((line, i) => {
         const trimmed = line.trim();
         if (!trimmed) return <div key={i} className={styles.spacer} />;
 
-        // **Heading** lines
         if (trimmed.startsWith('**') && trimmed.endsWith('**')) {
             const text = trimmed.slice(2, -2);
             return (
@@ -36,7 +27,6 @@ function renderInsight(raw: string): React.ReactNode {
             );
         }
 
-        // Inline **bold** within a line
         const withBold = trimmed.split(/(\*\*[^*]+\*\*)/).map((chunk, j) => {
             if (chunk.startsWith('**') && chunk.endsWith('**')) {
                 return <strong key={j}>{chunk.slice(2, -2)}</strong>;
@@ -44,17 +34,15 @@ function renderInsight(raw: string): React.ReactNode {
             return chunk;
         });
 
-        // Bullet points
-        if (trimmed.startsWith('•') || trimmed.startsWith('-') || trimmed.startsWith('*')) {
+        if (trimmed.startsWith('-') || trimmed.startsWith('*') || trimmed.startsWith('\u2022')) {
             return (
                 <div key={i} className={styles.bulletRow}>
-                    <span className={styles.bullet}>—</span>
+                    <span className={styles.bullet}>-</span>
                     <p className={styles.bulletText}>{withBold}</p>
                 </div>
             );
         }
 
-        // Numbered list
         if (/^\d+\./.test(trimmed)) {
             return (
                 <div key={i} className={styles.bulletRow}>
@@ -64,7 +52,6 @@ function renderInsight(raw: string): React.ReactNode {
             );
         }
 
-        // Plain paragraph
         return (
             <p key={i} className={styles.para}>
                 {withBold}
@@ -72,8 +59,6 @@ function renderInsight(raw: string): React.ReactNode {
         );
     });
 }
-
-// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function AIInsightTab({ result }: Props) {
     const [status, setStatus] = useState<Status>('idle');
@@ -100,7 +85,6 @@ export default function AIInsightTab({ result }: Props) {
         setError('');
     };
 
-    // ── Idle state ──────────────────────────────────────────────────────────────
     if (status === 'idle') {
         return (
             <div className={styles.idleWrap}>
@@ -112,19 +96,18 @@ export default function AIInsightTab({ result }: Props) {
                         <circle cx="20" cy="20" r="2" fill="var(--accent)" />
                     </svg>
                 </div>
-                <p className={styles.idleTitle}>AI Insight Ready</p>
+                <p className={styles.idleTitle}>AI Feasibility Insight Ready</p>
                 <p className={styles.idleSub}>
-                    Gemini will analyse your simulation output — MRP shortages, capacity constraints,
-                    cost breakdown — and return a structured management briefing.
+                    Gemini embeds your simulation run, GST data, stock position, and related ERP context
+                    before generating a production-feasibility plan with sales-based cost and profit projections.
                 </p>
 
-                {/* What to expect cards */}
                 <div className={styles.previewCards}>
                     {[
-                        { num: '01', label: 'Executive Summary', desc: 'Feasibility & top risk in 2–3 sentences' },
-                        { num: '02', label: 'Material Procurement Actions', desc: 'Shortage items with urgency & cost impact' },
-                        { num: '03', label: 'Capacity & Scheduling', desc: 'Timeline realism + specific remedies if overloaded' },
-                        { num: '04', label: 'Cost Optimisation', desc: '2–3 actionable levers for this specific run' },
+                        { num: '01', label: 'Feasibility Verdict', desc: 'GO / CONDITIONAL GO / NO-GO with main constraint' },
+                        { num: '02', label: 'Production Plan', desc: 'Procurement, scheduling, quality, and dispatch actions' },
+                        { num: '03', label: 'Sales Cost Profit', desc: 'Scenario-wise projected sales, cost, and profitability' },
+                        { num: '04', label: 'GST Stock ERP Impact', desc: 'Tax, inventory, working capital, and risk implications' },
                     ].map((c) => (
                         <div key={c.num} className={styles.previewCard}>
                             <span className={styles.previewNum}>{c.num}</span>
@@ -141,31 +124,30 @@ export default function AIInsightTab({ result }: Props) {
                         <path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" opacity="0.6" />
                         <circle cx="7" cy="7" r="3" stroke="currentColor" strokeWidth="1.4" />
                     </svg>
-                    Generate AI Insight
+                    Generate Feasibility Insight
                 </button>
 
                 <p className={styles.apiNote}>
-                    Uses Gemini 1.5 Flash · <code>NEXT_PUBLIC_GEMINI_API_KEY</code>
+                    Uses Gemini 2.5 Flash + gemini-embedding-001 · <code>NEXT_PUBLIC_GEMINI_API_KEY</code>
                 </p>
             </div>
         );
     }
 
-    // ── Loading state ───────────────────────────────────────────────────────────
     if (status === 'loading') {
         return (
             <div className={styles.loadingWrap}>
                 <div className={styles.loadingSpinner} />
-                <p className={styles.loadingTitle}>Analysing simulation output…</p>
+                <p className={styles.loadingTitle}>Building production feasibility analysis...</p>
                 <p className={styles.loadingSub}>
-                    Gemini is reviewing your MRP, CRP, and cost data.
+                    Gemini is embedding simulation and ERP context before generating the production plan.
                 </p>
                 <div className={styles.loadingSteps}>
                     {[
-                        'Reading material shortages',
-                        'Evaluating capacity constraints',
-                        'Calculating cost optimisations',
-                        'Drafting management briefing',
+                        'Embedding simulation run and query prompt',
+                        'Embedding GST, stock, and ERP datasets',
+                        'Ranking semantically relevant planning context',
+                        'Generating production plan and profit projection',
                     ].map((step, i) => (
                         <div key={i} className={styles.loadingStep} style={{ animationDelay: `${i * 0.4}s` }}>
                             <span className={styles.loadingDot} style={{ animationDelay: `${i * 0.4}s` }} />
@@ -177,34 +159,31 @@ export default function AIInsightTab({ result }: Props) {
         );
     }
 
-    // ── Error state ─────────────────────────────────────────────────────────────
     if (status === 'error') {
         return (
             <div className={styles.errorWrap}>
-                <div className={styles.errorIcon}>⚠</div>
+                <div className={styles.errorIcon}>!</div>
                 <p className={styles.errorTitle}>Gemini API Error</p>
                 <p className={styles.errorMsg}>{error}</p>
                 <div className={styles.errorActions}>
-                    <button className={styles.retryBtn} onClick={handleGenerate}>↺ Retry</button>
+                    <button className={styles.retryBtn} onClick={handleGenerate}>Retry</button>
                     <button className={styles.ghostBtn} onClick={handleReset}>Cancel</button>
                 </div>
                 <div className={styles.errorHint}>
                     <p>Common causes:</p>
                     <ul>
                         <li><code>NEXT_PUBLIC_GEMINI_API_KEY</code> not set in <code>.env.local</code></li>
-                        <li>API key does not have Gemini 1.5 Flash access</li>
-                        <li>Network / CORS issue in development</li>
+                        <li>API key does not have access to Gemini generation or embedding models</li>
+                        <li>Network issue in development</li>
+                        <li>Embedding or generation request timed out (retry once)</li>
                     </ul>
                 </div>
             </div>
         );
     }
 
-    // ── Done state — render insight ─────────────────────────────────────────────
     return (
         <div className={styles.resultWrap}>
-
-            {/* Header bar */}
             <div className={styles.resultHeader}>
                 <div className={styles.resultHeaderLeft}>
                     <span className={styles.geminiTag}>
@@ -212,13 +191,13 @@ export default function AIInsightTab({ result }: Props) {
                             <circle cx="5" cy="5" r="4" stroke="var(--accent)" strokeWidth="1.2" />
                             <circle cx="5" cy="5" r="2" fill="var(--accent)" />
                         </svg>
-                        Gemini 1.5 Flash
+                        Gemini 2.5 Flash
                     </span>
-                    <span className={styles.resultTitle}>Management Briefing</span>
+                    <span className={styles.resultTitle}>Production Feasibility Briefing</span>
                 </div>
                 <div className={styles.resultHeaderRight}>
                     <button className={styles.regenBtn} onClick={handleGenerate} title="Regenerate">
-                        ↺ Regenerate
+                        Regenerate
                     </button>
                     <button className={styles.copyBtn} onClick={() => navigator.clipboard.writeText(insight)} title="Copy to clipboard">
                         Copy
@@ -229,14 +208,12 @@ export default function AIInsightTab({ result }: Props) {
                 </div>
             </div>
 
-            {/* Insight content */}
             <div className={styles.insightBody}>
                 {renderInsight(insight)}
             </div>
 
-            {/* Footer disclaimer */}
             <div className={styles.resultFooter}>
-                AI-generated analysis. Verify material prices and lead times with procurement before actioning.
+                AI-generated analysis. Validate sales assumptions, GST effects, and procurement lead times before execution.
             </div>
         </div>
     );
